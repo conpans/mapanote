@@ -1,0 +1,38 @@
+{
+  // Rust
+  "rust-analyzer.checkOnSave.command": "clippy",
+  "rust-analyzer.cargo.features": "all",
+  
+  // Svelte
+  "svelte.enable-ts-plugin": true,
+  "files.associations": {
+    "*.svelte": "svelte"
+  },
+  
+  // Formatting
+  "editor.formatOnSave": true,
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  
+  // Tailwind
+  "tailwindCSS.experimental.classRegex": [
+    ["class:\\s*?[\"'`]([^\"'`]*).*?[\"'`]", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  
+  // Terminal
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  
+  // File exclusions (keep workspace clean)
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/target": true
+  }
+}
