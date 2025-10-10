@@ -1,16 +1,12 @@
 [package]
-name = "atlas-notes"
+name = "mapanote"                         # was "atlas-notes"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "A local-first geopolitics notebook"
+authors = ["conpans"]
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
+# keep this; it's needed on Windows
 [lib]
-# The `_lib` suffix may seem redundant but it is necessary
-# to make the lib name unique and wouldn't conflict with the bin name.
-# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
 name = "atlas_notes_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
@@ -18,8 +14,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = [] }  # no extra features needed for your current setup
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-

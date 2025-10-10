@@ -1,5 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "productName": "Mapanote",
+  "version": "0.1.0",
+  "identifier": "com.mapanote.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -17,14 +20,11 @@
       "icons/icon.ico"
     ]
   },
-  "productName": "Atlas Notes",
-  "version": "0.1.0",
-  "identifier": "app.atlasnotes.desktop",
   "plugins": {},
   "app": {
     "windows": [
       {
-        "title": "Atlas Notes",
+        "title": "Mapanote",
         "width": 1400,
         "height": 900,
         "minWidth": 1024,

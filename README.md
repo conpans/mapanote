@@ -1,4 +1,4 @@
-# Atlas Notes
+# Mapanote
 
 A local-first, desktop atlas-style notebook for geopolitics, IR students, analysts, and enthusiasts.
 
@@ -27,13 +27,13 @@ A local-first, desktop atlas-style notebook for geopolitics, IR students, analys
 ### Prerequisites
 
 - Rust (1.70+)
-- Node.js (20+ LTS)
+- Node.js (20 LTS)
 - Visual Studio C++ Build Tools (Windows)
 
 ### Install
 
 ```bash
-git clone https://github.com/conpans/atlas-notes.git
-cd atlas-notes
+git clone https://github.com/conpans/mapanote.git
+cd mapanote
 npm install
 ```
