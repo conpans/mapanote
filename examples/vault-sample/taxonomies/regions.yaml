@@ -1,0 +1,25 @@
+regions:
+  northern_europe:
+    name: Northern Europe
+    countries: [fi, se, no, dk, is]
+
+  eastern_europe:
+    name: Eastern Europe
+    countries: [ua, by, md, pl, cz, sk, hu, ro, bg]
+
+  western_europe:
+    name: Western Europe
+    countries: [de, fr, nl, be, lu, at, ch]
+
+  southern_europe:
+    name: Southern Europe
+    countries: [es, pt, it, gr, hr, si, mt, cy]
+
+collections:
+  nordics:
+    name: Nordic Countries
+    countries: [fi, se, no, dk, is]
+
+  baltics:
+    name: Baltic States
+    countries: [ee, lv, lt]
