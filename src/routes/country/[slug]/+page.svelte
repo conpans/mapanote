@@ -10,6 +10,7 @@
   import { goto } from "$app/navigation";
   import AddNoteForm from "$lib/components/AddNoteForm.svelte";
   import EditNoteModal from "$lib/components/EditNoteModal.svelte";
+  import ExportMenu from "$lib/components/ExportMenu.svelte";
   import type { Note } from "$lib/types";
 
   // Get slug from URL
@@ -22,6 +23,7 @@
 
   // Edit modal state
   let editingNote: Note | null = null;
+  let showExportMenu = false;
 
   // Load country data when component mounts
   onMount(async () => {
@@ -170,6 +172,30 @@
                 {$currentCountry.summary}
               </p>
             {/if}
+
+            <!-- Export button -->
+            <!-- ← ADD -->
+            <button
+              on:click={() => (showExportMenu = true)}
+              class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
+                   hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg transition
+                   flex items-center gap-2 text-gray-700 dark:text-gray-300"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              Export
+            </button>
 
             {#if $currentCountry.aliases.length > 0}
               <div
@@ -425,6 +451,16 @@
 <!-- Edit Modal (conditionally rendered) -->
 {#if editingNote}
   <EditNoteModal note={editingNote} onClose={closeEditModal} />
+{/if}
+
+<!-- Export Menu -->
+<!-- ← ADD -->
+{#if showExportMenu && $currentCountry}
+  <ExportMenu
+    countrySlug={$currentCountry.slug}
+    countryTitle={$currentCountry.title}
+    onClose={() => (showExportMenu = false)}
+  />
 {/if}
 
 <style>

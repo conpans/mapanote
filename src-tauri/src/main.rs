@@ -8,11 +8,14 @@ mod vault;
 use commands::vault::{
     add_note,    // ← NEW
     delete_note, // ← NEW
+    export_country_markdown,
     get_country,
     get_country_notes,
+    get_vault_stats, // ← NEW
     list_countries,
     open_vault,
-    update_note, // ← NEW
+    search_notes,
+    update_note,
     AppState,
 };
 use std::sync::Mutex;
@@ -20,6 +23,7 @@ use std::sync::Mutex;
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
         .manage(AppState {
             vault_reader: Mutex::new(None),
             vault_writer: Mutex::new(None), // ← NEW
@@ -32,6 +36,9 @@ fn main() {
             add_note,    // ← NEW
             update_note, // ← NEW
             delete_note, // ← NEW
+            search_notes,
+            export_country_markdown,
+            get_vault_stats,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
