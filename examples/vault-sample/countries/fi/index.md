@@ -26,3 +26,14 @@ NATO membership has shifted domestic priorities significantly since 2023.
 75th anniversary of the Paasikivi-Kekkonen doctrine marked with historical
 retrospective. Former presidents and foreign ministers reflected on Finland's
 Cold War neutrality and its evolution into NATO membership.
+
+
+### 2025-10-11 · politics, career · internal
+[id:01K78T6N55ZCD5HDVF1CV2NDQD]
+
+Brand new note. Place holder text.
+
+khkdhasio unhhlk lkhlkhjadlokhf.
+
+
+jjiodlikhjflkah.

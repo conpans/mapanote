@@ -20,6 +20,7 @@ pub struct Note {
     pub text: String,
     pub also: Vec<String>, // Cross-references
     pub visibility: Visibility,
+    pub pinned: bool, // ← NEW: Is this note pinned?
 }
 
 /// Visibility level for notes
@@ -51,4 +52,27 @@ pub struct CountryPage {
     pub country: Country,
     pub notes: Vec<Note>,
     pub raw_content: String, // Markdown body
+}
+
+/// Request to add a new note
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AddNoteRequest {
+    pub country_slug: String,
+    pub text: String,
+    pub tags: Vec<String>,
+    pub also: Vec<String>,
+    pub visibility: Visibility,
+    pub pinned: bool,
+}
+
+/// Request to update an existing note
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpdateNoteRequest {
+    pub country_slug: String,
+    pub note_id: String,
+    pub text: String,
+    pub tags: Vec<String>,
+    pub also: Vec<String>,
+    pub visibility: Visibility,
+    pub pinned: bool,
 }

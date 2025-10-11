@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
-import { invoke } from '@tauri-apps/api/core';  // ← Correct path for Tauri v2
-import type { Country, Note } from '$lib/types';
+import { invoke } from '@tauri-apps/api/core';
+import type { Country, Note, AddNoteRequest, UpdateNoteRequest } from '$lib/types';
 
 // Vault state
 export const vaultOpened = writable<boolean>(false);
@@ -9,7 +9,7 @@ export const countries = writable<string[]>([]);
 export const currentCountry = writable<Country | null>(null);
 export const currentNotes = writable<Note[]>([]);
 
-// Derived store: is vault loading?
+// UI state
 export const isLoading = writable<boolean>(false);
 
 /**
@@ -19,14 +19,11 @@ export async function openVault(path: string): Promise<void> {
   isLoading.set(true);
   
   try {
-    // Call Rust command
     const result = await invoke<string>('open_vault', { path });
     console.log('Vault opened:', result);
     
-    // Load list of countries
     const countryList = await invoke<string[]>('list_countries');
     
-    // Update stores
     vaultPath.set(path);
     countries.set(countryList);
     vaultOpened.set(true);
@@ -46,11 +43,9 @@ export async function loadCountry(slug: string): Promise<void> {
   isLoading.set(true);
   
   try {
-    // Load country metadata
     const country = await invoke<Country>('get_country', { slug });
     currentCountry.set(country);
     
-    // Load country notes
     const notes = await invoke<Note[]>('get_country_notes', { slug });
     currentNotes.set(notes);
     
@@ -59,6 +54,58 @@ export async function loadCountry(slug: string): Promise<void> {
     throw error;
   } finally {
     isLoading.set(false);
+  }
+}
+
+/**
+ * Add a new note
+ */
+export async function addNote(request: AddNoteRequest): Promise<Note> {
+  try {
+    const note = await invoke<Note>('add_note', { request });
+    
+    // Reload notes
+    await loadCountry(request.country_slug);
+    
+    return note;
+  } catch (error) {
+    console.error('Failed to add note:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update an existing note
+ */
+export async function updateNote(request: UpdateNoteRequest): Promise<void> {
+  try {
+    await invoke('update_note', { request });
+    
+    // Reload notes
+    await loadCountry(request.country_slug);
+    
+  } catch (error) {
+    console.error('Failed to update note:', error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a note
+ */
+export async function deleteNote(countrySlug: string, noteId: string): Promise<void> {
+  try {
+    await invoke('delete_note', { 
+      countrySlug, 
+      noteId 
+    });
+    
+    // Reload notes
+    await loadCountry(countrySlug);
+    
+  } catch (error) {
+    console.error('Failed to delete note:', error);
+    throw error;
   }
 }
 

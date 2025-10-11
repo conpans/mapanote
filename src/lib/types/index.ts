@@ -15,6 +15,7 @@ export interface Note {
   text: string;
   also: string[];  // Cross-references
   visibility: 'private' | 'internal' | 'publishable';
+  pinned: boolean;  // ← NEW
 }
 
 export interface VaultConfig {
@@ -29,4 +30,24 @@ export interface SearchResult {
   snippet: string;
   date: string;
   tags: string[];
+}
+
+// ← NEW: Request types for adding/updating notes
+export interface AddNoteRequest {
+  country_slug: string;
+  text: string;
+  tags: string[];
+  also: string[];
+  visibility: 'private' | 'internal' | 'publishable';
+  pinned: boolean;
+}
+
+export interface UpdateNoteRequest {
+  country_slug: string;
+  note_id: string;
+  text: string;
+  tags: string[];
+  also: string[];
+  visibility: 'private' | 'internal' | 'publishable';
+  pinned: boolean;
 }

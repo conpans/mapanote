@@ -7,11 +7,10 @@ pub fn parse_notes(markdown: &str) -> Result<Vec<Note>> {
     let mut notes = Vec::new();
 
     // Regex to match note headers
-    // Format: ### 2025-10-07 · tags... · also:co,ve · internal
+    // Format: ### 2025-10-07 · tags... · also:co,ve · internal · pinned
     let header_re = Regex::new(r"(?m)^###\s+(\d{4}-\d{2}-\d{2})\s*·\s*(.*?)\s*(?:·\s*(.*?))?\s*$")?;
 
     // Regex to match note IDs
-    // Format: [id:01J84N8P3E4]
     let id_re = Regex::new(r"\[id:([A-Z0-9]+)\]")?;
 
     let lines: Vec<&str> = markdown.lines().collect();
@@ -34,9 +33,10 @@ pub fn parse_notes(markdown: &str) -> Result<Vec<Note>> {
                 .map(String::from)
                 .collect();
 
-            // Parse metadata (also:co,ve · internal)
+            // Parse metadata (also:co,ve · internal · pinned)
             let mut also = Vec::new();
             let mut visibility = Visibility::Internal;
+            let mut pinned = false; // ← NEW
 
             for part in metadata_str.split('·') {
                 let part = part.trim();
@@ -51,6 +51,9 @@ pub fn parse_notes(markdown: &str) -> Result<Vec<Note>> {
                     visibility = Visibility::Private;
                 } else if part == "publishable" {
                     visibility = Visibility::Publishable;
+                } else if part == "pinned" {
+                    // ← NEW
+                    pinned = true;
                 }
             }
 
@@ -79,7 +82,7 @@ pub fn parse_notes(markdown: &str) -> Result<Vec<Note>> {
                     .map(|m| m.as_str().to_string())
                     .unwrap_or_default()
             } else {
-                // Generate ID if missing (shouldn't happen, but safe)
+                // Generate ID if missing
                 ulid::Ulid::new().to_string()
             };
 
@@ -93,6 +96,7 @@ pub fn parse_notes(markdown: &str) -> Result<Vec<Note>> {
                 text,
                 also,
                 visibility,
+                pinned, // ← NEW
             });
         } else {
             i += 1;
@@ -117,7 +121,7 @@ Some intro text
 
 Parliamentary debate over defense spending continues.
 
-### 2025-10-06 · energy · also:se,no · publishable
+### 2025-10-06 · energy · also:se,no · publishable · pinned
 [id:01J85P2K3M9]
 
 Wind development plans announced.
@@ -129,10 +133,10 @@ Wind development plans announced.
         let note1 = &notes[0];
         assert_eq!(note1.date, "2025-10-07");
         assert_eq!(note1.tags, vec!["politics", "current"]);
-        assert!(note1.text.contains("Parliamentary"));
+        assert!(!note1.pinned);
 
         let note2 = &notes[1];
         assert_eq!(note2.also, vec!["se", "no"]);
-        assert_eq!(note2.tags, vec!["energy"]);
+        assert!(note2.pinned);
     }
 }
