@@ -34,7 +34,20 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "capabilities": [
+        {
+          "identifier": "main-capability",
+          "description": "Main window permissions",
+          "windows": ["main"],
+          "permissions": [
+            "core:default",
+            "core:window:default",
+            "dialog:default",
+            "dialog:allow-open"
+          ]
+        }
+      ]
     }
   }
 }
