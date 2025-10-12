@@ -43,6 +43,7 @@ export async function loadCountry(slug: string): Promise<void> {
   isLoading.set(true);
   
   try {
+
     const country = await invoke<Country>('get_country', { slug });
     currentCountry.set(country);
     

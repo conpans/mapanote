@@ -7,6 +7,8 @@
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { invoke } from "@tauri-apps/api/core";
+  import ThemeToggle from "$lib/components/ThemeToggle.svelte";
+  import LoadingSkeleton from "$lib/components/LoadingSkeleton.svelte";
 
   let viewMode: "map" | "list" = "map";
   let showSearch = false;
@@ -65,6 +67,9 @@
           </div>
 
           <div class="flex items-center gap-3">
+            <!-- Theme toggle (NEW) -->
+            <ThemeToggle />
+
             <!-- Timeline button -->
             <!-- ← ADD -->
             <button
@@ -190,6 +195,8 @@
             </div>
           </div>
         </div>
+      {:else if $vaultOpened}
+        <LoadingSkeleton type="stats" />
       {/if}
 
       <!-- Content (map or list) -->

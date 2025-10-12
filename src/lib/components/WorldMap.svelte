@@ -8,6 +8,7 @@
     loadMapStats,
   } from "$lib/stores/mapStats";
   import { isoToSlug, isoToName } from "$lib/data/isoMapping";
+  import LoadingSkeleton from "./LoadingSkeleton.svelte";
 
   let mapContainer: HTMLDivElement;
   let svgElement: SVGElement | null = null;
@@ -171,7 +172,7 @@
   <!-- Loading overlay -->
   {#if isLoading}
     <div class="loading-overlay">
-      <div class="text-gray-600 dark:text-gray-400">Loading map...</div>
+      <LoadingSkeleton type="map" />
     </div>
   {/if}
 

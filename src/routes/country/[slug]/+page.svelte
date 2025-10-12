@@ -12,6 +12,8 @@
   import EditNoteModal from "$lib/components/EditNoteModal.svelte";
   import ExportMenu from "$lib/components/ExportMenu.svelte";
   import type { Note } from "$lib/types";
+  import ThemeToggle from "$lib/components/ThemeToggle.svelte";
+  import LoadingSkeleton from "$lib/components/LoadingSkeleton.svelte";
 
   // Get slug from URL
   $: slug = $page.params.slug;
@@ -119,10 +121,8 @@
 
 <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
   {#if $isLoading}
-    <div class="flex items-center justify-center h-screen">
-      <div class="text-gray-600 dark:text-gray-400">
-        Loading country data...
-      </div>
+    <div class="max-w-6xl mx-auto p-8">
+      <LoadingSkeleton type="country" count={3} />
     </div>
   {:else if $currentCountry}
     <!-- Country Header -->
@@ -149,6 +149,8 @@
           </svg>
           Back to countries
         </button>
+
+        <ThemeToggle />
 
         <div class="flex items-start justify-between">
           <div>
