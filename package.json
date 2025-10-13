@@ -9,7 +9,10 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "fetch-countries": "node scripts/fetch-country-data.js",
+    "generate-vault": "node scripts/generate-starter-vault.js",
+    "build-vault": "npm run fetch-countries && npm run generate-vault"
   },
   "license": "MIT",
   "dependencies": {

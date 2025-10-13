@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import { invoke } from '@tauri-apps/api/core';
 import type { Country, Note, AddNoteRequest, UpdateNoteRequest } from '$lib/types';
+import { loadMapStats } from './mapStats';  // ← ADD THIS
 
 // Vault state
 export const vaultOpened = writable<boolean>(false);
@@ -28,6 +29,11 @@ export async function openVault(path: string): Promise<void> {
     countries.set(countryList);
     vaultOpened.set(true);
     
+    // ← ADD: Load map stats once when vault opens
+    console.log('Loading initial map stats...');
+    await loadMapStats();
+    console.log('Map stats preloaded');
+    
   } catch (error) {
     console.error('Failed to open vault:', error);
     throw error;
@@ -43,7 +49,6 @@ export async function loadCountry(slug: string): Promise<void> {
   isLoading.set(true);
   
   try {
-
     const country = await invoke<Country>('get_country', { slug });
     currentCountry.set(country);
     
@@ -68,6 +73,9 @@ export async function addNote(request: AddNoteRequest): Promise<Note> {
     // Reload notes
     await loadCountry(request.country_slug);
     
+    // ← ADD: Refresh map stats after adding note
+    await loadMapStats();
+    
     return note;
   } catch (error) {
     console.error('Failed to add note:', error);
@@ -84,6 +92,9 @@ export async function updateNote(request: UpdateNoteRequest): Promise<void> {
     
     // Reload notes
     await loadCountry(request.country_slug);
+    
+    // ← ADD: Refresh map stats after updating note
+    await loadMapStats();
     
   } catch (error) {
     console.error('Failed to update note:', error);
@@ -103,6 +114,9 @@ export async function deleteNote(countrySlug: string, noteId: string): Promise<v
     
     // Reload notes
     await loadCountry(countrySlug);
+    
+    // ← ADD: Refresh map stats after deleting note
+    await loadMapStats();
     
   } catch (error) {
     console.error('Failed to delete note:', error);

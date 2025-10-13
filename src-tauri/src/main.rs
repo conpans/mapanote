@@ -9,6 +9,7 @@ use commands::vault::{
     add_note,    // ← NEW
     delete_note, // ← NEW
     export_country_markdown,
+    get_all_country_stats,
     get_country,
     get_country_notes,
     get_vault_stats, // ← NEW
@@ -39,6 +40,7 @@ fn main() {
             search_notes,
             export_country_markdown,
             get_vault_stats,
+            get_all_country_stats,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -3,12 +3,14 @@
   import { goto } from "$app/navigation";
   import {
     mapStats,
+    mapStatsLoaded, // ← ADD THIS
     getActivityLevel,
     isFresh,
     loadMapStats,
   } from "$lib/stores/mapStats";
-  import { isoToSlug, isoToName } from "$lib/data/isoMapping";
+  import { isoToSlug, isoToName, hasCountry } from "$lib/data/isoMapping";
   import LoadingSkeleton from "./LoadingSkeleton.svelte";
+  import { loadWorldSvg } from "$lib/stores/svgCache";
 
   let mapContainer: HTMLDivElement;
   let svgElement: SVGElement | null = null;
@@ -22,22 +24,35 @@
     console.log("=== WorldMap mounted ===");
 
     try {
-      // Load stats
-      console.log("Loading map stats...");
-      await loadMapStats();
-      console.log("Map stats loaded:", $mapStats.size, "countries");
-
-      // Container should now be available
-      console.log("mapContainer available:", !!mapContainer);
+      // Only load stats if not already loaded
+      if (!$mapStatsLoaded) {
+        console.log("Loading map stats...");
+        await loadMapStats();
+      } else {
+        console.log("Using cached map stats");
+      }
 
       if (!mapContainer) {
         throw new Error("mapContainer ref not bound");
       }
 
-      // Load SVG
+      // Load SVG (cached after first load)
       console.log("Loading SVG...");
-      await loadSVG();
-      console.log("SVG loaded");
+      const svgText = await loadWorldSvg();
+
+      mapContainer.innerHTML = svgText;
+      svgElement = mapContainer.querySelector("svg");
+
+      if (svgElement) {
+        svgElement.removeAttribute("width");
+        svgElement.removeAttribute("height");
+        svgElement.setAttribute("viewBox", "0 0 800 387");
+        svgElement.style.width = "100%";
+        svgElement.style.height = "auto";
+        svgElement.style.display = "block";
+      } else {
+        throw new Error("SVG element not found in response");
+      }
 
       // Enhance
       console.log("Enhancing map...");
@@ -53,14 +68,8 @@
   });
 
   async function loadSVG() {
-    const response = await fetch("/maps/world.svg");
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const svgText = await response.text();
-    console.log("SVG size:", svgText.length);
+    // Use the module-level cache
+    const svgText = await loadWorldSvg();
 
     mapContainer.innerHTML = svgText;
 
@@ -95,41 +104,102 @@
       const isoCode = path.id;
       if (!isoCode) return;
 
-      const slug = isoToSlug[isoCode];
-      const stats = slug ? $mapStats.get(slug) : null;
-
-      // Remove <a> wrapper
+      // Remove <a> wrapper first
       const parent = path.parentElement;
       if (parent && parent.tagName.toLowerCase() === "a") {
         parent.replaceWith(path);
       }
 
-      if (stats) {
+      // Check if this country exists in our metadata
+      if (!hasCountry(isoCode)) {
+        path.classList.add("activity-none");
+        return;
+      }
+
+      const slug = isoToSlug[isoCode];
+      const stats = slug ? $mapStats.get(slug) : null;
+
+      // Apply activity color based on note count
+      if (stats && stats.noteCount > 0) {
         const level = getActivityLevel(stats.noteCount);
         path.classList.add(`activity-${level}`);
 
         if (isFresh(stats.lastUpdated)) {
           path.classList.add("fresh");
         }
-
-        path.style.cursor = "pointer";
-        path.setAttribute("role", "button");
-        path.setAttribute("tabindex", "0");
-
-        path.addEventListener("mouseenter", (e) =>
-          handleMouseEnter(e, isoCode)
-        );
-        path.addEventListener("mousemove", handleMouseMove);
-        path.addEventListener("mouseleave", handleMouseLeave);
-        path.addEventListener("click", () => handleCountryClick(slug));
-
-        enhanced++;
       } else {
         path.classList.add("activity-none");
       }
+
+      // Make ALL countries with metadata clickable
+      path.style.cursor = "pointer";
+      path.setAttribute("role", "button");
+      path.setAttribute("tabindex", "0");
+
+      path.addEventListener("mouseenter", (e) => handleMouseEnter(e, isoCode));
+      path.addEventListener("mousemove", handleMouseMove);
+      path.addEventListener("mouseleave", handleMouseLeave);
+      path.addEventListener("click", () => handleCountryClick(slug));
+
+      enhanced++;
     });
 
-    console.log(`Enhanced ${enhanced} countries`);
+    console.log(`Enhanced ${enhanced} countries (paths)`);
+
+    // NEW: Enhance microstates
+    enhanceMicrostates();
+  }
+
+  function enhanceMicrostates() {
+    if (!svgElement) return;
+
+    const microstatesGroup = svgElement.querySelector("#microstates");
+    if (!microstatesGroup) {
+      console.log("No microstates group found");
+      return;
+    }
+
+    const circles = microstatesGroup.querySelectorAll("circle[data-code]");
+    console.log("Processing", circles.length, "microstates");
+
+    let enhanced = 0;
+
+    circles.forEach((circle) => {
+      const isoCode = circle.getAttribute("data-code");
+      if (!isoCode) return;
+
+      // Check if this microstate exists in our metadata
+      if (!hasCountry(isoCode)) {
+        return;
+      }
+
+      const slug = isoToSlug[isoCode];
+      const stats = slug ? $mapStats.get(slug) : null;
+
+      // Apply activity color
+      if (stats && stats.noteCount > 0) {
+        const level = getActivityLevel(stats.noteCount);
+        circle.classList.add(`microstate-${level}`);
+      } else {
+        circle.classList.add("microstate-none");
+      }
+
+      // Make clickable
+      circle.style.cursor = "pointer";
+      circle.setAttribute("role", "button");
+      circle.setAttribute("tabindex", "0");
+
+      circle.addEventListener("mouseenter", (e) =>
+        handleMouseEnter(e, isoCode)
+      );
+      circle.addEventListener("mousemove", handleMouseMove);
+      circle.addEventListener("mouseleave", handleMouseLeave);
+      circle.addEventListener("click", () => handleCountryClick(slug));
+
+      enhanced++;
+    });
+
+    console.log(`Enhanced ${enhanced} microstates`);
   }
 
   function handleMouseEnter(e: Event, isoCode: string) {
@@ -223,6 +293,11 @@
       {:else}
         <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">
           No notes yet
+        </div>
+        <div
+          class="text-xs text-mapanote-blue-600 dark:text-mapanote-blue-400 mt-2"
+        >
+          Click to start →
         </div>
       {/if}
     </div>
@@ -434,6 +509,66 @@
 
   :global(.dark) .legend-item {
     color: #9ca3af;
+  }
+
+  /* NEW: Microstate styles */
+  :global(#microstates circle) {
+    vector-effect: non-scaling-stroke;
+    transition: all 0.2s ease;
+  }
+
+  /* Default microstate (no notes) */
+  :global(.microstate-none) {
+    fill: #9ca3af !important;
+    stroke: #6b7280 !important;
+    stroke-width: 0.8;
+    r: 1.2;
+  }
+
+  :global(.dark .microstate-none) {
+    fill: #60a5fa !important;
+    stroke: #93c5fd !important;
+    stroke-width: 1;
+    r: 1.5;
+    filter: drop-shadow(0 0 3px rgba(96, 165, 250, 0.6));
+  }
+
+  /* Microstate with notes */
+  :global(.microstate-low) {
+    fill: #93c5fd !important;
+    stroke: #60a5fa !important;
+    r: 1.5;
+  }
+
+  :global(.dark .microstate-low) {
+    fill: #60a5fa !important;
+    stroke: #3b82f6 !important;
+    r: 1.8;
+    filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.7));
+  }
+
+  :global(.microstate-medium),
+  :global(.microstate-high),
+  :global(.microstate-very-high) {
+    fill: #3b82f6 !important;
+    stroke: #2563eb !important;
+    r: 1.8;
+  }
+
+  :global(.dark .microstate-medium),
+  :global(.dark .microstate-high),
+  :global(.dark .microstate-very-high) {
+    fill: #3b82f6 !important;
+    stroke: #2563eb !important;
+    r: 2;
+    filter: drop-shadow(0 0 5px rgba(37, 99, 235, 0.8));
+  }
+
+  /* Hover state for microstates */
+  :global(#microstates circle[role="button"]:hover) {
+    r: 2.5 !important;
+    stroke-width: 1.5 !important;
+    filter: drop-shadow(0 0 8px currentColor) !important;
   }
 
   .legend-swatch {

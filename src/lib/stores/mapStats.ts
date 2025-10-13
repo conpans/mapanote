@@ -8,40 +8,29 @@ export interface CountryStats {
 }
 
 export const mapStats = writable<Map<string, CountryStats>>(new Map());
+export const mapStatsLoaded = writable<boolean>(false);  // ← ADD THIS
 
 /**
- * Load stats for all countries in the vault
+ * Load stats for all countries in one efficient call
  */
 export async function loadMapStats(): Promise<void> {
   try {
-    // Get list of all countries
-    const countrySlugs = await invoke<string[]>('list_countries');
+    const allStats = await invoke<CountryStats[]>('get_all_country_stats');
     
     const statsMap = new Map<string, CountryStats>();
     
-    // Load note count for each country
-    for (const slug of countrySlugs) {
-      try {
-        const notes = await invoke<any[]>('get_country_notes', { slug });
-        
-        // Find most recent note date
-        let lastUpdated: string | null = null;
-        if (notes.length > 0) {
-          const dates = notes.map(n => n.date).sort();
-          lastUpdated = dates[dates.length - 1];
-        }
-        
-        statsMap.set(slug, {
-          slug,
-          noteCount: notes.length,
-          lastUpdated,
-        });
-      } catch (err) {
-        console.error(`Failed to load stats for ${slug}:`, err);
-      }
-    }
+    allStats.forEach(stat => {
+      statsMap.set(stat.slug, {
+        slug: stat.slug,
+        noteCount: stat.noteCount,
+        lastUpdated: stat.lastUpdated,
+      });
+    });
     
     mapStats.set(statsMap);
+    mapStatsLoaded.set(true);  // ← ADD THIS
+    
+    console.log(`Loaded stats for ${statsMap.size} countries in one call`);
   } catch (error) {
     console.error('Failed to load map stats:', error);
     throw error;

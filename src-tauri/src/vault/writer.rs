@@ -1,3 +1,4 @@
+use super::get_country_metadata;
 use super::reader::VaultReader;
 use crate::models::{AddNoteRequest, Note, UpdateNoteRequest, Visibility};
 use anyhow::{Context, Result};
@@ -16,6 +17,8 @@ impl VaultWriter {
 
     /// Add a new note to a country
     pub fn add_note(&self, request: AddNoteRequest) -> Result<Note> {
+        self.ensure_country(&request.country_slug)?;
+
         let country_path = self
             .vault_path
             .join("countries")
@@ -208,5 +211,74 @@ impl VaultWriter {
         }
 
         Ok(())
+    }
+
+    pub fn ensure_country(&self, slug: &str) -> Result<bool> {
+        let country_path = self
+            .vault_path
+            .join("countries")
+            .join(slug)
+            .join("index.md");
+
+        // If file exists, nothing to do
+        if country_path.exists() {
+            return Ok(false);
+        }
+
+        // Get metadata from embedded data
+        let metadata = get_country_metadata(slug)
+            .ok_or_else(|| anyhow::anyhow!("Unknown country: {}", slug))?;
+
+        // Create directory
+        fs::create_dir_all(country_path.parent().unwrap())?;
+
+        // Generate frontmatter
+        let today = Utc::now().format("%Y-%m-%d").to_string();
+        let aliases_yaml = if metadata.aliases.is_empty() {
+            "[]".to_string()
+        } else {
+            format!(
+                "[{}]",
+                metadata
+                    .aliases
+                    .iter()
+                    .map(|a| format!("\"{}\"", a))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            )
+        };
+
+        let content = format!(
+            r#"---
+    title: {}
+    slug: {}
+    region: {}
+    summary: {}
+    aliases: {}
+    updated_at: {}
+    ---
+
+    ## Overview
+
+    {}
+
+    ## Notes
+
+    <!-- Add your first note below -->
+    "#,
+            metadata.name,
+            metadata.slug,
+            metadata.subregion,
+            metadata.summary,
+            aliases_yaml,
+            today,
+            metadata.summary
+        );
+
+        // Write file
+        fs::write(&country_path, content)?;
+
+        eprintln!("Created country stub: {}", slug);
+        Ok(true)
     }
 }

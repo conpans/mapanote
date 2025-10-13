@@ -1,126 +1,68 @@
 /**
+ * ISO2 ↔ Slug mappings auto-generated from countries.json
+ * This file is generated - do not edit manually
+ */
+
+import countriesData from './countries.json';
+import type { CountryMetadata } from './countryHelpers';
+
+const COUNTRIES: CountryMetadata[] = countriesData as CountryMetadata[];
+
+/**
  * Maps SVG path IDs (uppercase ISO2) to vault slugs (lowercase)
- * Add countries as you create vault folders for them
  */
-export const isoToSlug: Record<string, string> = {
-  // Your current countries
-  'FI': 'fi',
-  'SE': 'se',
-  'NO': 'no',
-  'UA': 'ua',
-  'CO': 'co',
-  'FJ': 'fj',
-  
-  // Common European countries (add as needed)
-  'DE': 'de',
-  'FR': 'fr',
-  'GB': 'gb',
-  'ES': 'es',
-  'IT': 'it',
-  'PL': 'pl',
-  'RO': 'ro',
-  'NL': 'nl',
-  'BE': 'be',
-  'CZ': 'cz',
-  'GR': 'gr',
-  'PT': 'pt',
-  'HU': 'hu',
-  'AT': 'at',
-  'CH': 'ch',
-  'DK': 'dk',
-  'IE': 'ie',
-  'BG': 'bg',
-  'HR': 'hr',
-  'SK': 'sk',
-  'SI': 'si',
-  'LT': 'lt',
-  'LV': 'lv',
-  'EE': 'ee',
-  'RS': 'rs',
-  
-  // Other regions
-  'US': 'us',
-  'CA': 'ca',
-  'MX': 'mx',
-  'BR': 'br',
-  'AR': 'ar',
-  'CN': 'cn',
-  'JP': 'jp',
-  'KR': 'kr',
-  'IN': 'in',
-  'AU': 'au',
-  'NZ': 'nz',
-  'ZA': 'za',
-  'EG': 'eg',
-  'NG': 'ng',
-  'KE': 'ke',
-  'SA': 'sa',
-  'TR': 'tr',
-  'IL': 'il',
-  'AE': 'ae',
-  'RU': 'ru',
-};
+export const isoToSlug: Record<string, string> = {};
 
 /**
- * Reverse mapping: slug -> ISO2
+ * Reverse mapping: slug → ISO2
  */
-export const slugToIso: Record<string, string> = Object.fromEntries(
-  Object.entries(isoToSlug).map(([iso, slug]) => [slug, iso])
-);
+export const slugToIso: Record<string, string> = {};
 
 /**
- * Get readable country name from ISO code
+ * Maps ISO2 codes to readable country names
  */
-export const isoToName: Record<string, string> = {
-  'FI': 'Finland',
-  'SE': 'Sweden',
-  'NO': 'Norway',
-  'UA': 'Ukraine',
-  'CO': 'Colombia',
-  'FJ': 'Fiji',
-  'DE': 'Germany',
-  'FR': 'France',
-  'GB': 'United Kingdom',
-  'ES': 'Spain',
-  'IT': 'Italy',
-  'PL': 'Poland',
-  'RO': 'Romania',
-  'NL': 'Netherlands',
-  'BE': 'Belgium',
-  'CZ': 'Czech Republic',
-  'GR': 'Greece',
-  'PT': 'Portugal',
-  'HU': 'Hungary',
-  'AT': 'Austria',
-  'CH': 'Switzerland',
-  'DK': 'Denmark',
-  'IE': 'Ireland',
-  'BG': 'Bulgaria',
-  'HR': 'Croatia',
-  'SK': 'Slovakia',
-  'SI': 'Slovenia',
-  'LT': 'Lithuania',
-  'LV': 'Latvia',
-  'EE': 'Estonia',
-  'RS': 'Serbia',
-  'US': 'United States',
-  'CA': 'Canada',
-  'MX': 'Mexico',
-  'BR': 'Brazil',
-  'AR': 'Argentina',
-  'CN': 'China',
-  'JP': 'Japan',
-  'KR': 'South Korea',
-  'IN': 'India',
-  'AU': 'Australia',
-  'NZ': 'New Zealand',
-  'ZA': 'South Africa',
-  'EG': 'Egypt',
-  'NG': 'Nigeria',
-  'KE': 'Kenya',
-  'SA': 'Saudi Arabia',
-  'TR': 'Turkey',
-  'IL': 'Israel',
-  'AE': 'United Arab Emirates',
-  'RU': 'Russia',
-};
+export const isoToName: Record<string, string> = {};
+
+// Build all mappings from countries.json
+COUNTRIES.forEach(country => {
+  const isoUpper = country.iso2.toUpperCase();
+  const isoLower = country.iso2.toLowerCase();
+  
+  // SVG uses uppercase IDs, slugs are lowercase
+  isoToSlug[isoUpper] = country.slug;
+  slugToIso[country.slug] = isoUpper;
+  isoToName[isoUpper] = country.name;
+  
+  // Also support lowercase lookups
+  isoToSlug[isoLower] = country.slug;
+  isoToName[isoLower] = country.name;
+});
+
+/**
+ * Get country metadata by ISO2 code
+ */
+export function getCountryByIso2(iso2: string): CountryMetadata | undefined {
+  return COUNTRIES.find(c => 
+    c.iso2.toUpperCase() === iso2.toUpperCase()
+  );
+}
+
+/**
+ * Get country metadata by slug
+ */
+export function getCountryBySlug(slug: string): CountryMetadata | undefined {
+  return COUNTRIES.find(c => c.slug === slug);
+}
+
+/**
+ * Check if a country exists in our metadata
+ */
+export function hasCountry(iso2OrSlug: string): boolean {
+  return COUNTRIES.some(c => 
+    c.iso2.toUpperCase() === iso2OrSlug.toUpperCase() ||
+    c.slug === iso2OrSlug.toLowerCase()
+  );
+}
+
+// Export the full list for convenience
+export const ALL_COUNTRIES = COUNTRIES;

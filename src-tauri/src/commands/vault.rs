@@ -315,3 +315,46 @@ pub struct VaultStats {
     pub pinned_count: usize,
     pub tag_count: usize,
 }
+
+#[tauri::command]
+pub async fn get_all_country_stats(state: State<'_, AppState>) -> Result<Vec<CountryStatsItem>, String> {
+    let reader_guard = state.vault_reader.lock().unwrap();
+    
+    match reader_guard.as_ref() {
+        Some(reader) => {
+            let countries = reader.list_countries().map_err(|e| e.to_string())?;
+            let mut stats = Vec::new();
+            
+            for slug in countries {
+                if let Ok(page) = reader.read_country(&slug) {
+                    let note_count = page.notes.len();
+                    
+                    // Find most recent note date
+                    let last_updated = if !page.notes.is_empty() {
+                        let dates: Vec<String> = page.notes.iter().map(|n| n.date.clone()).collect();
+                        dates.into_iter().max()
+                    } else {
+                        None
+                    };
+                    
+                    stats.push(CountryStatsItem {
+                        slug,
+                        note_count,
+                        last_updated,
+                    });
+                }
+            }
+            
+            Ok(stats)
+        }
+        None => Err("No vault opened".to_string()),
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(rename_all = "camelCase")] 
+pub struct CountryStatsItem {
+    pub slug: String,
+    pub note_count: usize,
+    pub last_updated: Option<String>,
+}
