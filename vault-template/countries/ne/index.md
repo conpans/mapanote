@@ -4,7 +4,7 @@ slug: ne
 region: Western Africa
 summary: Western Africa; UN member; in Africa; capital Niamey; XOF currency.
 aliases: ["Republic of Niger", "NE", "Nijar"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

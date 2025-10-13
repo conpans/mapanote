@@ -4,7 +4,7 @@ slug: li
 region: Western Europe
 summary: Western Europe; UN member; in Europe; capital Vaduz; CHF currency.
 aliases: ["Principality of Liechtenstein", "LI", "Fürstentum Liechtenstein"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

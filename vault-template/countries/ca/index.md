@@ -4,7 +4,7 @@ slug: ca
 region: North America
 summary: North America; UN member; in Americas; capital Ottawa; CAD currency.
 aliases: ["CA"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

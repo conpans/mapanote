@@ -4,7 +4,7 @@ slug: pg
 region: Melanesia
 summary: Melanesia; UN member; in Oceania; capital Port Moresby; PGK currency.
 aliases: ["Independent State of Papua New Guinea", "PG", "Independen Stet bilong Papua Niugini"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

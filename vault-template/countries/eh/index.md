@@ -4,7 +4,7 @@ slug: eh
 region: Northern Africa
 summary: Northern Africa; in Africa; capital El Aaiún; DZD currency.
 aliases: ["Sahrawi Arab Democratic Republic", "EH", "Taneẓroft Tutrimt"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

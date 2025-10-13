@@ -4,7 +4,7 @@ slug: tn
 region: Northern Africa
 summary: Northern Africa; UN member; in Africa; capital Tunis; TND currency.
 aliases: ["Tunisian Republic", "TN", "Republic of Tunisia"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

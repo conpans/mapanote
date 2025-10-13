@@ -4,7 +4,7 @@ slug: py
 region: South America
 summary: South America; UN member; in Americas; capital Asunción; PYG currency.
 aliases: ["Republic of Paraguay", "PY", "República del Paraguay"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

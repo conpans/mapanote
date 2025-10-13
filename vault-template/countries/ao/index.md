@@ -4,7 +4,7 @@ slug: ao
 region: Middle Africa
 summary: Middle Africa; UN member; in Africa; capital Luanda; AOA currency.
 aliases: ["Republic of Angola", "AO", "República de Angola"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

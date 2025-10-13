@@ -4,7 +4,7 @@ slug: tl
 region: South-Eastern Asia
 summary: South-Eastern Asia; UN member; in Asia; capital Dili; USD currency.
 aliases: ["Democratic Republic of Timor-Leste", "TL", "East Timor"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

@@ -4,7 +4,7 @@ slug: tm
 region: Central Asia
 summary: Central Asia; UN member; in Asia; capital Ashgabat; TMT currency.
 aliases: ["TM"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

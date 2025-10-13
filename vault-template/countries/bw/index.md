@@ -4,7 +4,7 @@ slug: bw
 region: Southern Africa
 summary: Southern Africa; UN member; in Africa; capital Gaborone; BWP currency.
 aliases: ["Republic of Botswana", "BW", "Lefatshe la Botswana"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

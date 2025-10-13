@@ -4,7 +4,7 @@ slug: la
 region: South-Eastern Asia
 summary: South-Eastern Asia; UN member; in Asia; capital Vientiane; LAK currency.
 aliases: ["Lao People's Democratic Republic", "LA", "Lao"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

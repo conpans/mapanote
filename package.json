@@ -12,7 +12,9 @@
     "tauri": "tauri",
     "fetch-countries": "node scripts/fetch-country-data.js",
     "generate-vault": "node scripts/generate-starter-vault.js",
-    "build-vault": "npm run fetch-countries && npm run generate-vault"
+    "build-vault": "npm run fetch-countries && npm run generate-vault",
+    "extract-svg-countries": "node scripts/extract-svg-countries.js",
+    "filter-countries": "node scripts/filter-countries-by-svg.js"
   },
   "license": "MIT",
   "dependencies": {

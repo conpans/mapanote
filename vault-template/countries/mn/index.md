@@ -4,7 +4,7 @@ slug: mn
 region: Eastern Asia
 summary: Eastern Asia; UN member; in Asia; capital Ulan Bator; MNT currency.
 aliases: ["MN"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

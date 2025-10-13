@@ -4,7 +4,7 @@ slug: ng
 region: Western Africa
 summary: Western Africa; UN member; in Africa; capital Abuja; NGN currency.
 aliases: ["Federal Republic of Nigeria", "NG", "Nijeriya"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

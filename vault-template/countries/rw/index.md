@@ -4,7 +4,7 @@ slug: rw
 region: Eastern Africa
 summary: Eastern Africa; UN member; in Africa; capital Kigali; RWF currency.
 aliases: ["Republic of Rwanda", "RW", "Repubulika y'u Rwanda"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

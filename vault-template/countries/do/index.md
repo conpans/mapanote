@@ -4,7 +4,7 @@ slug: do
 region: Caribbean
 summary: Caribbean; UN member; in Americas; capital Santo Domingo; DOP currency.
 aliases: ["DO"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

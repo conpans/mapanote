@@ -4,7 +4,7 @@ slug: nc
 region: Melanesia
 summary: Melanesia; in Oceania; capital Nouméa; XPF currency.
 aliases: ["NC"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

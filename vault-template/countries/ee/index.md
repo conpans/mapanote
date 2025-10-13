@@ -4,7 +4,7 @@ slug: ee
 region: Northern Europe
 summary: Northern Europe; UN member; in Europe; capital Tallinn; EUR currency.
 aliases: ["Republic of Estonia", "EE", "Eesti"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

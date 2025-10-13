@@ -4,7 +4,7 @@ slug: tf
 region: Antarctic
 summary: in Antarctic; capital Port-aux-Français; EUR currency.
 aliases: ["Territory of the French Southern and Antarctic Lands", "TF", "French Southern Territories"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

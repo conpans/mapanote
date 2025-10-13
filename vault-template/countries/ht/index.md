@@ -4,7 +4,7 @@ slug: ht
 region: Caribbean
 summary: Caribbean; UN member; in Americas; capital Port-au-Prince; HTG currency.
 aliases: ["Republic of Haiti", "HT", "République d'Haïti"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

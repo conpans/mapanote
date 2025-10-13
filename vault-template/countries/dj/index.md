@@ -4,7 +4,7 @@ slug: dj
 region: Eastern Africa
 summary: Eastern Africa; UN member; in Africa; capital Djibouti; DJF currency.
 aliases: ["Republic of Djibouti", "DJ", "Jabuuti"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

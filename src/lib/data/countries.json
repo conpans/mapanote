@@ -13,19 +13,6 @@
     ]
   },
   {
-    "iso2": "AX",
-    "slug": "ax",
-    "name": "Åland Islands",
-    "region": "Europe",
-    "subregion": "Northern Europe",
-    "summary": "Northern Europe; in Europe; capital Mariehamn; EUR currency.",
-    "aliases": [
-      "AX",
-      "Aaland",
-      "Aland"
-    ]
-  },
-  {
     "iso2": "AL",
     "slug": "al",
     "name": "Albania",
@@ -52,19 +39,6 @@
     ]
   },
   {
-    "iso2": "AS",
-    "slug": "as",
-    "name": "American Samoa",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; in Oceania; capital Pago Pago; USD currency.",
-    "aliases": [
-      "AS",
-      "Amerika Sāmoa",
-      "Amelika Sāmoa"
-    ]
-  },
-  {
     "iso2": "AD",
     "slug": "ad",
     "name": "Andorra",
@@ -88,17 +62,6 @@
       "Republic of Angola",
       "AO",
       "República de Angola"
-    ]
-  },
-  {
-    "iso2": "AI",
-    "slug": "ai",
-    "name": "Anguilla",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital The Valley; XCD currency.",
-    "aliases": [
-      "AI"
     ]
   },
   {
@@ -147,17 +110,6 @@
       "Republic of Armenia",
       "AM",
       "Hayastan"
-    ]
-  },
-  {
-    "iso2": "AW",
-    "slug": "aw",
-    "name": "Aruba",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Oranjestad; AWG currency.",
-    "aliases": [
-      "AW"
     ]
   },
   {
@@ -298,19 +250,6 @@
     ]
   },
   {
-    "iso2": "BM",
-    "slug": "bm",
-    "name": "Bermuda",
-    "region": "Americas",
-    "subregion": "North America",
-    "summary": "North America; in Americas; capital Hamilton; BMD currency.",
-    "aliases": [
-      "BM",
-      "The Islands of Bermuda",
-      "The Bermudas"
-    ]
-  },
-  {
     "iso2": "BT",
     "slug": "bt",
     "name": "Bhutan",
@@ -362,19 +301,6 @@
     ]
   },
   {
-    "iso2": "BV",
-    "slug": "bv",
-    "name": "Bouvet Island",
-    "region": "Antarctic",
-    "subregion": "Antarctic",
-    "summary": "in Antarctic.",
-    "aliases": [
-      "BV",
-      "Bouvetøya",
-      "Bouvet-øya"
-    ]
-  },
-  {
     "iso2": "BR",
     "slug": "br",
     "name": "Brazil",
@@ -385,30 +311,6 @@
       "Federative Republic of Brazil",
       "BR",
       "Brasil"
-    ]
-  },
-  {
-    "iso2": "IO",
-    "slug": "io",
-    "name": "British Indian Ocean Territory",
-    "region": "Africa",
-    "subregion": "Eastern Africa",
-    "summary": "Eastern Africa; in Africa; capital Diego Garcia; USD currency.",
-    "aliases": [
-      "IO"
-    ]
-  },
-  {
-    "iso2": "VG",
-    "slug": "vg",
-    "name": "British Virgin Islands",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Road Town; USD currency.",
-    "aliases": [
-      "Virgin Islands",
-      "VG",
-      "Virgin Islands, British"
     ]
   },
   {
@@ -498,43 +400,6 @@
     ]
   },
   {
-    "iso2": "CV",
-    "slug": "cv",
-    "name": "Cape Verde",
-    "region": "Africa",
-    "subregion": "Western Africa",
-    "summary": "Western Africa; UN member; in Africa; capital Praia; CVE currency.",
-    "aliases": [
-      "Republic of Cabo Verde",
-      "CV",
-      "República de Cabo Verde"
-    ]
-  },
-  {
-    "iso2": "BQ",
-    "slug": "bq",
-    "name": "Caribbean Netherlands",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Kralendijk; USD currency.",
-    "aliases": [
-      "Bonaire, Sint Eustatius and Saba",
-      "BES islands",
-      "Bonaire Sint Eustatius and Saba"
-    ]
-  },
-  {
-    "iso2": "KY",
-    "slug": "ky",
-    "name": "Cayman Islands",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital George Town; KYD currency.",
-    "aliases": [
-      "KY"
-    ]
-  },
-  {
     "iso2": "CF",
     "slug": "cf",
     "name": "Central African Republic",
@@ -586,31 +451,6 @@
     ]
   },
   {
-    "iso2": "CX",
-    "slug": "cx",
-    "name": "Christmas Island",
-    "region": "Oceania",
-    "subregion": "Australia and New Zealand",
-    "summary": "Australia and New Zealand; in Oceania; capital Flying Fish Cove; AUD currency.",
-    "aliases": [
-      "Territory of Christmas Island",
-      "CX"
-    ]
-  },
-  {
-    "iso2": "CC",
-    "slug": "cc",
-    "name": "Cocos (Keeling) Islands",
-    "region": "Oceania",
-    "subregion": "Australia and New Zealand",
-    "summary": "Australia and New Zealand; in Oceania; capital West Island; AUD currency.",
-    "aliases": [
-      "Territory of the Cocos (Keeling) Islands",
-      "CC",
-      "Keeling Islands"
-    ]
-  },
-  {
     "iso2": "CO",
     "slug": "co",
     "name": "Colombia",
@@ -624,19 +464,6 @@
     ]
   },
   {
-    "iso2": "KM",
-    "slug": "km",
-    "name": "Comoros",
-    "region": "Africa",
-    "subregion": "Eastern Africa",
-    "summary": "Eastern Africa; UN member; in Africa; capital Moroni; KMF currency.",
-    "aliases": [
-      "Union of the Comoros",
-      "KM",
-      "Union des Comores"
-    ]
-  },
-  {
     "iso2": "CG",
     "slug": "cg",
     "name": "Congo",
@@ -647,18 +474,6 @@
       "Republic of the Congo",
       "CG",
       "Congo-Brazzaville"
-    ]
-  },
-  {
-    "iso2": "CK",
-    "slug": "ck",
-    "name": "Cook Islands",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; in Oceania; capital Avarua; CKD currency.",
-    "aliases": [
-      "CK",
-      "Kūki 'Āirani"
     ]
   },
   {
@@ -698,19 +513,6 @@
       "Republic of Cuba",
       "CU",
       "República de Cuba"
-    ]
-  },
-  {
-    "iso2": "CW",
-    "slug": "cw",
-    "name": "Curaçao",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Willemstad; ANG currency.",
-    "aliases": [
-      "Country of Curaçao",
-      "CW",
-      "Curacao"
     ]
   },
   {
@@ -919,19 +721,6 @@
     ]
   },
   {
-    "iso2": "FO",
-    "slug": "fo",
-    "name": "Faroe Islands",
-    "region": "Europe",
-    "subregion": "Northern Europe",
-    "summary": "Northern Europe; in Europe; capital Tórshavn; DKK currency.",
-    "aliases": [
-      "FO",
-      "Føroyar",
-      "Færøerne"
-    ]
-  },
-  {
     "iso2": "FJ",
     "slug": "fj",
     "name": "Fiji",
@@ -955,45 +744,6 @@
       "Republic of Finland",
       "FI",
       "Suomi"
-    ]
-  },
-  {
-    "iso2": "FR",
-    "slug": "fr",
-    "name": "France",
-    "region": "Europe",
-    "subregion": "Western Europe",
-    "summary": "Western Europe; UN member; in Europe; capital Paris; EUR currency.",
-    "aliases": [
-      "French Republic",
-      "FR",
-      "République française"
-    ]
-  },
-  {
-    "iso2": "GF",
-    "slug": "gf",
-    "name": "French Guiana",
-    "region": "Americas",
-    "subregion": "South America",
-    "summary": "South America; in Americas; capital Cayenne; EUR currency.",
-    "aliases": [
-      "Guiana",
-      "GF",
-      "Guyane"
-    ]
-  },
-  {
-    "iso2": "PF",
-    "slug": "pf",
-    "name": "French Polynesia",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; in Oceania; capital Papeetē; XPF currency.",
-    "aliases": [
-      "PF",
-      "Polynésie française",
-      "Pōrīnetia Farāni"
     ]
   },
   {
@@ -1072,17 +822,6 @@
     ]
   },
   {
-    "iso2": "GI",
-    "slug": "gi",
-    "name": "Gibraltar",
-    "region": "Europe",
-    "subregion": "Southern Europe",
-    "summary": "Southern Europe; in Europe; capital Gibraltar; GIP currency.",
-    "aliases": [
-      "GI"
-    ]
-  },
-  {
     "iso2": "GR",
     "slug": "gr",
     "name": "Greece",
@@ -1119,30 +858,6 @@
     ]
   },
   {
-    "iso2": "GP",
-    "slug": "gp",
-    "name": "Guadeloupe",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Basse-Terre; EUR currency.",
-    "aliases": [
-      "GP",
-      "Gwadloup"
-    ]
-  },
-  {
-    "iso2": "GU",
-    "slug": "gu",
-    "name": "Guam",
-    "region": "Oceania",
-    "subregion": "Micronesia",
-    "summary": "Micronesia; in Oceania; capital Hagåtña; USD currency.",
-    "aliases": [
-      "GU",
-      "Guåhån"
-    ]
-  },
-  {
     "iso2": "GT",
     "slug": "gt",
     "name": "Guatemala",
@@ -1152,19 +867,6 @@
     "aliases": [
       "Republic of Guatemala",
       "GT"
-    ]
-  },
-  {
-    "iso2": "GG",
-    "slug": "gg",
-    "name": "Guernsey",
-    "region": "Europe",
-    "subregion": "Northern Europe",
-    "summary": "Northern Europe; in Europe; capital St. Peter Port; GBP currency.",
-    "aliases": [
-      "Bailiwick of Guernsey",
-      "GG",
-      "Bailliage de Guernesey"
     ]
   },
   {
@@ -1219,17 +921,6 @@
     ]
   },
   {
-    "iso2": "HM",
-    "slug": "hm",
-    "name": "Heard Island and McDonald Islands",
-    "region": "Antarctic",
-    "subregion": "Antarctic",
-    "summary": "in Antarctic.",
-    "aliases": [
-      "HM"
-    ]
-  },
-  {
     "iso2": "HN",
     "slug": "hn",
     "name": "Honduras",
@@ -1240,18 +931,6 @@
       "Republic of Honduras",
       "HN",
       "República de Honduras"
-    ]
-  },
-  {
-    "iso2": "HK",
-    "slug": "hk",
-    "name": "Hong Kong",
-    "region": "Asia",
-    "subregion": "Eastern Asia",
-    "summary": "Eastern Asia; in Asia; capital City of Victoria; HKD currency.",
-    "aliases": [
-      "Hong Kong Special Administrative Region of the People's Republic of China",
-      "HK"
     ]
   },
   {
@@ -1344,19 +1023,6 @@
     ]
   },
   {
-    "iso2": "IM",
-    "slug": "im",
-    "name": "Isle of Man",
-    "region": "Europe",
-    "subregion": "Northern Europe",
-    "summary": "Northern Europe; in Europe; capital Douglas; GBP currency.",
-    "aliases": [
-      "IM",
-      "Ellan Vannin",
-      "Mann"
-    ]
-  },
-  {
     "iso2": "IL",
     "slug": "il",
     "name": "Israel",
@@ -1420,19 +1086,6 @@
     ]
   },
   {
-    "iso2": "JE",
-    "slug": "je",
-    "name": "Jersey",
-    "region": "Europe",
-    "subregion": "Northern Europe",
-    "summary": "Northern Europe; in Europe; capital Saint Helier; GBP currency.",
-    "aliases": [
-      "Bailiwick of Jersey",
-      "JE",
-      "Bailliage de Jersey"
-    ]
-  },
-  {
     "iso2": "JO",
     "slug": "jo",
     "name": "Jordan",
@@ -1469,32 +1122,6 @@
       "Republic of Kenya",
       "KE",
       "Jamhuri ya Kenya"
-    ]
-  },
-  {
-    "iso2": "KI",
-    "slug": "ki",
-    "name": "Kiribati",
-    "region": "Oceania",
-    "subregion": "Micronesia",
-    "summary": "Micronesia; UN member; in Oceania; capital South Tarawa; AUD currency.",
-    "aliases": [
-      "Independent and Sovereign Republic of Kiribati",
-      "KI",
-      "Republic of Kiribati"
-    ]
-  },
-  {
-    "iso2": "XK",
-    "slug": "xk",
-    "name": "Kosovo",
-    "region": "Europe",
-    "subregion": "Southeast Europe",
-    "summary": "Southeast Europe; in Europe; capital Pristina; EUR currency.",
-    "aliases": [
-      "Republic of Kosovo",
-      "XK",
-      "Република Косово"
     ]
   },
   {
@@ -1640,19 +1267,6 @@
     ]
   },
   {
-    "iso2": "MO",
-    "slug": "mo",
-    "name": "Macau",
-    "region": "Asia",
-    "subregion": "Eastern Asia",
-    "summary": "Eastern Asia; in Asia; MOP currency.",
-    "aliases": [
-      "Macao Special Administrative Region of the People's Republic of China",
-      "MO",
-      "澳门"
-    ]
-  },
-  {
     "iso2": "MG",
     "slug": "mg",
     "name": "Madagascar",
@@ -1728,30 +1342,6 @@
     ]
   },
   {
-    "iso2": "MH",
-    "slug": "mh",
-    "name": "Marshall Islands",
-    "region": "Oceania",
-    "subregion": "Micronesia",
-    "summary": "Micronesia; UN member; in Oceania; capital Majuro; USD currency.",
-    "aliases": [
-      "Republic of the Marshall Islands",
-      "MH",
-      "Aolepān Aorōkin M̧ajeļ"
-    ]
-  },
-  {
-    "iso2": "MQ",
-    "slug": "mq",
-    "name": "Martinique",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Fort-de-France; EUR currency.",
-    "aliases": [
-      "MQ"
-    ]
-  },
-  {
     "iso2": "MR",
     "slug": "mr",
     "name": "Mauritania",
@@ -1778,19 +1368,6 @@
     ]
   },
   {
-    "iso2": "YT",
-    "slug": "yt",
-    "name": "Mayotte",
-    "region": "Africa",
-    "subregion": "Eastern Africa",
-    "summary": "Eastern Africa; in Africa; capital Mamoudzou; EUR currency.",
-    "aliases": [
-      "Department of Mayotte",
-      "YT",
-      "Département de Mayotte"
-    ]
-  },
-  {
     "iso2": "MX",
     "slug": "mx",
     "name": "Mexico",
@@ -1801,19 +1378,6 @@
       "United Mexican States",
       "MX",
       "Mexicanos"
-    ]
-  },
-  {
-    "iso2": "FM",
-    "slug": "fm",
-    "name": "Micronesia",
-    "region": "Oceania",
-    "subregion": "Micronesia",
-    "summary": "Micronesia; UN member; in Oceania; capital Palikir.",
-    "aliases": [
-      "Federated States of Micronesia",
-      "FM",
-      "Micronesia, Federated States of"
     ]
   },
   {
@@ -1866,17 +1430,6 @@
     ]
   },
   {
-    "iso2": "MS",
-    "slug": "ms",
-    "name": "Montserrat",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Plymouth; XCD currency.",
-    "aliases": [
-      "MS"
-    ]
-  },
-  {
     "iso2": "MA",
     "slug": "ma",
     "name": "Morocco",
@@ -1926,19 +1479,6 @@
       "Republic of Namibia",
       "NA",
       "Namibië"
-    ]
-  },
-  {
-    "iso2": "NR",
-    "slug": "nr",
-    "name": "Nauru",
-    "region": "Oceania",
-    "subregion": "Micronesia",
-    "summary": "Micronesia; UN member; in Oceania; capital Yaren; AUD currency.",
-    "aliases": [
-      "Republic of Nauru",
-      "NR",
-      "Naoero"
     ]
   },
   {
@@ -2030,30 +1570,6 @@
     ]
   },
   {
-    "iso2": "NU",
-    "slug": "nu",
-    "name": "Niue",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; in Oceania; capital Alofi; NZD currency.",
-    "aliases": [
-      "NU"
-    ]
-  },
-  {
-    "iso2": "NF",
-    "slug": "nf",
-    "name": "Norfolk Island",
-    "region": "Oceania",
-    "subregion": "Australia and New Zealand",
-    "summary": "Australia and New Zealand; in Oceania; capital Kingston; AUD currency.",
-    "aliases": [
-      "Territory of Norfolk Island",
-      "NF",
-      "Teratri of Norf'k Ailen"
-    ]
-  },
-  {
     "iso2": "KP",
     "slug": "kp",
     "name": "North Korea",
@@ -2080,32 +1596,6 @@
     ]
   },
   {
-    "iso2": "MP",
-    "slug": "mp",
-    "name": "Northern Mariana Islands",
-    "region": "Oceania",
-    "subregion": "Micronesia",
-    "summary": "Micronesia; in Oceania; capital Saipan; USD currency.",
-    "aliases": [
-      "Commonwealth of the Northern Mariana Islands",
-      "MP",
-      "Sankattan Siha Na Islas Mariånas"
-    ]
-  },
-  {
-    "iso2": "NO",
-    "slug": "no",
-    "name": "Norway",
-    "region": "Europe",
-    "subregion": "Northern Europe",
-    "summary": "Northern Europe; UN member; in Europe; capital Oslo; NOK currency.",
-    "aliases": [
-      "Kingdom of Norway",
-      "NO",
-      "Norge"
-    ]
-  },
-  {
     "iso2": "OM",
     "slug": "om",
     "name": "Oman",
@@ -2129,19 +1619,6 @@
       "Islamic Republic of Pakistan",
       "PK",
       "Pākistān"
-    ]
-  },
-  {
-    "iso2": "PW",
-    "slug": "pw",
-    "name": "Palau",
-    "region": "Oceania",
-    "subregion": "Micronesia",
-    "summary": "Micronesia; UN member; in Oceania; capital Ngerulmud; USD currency.",
-    "aliases": [
-      "Republic of Palau",
-      "PW",
-      "Beluu er a Belau"
     ]
   },
   {
@@ -2223,19 +1700,6 @@
     ]
   },
   {
-    "iso2": "PN",
-    "slug": "pn",
-    "name": "Pitcairn Islands",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; in Oceania; capital Adamstown; NZD currency.",
-    "aliases": [
-      "Pitcairn Group of Islands",
-      "PN",
-      "Pitcairn"
-    ]
-  },
-  {
     "iso2": "PL",
     "slug": "pl",
     "name": "Poland",
@@ -2288,19 +1752,6 @@
     ]
   },
   {
-    "iso2": "RE",
-    "slug": "re",
-    "name": "Réunion",
-    "region": "Africa",
-    "subregion": "Eastern Africa",
-    "summary": "Eastern Africa; in Africa; capital Saint-Denis; EUR currency.",
-    "aliases": [
-      "Réunion Island",
-      "RE",
-      "Reunion"
-    ]
-  },
-  {
     "iso2": "RO",
     "slug": "ro",
     "name": "Romania",
@@ -2340,31 +1791,6 @@
     ]
   },
   {
-    "iso2": "BL",
-    "slug": "bl",
-    "name": "Saint Barthélemy",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Gustavia; EUR currency.",
-    "aliases": [
-      "Collectivity of Saint Barthélemy",
-      "BL",
-      "St. Barthelemy"
-    ]
-  },
-  {
-    "iso2": "SH",
-    "slug": "sh",
-    "name": "Saint Helena, Ascension and Tristan da Cunha",
-    "region": "Africa",
-    "subregion": "Western Africa",
-    "summary": "Western Africa; in Africa; capital Jamestown; GBP currency.",
-    "aliases": [
-      "Saint Helena",
-      "St. Helena, Ascension and Tristan da Cunha"
-    ]
-  },
-  {
     "iso2": "KN",
     "slug": "kn",
     "name": "Saint Kitts and Nevis",
@@ -2388,31 +1814,6 @@
     ]
   },
   {
-    "iso2": "MF",
-    "slug": "mf",
-    "name": "Saint Martin",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Marigot; EUR currency.",
-    "aliases": [
-      "MF",
-      "Collectivity of Saint Martin",
-      "Collectivité de Saint-Martin"
-    ]
-  },
-  {
-    "iso2": "PM",
-    "slug": "pm",
-    "name": "Saint Pierre and Miquelon",
-    "region": "Americas",
-    "subregion": "North America",
-    "summary": "North America; in Americas; capital Saint-Pierre; EUR currency.",
-    "aliases": [
-      "PM",
-      "Collectivité territoriale de Saint-Pierre-et-Miquelon"
-    ]
-  },
-  {
     "iso2": "VC",
     "slug": "vc",
     "name": "Saint Vincent and the Grenadines",
@@ -2421,19 +1822,6 @@
     "summary": "Caribbean; UN member; in Americas; capital Kingstown; XCD currency.",
     "aliases": [
       "VC"
-    ]
-  },
-  {
-    "iso2": "WS",
-    "slug": "ws",
-    "name": "Samoa",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; UN member; in Oceania; capital Apia; WST currency.",
-    "aliases": [
-      "Independent State of Samoa",
-      "WS",
-      "Malo Saʻoloto Tutoʻatasi o Sāmoa"
     ]
   },
   {
@@ -2447,19 +1835,6 @@
       "Most Serene Republic of San Marino",
       "SM",
       "Republic of San Marino"
-    ]
-  },
-  {
-    "iso2": "ST",
-    "slug": "st",
-    "name": "São Tomé and Príncipe",
-    "region": "Africa",
-    "subregion": "Middle Africa",
-    "summary": "Middle Africa; UN member; in Africa; capital São Tomé; STN currency.",
-    "aliases": [
-      "Democratic Republic of São Tomé and Príncipe",
-      "ST",
-      "Sao Tome and Principe"
     ]
   },
   {
@@ -2540,18 +1915,6 @@
     ]
   },
   {
-    "iso2": "SX",
-    "slug": "sx",
-    "name": "Sint Maarten",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Philipsburg; ANG currency.",
-    "aliases": [
-      "SX",
-      "Sint Maarten (Dutch part)"
-    ]
-  },
-  {
     "iso2": "SK",
     "slug": "sk",
     "name": "Slovakia",
@@ -2612,18 +1975,6 @@
       "Republic of South Africa",
       "ZA",
       "RSA"
-    ]
-  },
-  {
-    "iso2": "GS",
-    "slug": "gs",
-    "name": "South Georgia",
-    "region": "Antarctic",
-    "subregion": "Antarctic",
-    "summary": "in Antarctic; capital King Edward Point; SHP currency.",
-    "aliases": [
-      "South Georgia and the South Sandwich Islands",
-      "GS"
     ]
   },
   {
@@ -2704,19 +2055,6 @@
     ]
   },
   {
-    "iso2": "SJ",
-    "slug": "sj",
-    "name": "Svalbard and Jan Mayen",
-    "region": "Europe",
-    "subregion": "Northern Europe",
-    "summary": "Northern Europe; in Europe; capital Longyearbyen; NOK currency.",
-    "aliases": [
-      "Svalbard og Jan Mayen",
-      "SJ",
-      "Svalbard and Jan Mayen Islands"
-    ]
-  },
-  {
     "iso2": "SE",
     "slug": "se",
     "name": "Sweden",
@@ -2753,19 +2091,6 @@
       "Syrian Arab Republic",
       "SY",
       "Al-Jumhūrīyah Al-ʻArabīyah As-Sūrīyah"
-    ]
-  },
-  {
-    "iso2": "TW",
-    "slug": "tw",
-    "name": "Taiwan",
-    "region": "Asia",
-    "subregion": "Eastern Asia",
-    "summary": "Eastern Asia; in Asia; capital Taipei; TWD currency.",
-    "aliases": [
-      "Republic of China (Taiwan)",
-      "TW",
-      "Táiwān"
     ]
   },
   {
@@ -2834,29 +2159,6 @@
     ]
   },
   {
-    "iso2": "TK",
-    "slug": "tk",
-    "name": "Tokelau",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; in Oceania; capital Fakaofo; NZD currency.",
-    "aliases": [
-      "TK"
-    ]
-  },
-  {
-    "iso2": "TO",
-    "slug": "to",
-    "name": "Tonga",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; UN member; in Oceania; capital Nuku'alofa; TOP currency.",
-    "aliases": [
-      "Kingdom of Tonga",
-      "TO"
-    ]
-  },
-  {
     "iso2": "TT",
     "slug": "tt",
     "name": "Trinidad and Tobago",
@@ -2903,28 +2205,6 @@
     "summary": "Central Asia; UN member; in Asia; capital Ashgabat; TMT currency.",
     "aliases": [
       "TM"
-    ]
-  },
-  {
-    "iso2": "TC",
-    "slug": "tc",
-    "name": "Turks and Caicos Islands",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Cockburn Town; USD currency.",
-    "aliases": [
-      "TC"
-    ]
-  },
-  {
-    "iso2": "TV",
-    "slug": "tv",
-    "name": "Tuvalu",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; UN member; in Oceania; capital Funafuti; AUD currency.",
-    "aliases": [
-      "TV"
     ]
   },
   {
@@ -2989,30 +2269,6 @@
       "United States of America",
       "US",
       "USA"
-    ]
-  },
-  {
-    "iso2": "UM",
-    "slug": "um",
-    "name": "United States Minor Outlying Islands",
-    "region": "Americas",
-    "subregion": "North America",
-    "summary": "North America; in Americas; USD currency.",
-    "aliases": [
-      "UM"
-    ]
-  },
-  {
-    "iso2": "VI",
-    "slug": "vi",
-    "name": "United States Virgin Islands",
-    "region": "Americas",
-    "subregion": "Caribbean",
-    "summary": "Caribbean; in Americas; capital Charlotte Amalie; USD currency.",
-    "aliases": [
-      "Virgin Islands of the United States",
-      "VI",
-      "Virgin Islands, U.S."
     ]
   },
   {
@@ -3091,19 +2347,6 @@
       "Socialist Republic of Vietnam",
       "VN",
       "Cộng hòa Xã hội chủ nghĩa Việt Nam"
-    ]
-  },
-  {
-    "iso2": "WF",
-    "slug": "wf",
-    "name": "Wallis and Futuna",
-    "region": "Oceania",
-    "subregion": "Polynesia",
-    "summary": "Polynesia; in Oceania; capital Mata-Utu; XPF currency.",
-    "aliases": [
-      "Territory of the Wallis and Futuna Islands",
-      "WF",
-      "Territoire des îles Wallis et Futuna"
     ]
   },
   {

@@ -4,7 +4,7 @@ slug: ug
 region: Eastern Africa
 summary: Eastern Africa; UN member; in Africa; capital Kampala; UGX currency.
 aliases: ["Republic of Uganda", "UG", "Jamhuri ya Uganda"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

@@ -4,7 +4,7 @@ slug: zm
 region: Eastern Africa
 summary: Eastern Africa; UN member; in Africa; capital Lusaka; ZMW currency.
 aliases: ["Republic of Zambia", "ZM"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

@@ -4,7 +4,7 @@ slug: pk
 region: Southern Asia
 summary: Southern Asia; UN member; in Asia; capital Islamabad; PKR currency.
 aliases: ["Islamic Republic of Pakistan", "PK", "Pākistān"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

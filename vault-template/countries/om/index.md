@@ -4,7 +4,7 @@ slug: om
 region: Western Asia
 summary: Western Asia; UN member; in Asia; capital Muscat; OMR currency.
 aliases: ["Sultanate of Oman", "OM", "Salṭanat ʻUmān"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

@@ -4,7 +4,7 @@ slug: si
 region: Central Europe
 summary: Central Europe; UN member; in Europe; capital Ljubljana; EUR currency.
 aliases: ["Republic of Slovenia", "SI", "Republika Slovenija"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

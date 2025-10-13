@@ -4,7 +4,7 @@ slug: sc
 region: Eastern Africa
 summary: Eastern Africa; UN member; in Africa; capital Victoria; SCR currency.
 aliases: ["Republic of Seychelles", "SC", "Repiblik Sesel"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

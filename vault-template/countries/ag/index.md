@@ -4,7 +4,7 @@ slug: ag
 region: Caribbean
 summary: Caribbean; UN member; in Americas; capital Saint John's; XCD currency.
 aliases: ["AG"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

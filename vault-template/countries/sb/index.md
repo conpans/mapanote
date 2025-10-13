@@ -4,7 +4,7 @@ slug: sb
 region: Melanesia
 summary: Melanesia; UN member; in Oceania; capital Honiara; SBD currency.
 aliases: ["SB"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

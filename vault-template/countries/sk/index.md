@@ -4,7 +4,7 @@ slug: sk
 region: Central Europe
 summary: Central Europe; UN member; in Europe; capital Bratislava; EUR currency.
 aliases: ["Slovak Republic", "SK", "Slovenská republika"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

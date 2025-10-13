@@ -4,7 +4,7 @@ slug: so
 region: Eastern Africa
 summary: Eastern Africa; UN member; in Africa; capital Mogadishu; SOS currency.
 aliases: ["Federal Republic of Somalia", "SO", "aṣ-Ṣūmāl"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

@@ -4,7 +4,7 @@ slug: sr
 region: South America
 summary: South America; UN member; in Americas; capital Paramaribo; SRD currency.
 aliases: ["Republic of Suriname", "SR", "Sarnam"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

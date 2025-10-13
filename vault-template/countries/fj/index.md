@@ -4,7 +4,7 @@ slug: fj
 region: Melanesia
 summary: Melanesia; UN member; in Oceania; capital Suva; FJD currency.
 aliases: ["Republic of Fiji", "FJ", "Viti"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

@@ -4,7 +4,7 @@ slug: ly
 region: Northern Africa
 summary: Northern Africa; UN member; in Africa; capital Tripoli; LYD currency.
 aliases: ["State of Libya", "LY", "Dawlat Libya"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

@@ -4,7 +4,7 @@ slug: eg
 region: Northern Africa
 summary: Northern Africa; UN member; in Africa; capital Cairo; EGP currency.
 aliases: ["Arab Republic of Egypt", "EG"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

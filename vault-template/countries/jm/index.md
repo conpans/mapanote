@@ -4,7 +4,7 @@ slug: jm
 region: Caribbean
 summary: Caribbean; UN member; in Americas; capital Kingston; JMD currency.
 aliases: ["JM"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview

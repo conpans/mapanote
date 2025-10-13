@@ -4,7 +4,7 @@ slug: ar
 region: South America
 summary: South America; UN member; in Americas; capital Buenos Aires; ARS currency.
 aliases: ["Argentine Republic", "AR", "República Argentina"]
-updated_at: 2025-10-12
+updated_at: 2025-10-13
 ---
 
 ## Overview
