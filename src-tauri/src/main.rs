@@ -6,7 +6,8 @@ mod models;
 mod vault;
 
 use commands::vault::{
-    add_note,    // ← NEW
+    add_note, // ← NEW
+    create_vault_from_template,
     delete_note, // ← NEW
     export_country_markdown,
     get_all_country_stats,
@@ -41,6 +42,7 @@ fn main() {
             export_country_markdown,
             get_vault_stats,
             get_all_country_stats,
+            create_vault_from_template,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

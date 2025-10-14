@@ -2,7 +2,10 @@ use crate::vault::{VaultReader, VaultWriter};
 use crate::models::{Country, Note, AddNoteRequest, UpdateNoteRequest};
 use tauri::State;
 use std::sync::Mutex;
+use include_dir::{include_dir, Dir};
 use std::path::PathBuf;
+use std::fs;
+use tauri::Manager;
 
 /// App state shared across commands
 pub struct AppState {
@@ -357,4 +360,52 @@ pub struct CountryStatsItem {
     pub slug: String,
     pub note_count: usize,
     pub last_updated: Option<String>,
+}
+
+// Embed the vault-template directory at compile time
+static VAULT_TEMPLATE: Dir = include_dir!("$CARGO_MANIFEST_DIR/../vault-template");
+
+#[tauri::command]
+pub async fn create_vault_from_template(
+    destination: String,
+) -> Result<String, String> {
+    println!("Creating vault at: {}", destination);
+    
+    let dest_path = PathBuf::from(&destination);
+    
+    // Create destination directory if it doesn't exist
+    if !dest_path.exists() {
+        fs::create_dir_all(&dest_path)
+            .map_err(|e| format!("Failed to create destination directory: {}", e))?;
+    }
+    
+    // Extract embedded template to destination
+    println!("Extracting template...");
+    VAULT_TEMPLATE.extract(&dest_path)
+        .map_err(|e| format!("Failed to extract template: {}", e))?;
+    
+    println!("Vault created successfully!");
+    Ok(format!("Vault created successfully at {}", destination))
+}
+
+// Helper function to recursively copy directories
+fn copy_dir_recursive(src: &PathBuf, dst: &PathBuf) -> std::io::Result<()> {
+    if !dst.exists() {
+        fs::create_dir_all(dst)?;
+    }
+    
+    for entry in fs::read_dir(src)? {
+        let entry = entry?;
+        let file_type = entry.file_type()?;
+        let src_path = entry.path();
+        let dst_path = dst.join(entry.file_name());
+        
+        if file_type.is_dir() {
+            copy_dir_recursive(&src_path, &dst_path)?;
+        } else {
+            fs::copy(&src_path, &dst_path)?;
+        }
+    }
+    
+    Ok(())
 }
