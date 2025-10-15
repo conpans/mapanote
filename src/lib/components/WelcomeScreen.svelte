@@ -73,14 +73,17 @@
     error = "";
 
     try {
-      // Construct full path
       const fullPath = createSubfolder
         ? `${vaultLocation}/${vaultName}`
         : vaultLocation;
 
-      // Create vault from template
-      console.log("Creating vault at:", fullPath);
-      await invoke("create_vault_from_template", { destination: fullPath });
+      console.log("Creating minimal vault at:", fullPath);
+
+      // Use the new create_minimal_vault command
+      await invoke("create_minimal_vault", {
+        destination: fullPath,
+        vaultName: vaultName,
+      });
 
       // Open the newly created vault
       await openVault(fullPath);
@@ -191,16 +194,8 @@
         {/if}
 
         <div class="welcome-footer">
-          <a
-            href="https://docs.mapanote.com"
-            class="footer-link"
-            target="_blank">Documentation</a
-          >
-          <a
-            href="https://github.com/yourusername/mapanote"
-            class="footer-link"
-            target="_blank">GitHub</a
-          >
+          <a href="#" class="footer-link">Documentation</a>
+          <a href="#" class="footer-link">GitHub</a>
         </div>
       </div>
     {:else if currentStep === "create-name"}
@@ -208,9 +203,7 @@
       <div class="wizard-content">
         <div class="wizard-header">
           <h2>Name your vault</h2>
-          <p>
-            Choose a name that describes your notes (you can change this later)
-          </p>
+          <p>Choose a name that describes your notes</p>
         </div>
 
         <div class="form-group">
@@ -223,6 +216,7 @@
             class="input-large"
             autofocus
           />
+          <p class="help-text">You can change this later.</p>
         </div>
 
         {#if error}
@@ -245,7 +239,10 @@
       <div class="wizard-content">
         <div class="wizard-header">
           <h2>Choose where to save</h2>
-          <p>Your vault will include ~180 countries with world map</p>
+          <p>
+            Your vault will be lightweight - just a few files to start. Country
+            data is loaded from the app.
+          </p>
         </div>
 
         <div class="form-group">
@@ -317,6 +314,8 @@
     max-width: 600px;
     width: 100%;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   :global(.dark) .welcome-card {
@@ -370,6 +369,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    border-radius: 6px;
   }
 
   .btn-primary {
@@ -377,7 +377,7 @@
     color: white;
   }
 
-  .btn-primary:hover {
+  .btn-primary:hover:not(:disabled) {
     background: #1d4ed8;
   }
 
@@ -392,7 +392,7 @@
     color: #374151;
   }
 
-  .btn-secondary:hover {
+  .btn-secondary:hover:not(:disabled) {
     background: #f3f4f6;
     border-color: #9ca3af;
   }
@@ -407,6 +407,10 @@
     margin-top: 2rem;
     padding-top: 2rem;
     border-top: 1px solid #e5e7eb;
+  }
+
+  :global(.dark) .recent-vaults {
+    border-top-color: #374151;
   }
 
   .recent-vaults h3 {
@@ -426,6 +430,7 @@
     padding: 0.75rem 1rem;
     background: #f9fafb;
     border: 1px solid #e5e7eb;
+    border-radius: 6px;
     margin-bottom: 0.5rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -436,12 +441,21 @@
     border-color: #2563eb;
   }
 
+  :global(.dark) .recent-vault-item {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
   .vault-path {
     font-size: 0.875rem;
     color: #374151;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  :global(.dark) .vault-path {
+    color: #d1d5db;
   }
 
   .vault-action {
@@ -480,8 +494,17 @@
     margin-bottom: 0.5rem;
   }
 
+  :global(.dark) .wizard-header h2 {
+    color: #f9fafb;
+  }
+
   .wizard-header p {
     color: #6b7280;
+    font-size: 0.9375rem;
+  }
+
+  :global(.dark) .wizard-header p {
+    color: #9ca3af;
   }
 
   .form-group {
@@ -493,6 +516,11 @@
     font-weight: 500;
     color: #374151;
     margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
+  }
+
+  :global(.dark) .form-group label {
+    color: #d1d5db;
   }
 
   .input-large {
@@ -500,13 +528,21 @@
     padding: 0.75rem 1rem;
     font-size: 1rem;
     border: 2px solid #d1d5db;
+    border-radius: 6px;
     background: white;
     color: #111827;
+    transition: border-color 0.2s;
   }
 
   .input-large:focus {
     outline: none;
     border-color: #2563eb;
+  }
+
+  :global(.dark) .input-large {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
   }
 
   .input-with-button {
@@ -524,12 +560,23 @@
     gap: 0.5rem;
     margin-top: 1rem;
     cursor: pointer;
+    font-size: 0.9375rem;
+    color: #374151;
+  }
+
+  :global(.dark) .checkbox-label {
+    color: #d1d5db;
   }
 
   .help-text {
     font-size: 0.875rem;
     color: #6b7280;
     margin-top: 0.5rem;
+    line-height: 1.5;
+  }
+
+  :global(.dark) .help-text {
+    color: #9ca3af;
   }
 
   .wizard-actions {
@@ -543,7 +590,15 @@
     padding: 1rem;
     background: #fee2e2;
     border: 1px solid #ef4444;
+    border-radius: 6px;
     color: #991b1b;
     margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+
+  :global(.dark) .error-message {
+    background: #7f1d1d;
+    border-color: #991b1b;
+    color: #fecaca;
   }
 </style>

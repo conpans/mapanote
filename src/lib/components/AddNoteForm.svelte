@@ -1,41 +1,32 @@
 <script lang="ts">
   import { addNote, currentCountry } from "$lib/stores/vault";
-  import type { AddNoteRequest } from "$lib/types";
 
   export let onSuccess: () => void = () => {};
 
-  let text = "";
+  let title = "";
+  let content = "";
   let tagsInput = "";
-  let visibility: "private" | "internal" | "publishable" = "internal";
-  let pinned = false;
   let isSubmitting = false;
   let error = "";
 
   async function handleSubmit() {
-    if (!text.trim() || !$currentCountry) return;
+    if (!content.trim() || !title.trim() || !$currentCountry) return;
 
     isSubmitting = true;
     error = "";
 
     try {
-      const request: AddNoteRequest = {
-        country_slug: $currentCountry.slug,
-        text: text.trim(),
-        tags: tagsInput
-          .split(",")
-          .map((t) => t.trim())
-          .filter((t) => t.length > 0),
-        also: [],
-        visibility,
-        pinned,
-      };
+      const tags = tagsInput
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t.length > 0);
 
-      await addNote(request);
+      await addNote($currentCountry.slug, title.trim(), content.trim(), tags);
 
       // Clear form
-      text = "";
+      title = "";
+      content = "";
       tagsInput = "";
-      pinned = false;
 
       onSuccess();
     } catch (err) {
@@ -70,9 +61,22 @@
   {/if}
 
   <form on:submit|preventDefault={handleSubmit}>
-    <!-- Note text -->
+    <!-- Title input -->
+    <input
+      type="text"
+      bind:value={title}
+      placeholder="Note title..."
+      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+             rounded-lg bg-white dark:bg-gray-700
+             text-gray-900 dark:text-gray-100
+             placeholder-gray-400 dark:placeholder-gray-500
+             focus:ring-2 focus:ring-mapanote-blue-500 focus:border-transparent
+             mb-3"
+    />
+
+    <!-- Note content -->
     <textarea
-      bind:value={text}
+      bind:value={content}
       on:keydown={handleKeydown}
       placeholder="Write your note... (Ctrl+Enter to save)"
       rows="4"
@@ -88,7 +92,7 @@
     <input
       type="text"
       bind:value={tagsInput}
-      placeholder="Tags (comma-separated): politics, current, economy"
+      placeholder="Tags (comma-separated): politics, sports, history"
       class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
              rounded-lg bg-white dark:bg-gray-700
              text-gray-900 dark:text-gray-100 text-sm
@@ -97,43 +101,11 @@
              mb-3"
     />
 
-    <!-- Options row -->
-    <div class="flex items-center gap-4 mb-3">
-      <!-- Visibility -->
-      <div class="flex items-center gap-2">
-        <label class="text-sm text-gray-600 dark:text-gray-400"
-          >Visibility:</label
-        >
-        <select
-          bind:value={visibility}
-          class="px-2 py-1 border border-gray-300 dark:border-gray-600
-                 rounded bg-white dark:bg-gray-700
-                 text-gray-900 dark:text-gray-100 text-sm"
-        >
-          <option value="internal">Internal</option>
-          <option value="private">Private</option>
-          <option value="publishable">Publishable</option>
-        </select>
-      </div>
-
-      <!-- Pin checkbox -->
-      <label class="flex items-center gap-2 cursor-pointer">
-        <input
-          type="checkbox"
-          bind:checked={pinned}
-          class="rounded border-gray-300 text-mapanote-blue-600
-                 focus:ring-mapanote-blue-500"
-        />
-        <span class="text-sm text-gray-700 dark:text-gray-300">📌 Pin note</span
-        >
-      </label>
-    </div>
-
     <!-- Submit button -->
     <div class="flex justify-end">
       <button
         type="submit"
-        disabled={!text.trim() || isSubmitting}
+        disabled={!content.trim() || !title.trim() || isSubmitting}
         class="px-6 py-2 bg-mapanote-blue-600 hover:bg-mapanote-blue-700
                disabled:bg-gray-400 disabled:cursor-not-allowed
                text-white rounded-lg font-medium transition"
@@ -157,8 +129,7 @@
 
 <style>
   textarea:focus,
-  input:focus,
-  select:focus {
+  input:focus {
     outline: none;
   }
 

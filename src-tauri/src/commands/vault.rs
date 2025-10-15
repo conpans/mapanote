@@ -1,411 +1,316 @@
-use crate::vault::{VaultReader, VaultWriter};
-use crate::models::{Country, Note, AddNoteRequest, UpdateNoteRequest};
-use tauri::State;
-use std::sync::Mutex;
-use include_dir::{include_dir, Dir};
-use std::path::PathBuf;
+use mapanote_lib::models::{CountryStats, Note, VaultManifest};
+use mapanote_lib::AppState;
+use serde::Serialize;
 use std::fs;
-use tauri::Manager;
-
-/// App state shared across commands
-pub struct AppState {
-    pub vault_reader: Mutex<Option<VaultReader>>,
-    pub vault_writer: Mutex<Option<VaultWriter>>,  // ← NEW
-}
+use std::path::PathBuf;
+use tauri::State;
 
 #[tauri::command]
-pub async fn open_vault(path: String, state: State<'_, AppState>) -> Result<String, String> {
-    let vault_path = PathBuf::from(&path);
-    let vault_reader = VaultReader::new(vault_path.clone());
-    let vault_writer = VaultWriter::new(vault_path);  // ← NEW
-    
-    // Verify vault exists by loading config
-    match vault_reader.load_config() {
-        Ok(config) => {
-            *state.vault_reader.lock().unwrap() = Some(vault_reader);
-            *state.vault_writer.lock().unwrap() = Some(vault_writer);  // ← NEW
-            Ok(format!("Vault opened: schema v{}", config.schema_version))
-        }
-        Err(e) => Err(format!("Failed to open vault: {}", e)),
-    }
-}
+pub fn create_minimal_vault(destination: String, vault_name: String) -> Result<String, String> {
+    println!("Creating minimal vault at: {}", destination);
 
-#[tauri::command]
-pub async fn list_countries(state: State<'_, AppState>) -> Result<Vec<String>, String> {
-    let reader_guard = state.vault_reader.lock().unwrap();
-    
-    match reader_guard.as_ref() {
-        Some(reader) => {
-            reader.list_countries().map_err(|e| e.to_string())
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-#[tauri::command]
-pub async fn get_country(slug: String, state: State<'_, AppState>) -> Result<Country, String> {
-    let reader_guard = state.vault_reader.lock().unwrap();
-    
-    match reader_guard.as_ref() {
-        Some(reader) => {
-            let page = reader.read_country(&slug).map_err(|e| e.to_string())?;
-            Ok(page.country)
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-#[tauri::command]
-pub async fn get_country_notes(slug: String, state: State<'_, AppState>) -> Result<Vec<Note>, String> {
-    let reader_guard = state.vault_reader.lock().unwrap();
-    
-    match reader_guard.as_ref() {
-        Some(reader) => {
-            let page = reader.read_country(&slug).map_err(|e| e.to_string())?;
-            Ok(page.notes)
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-// ← NEW COMMANDS BELOW
-
-#[tauri::command]
-pub async fn add_note(request: AddNoteRequest, state: State<'_, AppState>) -> Result<Note, String> {
-    let writer_guard = state.vault_writer.lock().unwrap();
-    
-    match writer_guard.as_ref() {
-        Some(writer) => {
-            writer.add_note(request).map_err(|e| e.to_string())
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-#[tauri::command]
-pub async fn update_note(request: UpdateNoteRequest, state: State<'_, AppState>) -> Result<(), String> {
-    let writer_guard = state.vault_writer.lock().unwrap();
-    
-    match writer_guard.as_ref() {
-        Some(writer) => {
-            writer.update_note(request).map_err(|e| e.to_string())
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-#[tauri::command]
-pub async fn delete_note(country_slug: String, note_id: String, state: State<'_, AppState>) -> Result<(), String> {
-    let writer_guard = state.vault_writer.lock().unwrap();
-    
-    match writer_guard.as_ref() {
-        Some(writer) => {
-            writer.delete_note(&country_slug, &note_id).map_err(|e| e.to_string())
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-
-/// Search result combining note data with country info
-#[derive(Debug, Clone, serde::Serialize)]
-pub struct SearchResult {
-    pub note_id: String,
-    pub country_slug: String,
-    pub country_title: String,
-    pub date: String,
-    pub tags: Vec<String>,
-    pub text: String,
-    pub snippet: String,  // Highlighted excerpt
-    pub visibility: String,
-    pub pinned: bool,
-}
-
-#[tauri::command]
-pub async fn search_notes(
-    query: String, 
-    state: State<'_, AppState>
-) -> Result<Vec<SearchResult>, String> {
-    let reader_guard = state.vault_reader.lock().unwrap();
-    
-    match reader_guard.as_ref() {
-        Some(reader) => {
-            // Get all countries
-            let countries = reader.list_countries().map_err(|e| e.to_string())?;
-            
-            let mut results = Vec::new();
-            let query_lower = query.to_lowercase();
-            
-            // Search through each country
-            for slug in countries {
-                let page = match reader.read_country(&slug) {
-                    Ok(p) => p,
-                    Err(_) => continue,
-                };
-                
-                // Search through notes
-                for note in page.notes {
-                    // Check if query matches text or tags
-                    let text_lower = note.text.to_lowercase();
-                    let tags_str = note.tags.join(" ").to_lowercase();
-                    
-                    if text_lower.contains(&query_lower) || tags_str.contains(&query_lower) {
-                        // Create snippet (extract surrounding context)
-                        let snippet = create_snippet(&note.text, &query, 100);
-                        
-                        results.push(SearchResult {
-                            note_id: note.id.clone(),
-                            country_slug: slug.clone(),
-                            country_title: page.country.title.clone(),
-                            date: note.date.clone(),
-                            tags: note.tags.clone(),
-                            text: note.text.clone(),
-                            snippet,
-                            visibility: format!("{:?}", note.visibility).to_lowercase(),
-                            pinned: note.pinned,
-                        });
-                    }
-                }
-            }
-            
-            // Sort by date (newest first)
-            results.sort_by(|a, b| b.date.cmp(&a.date));
-            
-            Ok(results)
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-/// Create a snippet with context around the search term
-fn create_snippet(text: &str, query: &str, max_len: usize) -> String {
-    let text_lower = text.to_lowercase();
-    let query_lower = query.to_lowercase();
-    
-    if let Some(pos) = text_lower.find(&query_lower) {
-        // Calculate start and end positions for snippet
-        let start = pos.saturating_sub(max_len / 2);
-        let end = (pos + query.len() + max_len / 2).min(text.len());
-        
-        let mut snippet = String::new();
-        
-        if start > 0 {
-            snippet.push_str("...");
-        }
-        
-        snippet.push_str(&text[start..end]);
-        
-        if end < text.len() {
-            snippet.push_str("...");
-        }
-        
-        snippet
-    } else {
-        // Fallback: just return first N chars
-        let end = max_len.min(text.len());
-        let mut snippet = text[..end].to_string();
-        if end < text.len() {
-            snippet.push_str("...");
-        }
-        snippet
-    }
-}
-
-#[tauri::command]
-pub async fn export_country_markdown(
-    country_slug: String,
-    state: State<'_, AppState>
-) -> Result<String, String> {
-    let reader_guard = state.vault_reader.lock().unwrap();
-    
-    match reader_guard.as_ref() {
-        Some(reader) => {
-            let page = reader.read_country(&country_slug).map_err(|e| e.to_string())?;
-            
-            // Build markdown content
-            let mut content = String::new();
-            
-            // Add frontmatter
-            content.push_str("---\n");
-            content.push_str(&format!("title: {}\n", page.country.title));
-            content.push_str(&format!("slug: {}\n", page.country.slug));
-            content.push_str(&format!("region: {}\n", page.country.region));
-            if !page.country.summary.is_empty() {
-                content.push_str(&format!("summary: {}\n", page.country.summary));
-            }
-            if !page.country.aliases.is_empty() {
-                content.push_str(&format!("aliases: [{}]\n", page.country.aliases.join(", ")));
-            }
-            content.push_str(&format!("updated_at: {}\n", page.country.updated_at));
-            content.push_str("---\n\n");
-            
-            // Add overview
-            content.push_str(&format!("# {}\n\n", page.country.title));
-            content.push_str(&format!("**Region:** {}\n\n", page.country.region));
-            if !page.country.summary.is_empty() {
-                content.push_str(&format!("{}\n\n", page.country.summary));
-            }
-            
-            // Add notes
-            content.push_str("## Notes\n\n");
-            for note in &page.notes {
-                let mut metadata = vec![note.date.clone()];
-                
-                if !note.tags.is_empty() {
-                    metadata.push(note.tags.join(", "));
-                }
-                
-                if !note.also.is_empty() {
-                    metadata.push(format!("also:{}", note.also.join(",")));
-                }
-                
-                metadata.push(format!("{:?}", note.visibility).to_lowercase());
-                
-                if note.pinned {
-                    metadata.push("pinned".to_string());
-                }
-                
-                content.push_str(&format!("### {} · {}\n", note.date, metadata[1..].join(" · ")));
-                content.push_str(&format!("[id:{}]\n\n", note.id));
-                content.push_str(&format!("{}\n\n", note.text));
-            }
-            
-            Ok(content)
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-#[tauri::command]
-pub async fn get_vault_stats(state: State<'_, AppState>) -> Result<VaultStats, String> {
-    let reader_guard = state.vault_reader.lock().unwrap();
-    
-    match reader_guard.as_ref() {
-        Some(reader) => {
-            let countries = reader.list_countries().map_err(|e| e.to_string())?;
-            let mut total_notes = 0;
-            let mut total_pinned = 0;
-            let mut all_tags = std::collections::HashSet::new();
-            
-            for slug in &countries {
-                if let Ok(page) = reader.read_country(slug) {
-                    total_notes += page.notes.len();
-                    total_pinned += page.notes.iter().filter(|n| n.pinned).count();
-                    
-                    for note in page.notes {
-                        for tag in note.tags {
-                            all_tags.insert(tag);
-                        }
-                    }
-                }
-            }
-            
-            Ok(VaultStats {
-                country_count: countries.len(),
-                note_count: total_notes,
-                pinned_count: total_pinned,
-                tag_count: all_tags.len(),
-            })
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-pub struct VaultStats {
-    pub country_count: usize,
-    pub note_count: usize,
-    pub pinned_count: usize,
-    pub tag_count: usize,
-}
-
-#[tauri::command]
-pub async fn get_all_country_stats(state: State<'_, AppState>) -> Result<Vec<CountryStatsItem>, String> {
-    let reader_guard = state.vault_reader.lock().unwrap();
-    
-    match reader_guard.as_ref() {
-        Some(reader) => {
-            let countries = reader.list_countries().map_err(|e| e.to_string())?;
-            let mut stats = Vec::new();
-            
-            for slug in countries {
-                if let Ok(page) = reader.read_country(&slug) {
-                    let note_count = page.notes.len();
-                    
-                    // Find most recent note date
-                    let last_updated = if !page.notes.is_empty() {
-                        let dates: Vec<String> = page.notes.iter().map(|n| n.date.clone()).collect();
-                        dates.into_iter().max()
-                    } else {
-                        None
-                    };
-                    
-                    stats.push(CountryStatsItem {
-                        slug,
-                        note_count,
-                        last_updated,
-                    });
-                }
-            }
-            
-            Ok(stats)
-        }
-        None => Err("No vault opened".to_string()),
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-#[serde(rename_all = "camelCase")] 
-pub struct CountryStatsItem {
-    pub slug: String,
-    pub note_count: usize,
-    pub last_updated: Option<String>,
-}
-
-// Embed the vault-template directory at compile time
-static VAULT_TEMPLATE: Dir = include_dir!("$CARGO_MANIFEST_DIR/../vault-template");
-
-#[tauri::command]
-pub async fn create_vault_from_template(
-    destination: String,
-) -> Result<String, String> {
-    println!("Creating vault at: {}", destination);
-    
     let dest_path = PathBuf::from(&destination);
-    
-    // Create destination directory if it doesn't exist
-    if !dest_path.exists() {
-        fs::create_dir_all(&dest_path)
-            .map_err(|e| format!("Failed to create destination directory: {}", e))?;
-    }
-    
-    // Extract embedded template to destination
-    println!("Extracting template...");
-    VAULT_TEMPLATE.extract(&dest_path)
-        .map_err(|e| format!("Failed to extract template: {}", e))?;
-    
-    println!("Vault created successfully!");
-    Ok(format!("Vault created successfully at {}", destination))
+
+    // Create directory structure
+    fs::create_dir_all(&dest_path)
+        .map_err(|e| format!("Failed to create vault directory: {}", e))?;
+
+    fs::create_dir_all(dest_path.join("notes"))
+        .map_err(|e| format!("Failed to create notes directory: {}", e))?;
+
+    fs::create_dir_all(dest_path.join(".mapanote"))
+        .map_err(|e| format!("Failed to create config directory: {}", e))?;
+
+    // Create empty manifest
+    let manifest = VaultManifest::new();
+    let manifest_path = dest_path.join("vault.json");
+    fs::write(
+        &manifest_path,
+        serde_json::to_string_pretty(&manifest)
+            .map_err(|e| format!("Failed to serialize manifest: {}", e))?,
+    )
+    .map_err(|e| format!("Failed to write manifest: {}", e))?;
+
+    // Create config
+    let config = serde_json::json!({
+        "name": vault_name,
+        "version": "1.0",
+        "created": chrono::Utc::now().to_rfc3339(),
+    });
+
+    fs::write(
+        dest_path.join(".mapanote/config.json"),
+        serde_json::to_string_pretty(&config)
+            .map_err(|e| format!("Failed to serialize config: {}", e))?,
+    )
+    .map_err(|e| format!("Failed to write config: {}", e))?;
+
+    // Create README
+    let readme = format!(
+        "# {}\n\nCreated: {}\n\n## Structure\n\n\
+         - `vault.json` - Manifest tracking all notes\n\
+         - `notes/` - Country folders (created when you add notes)\n\
+         - `.mapanote/` - App configuration\n",
+        vault_name,
+        chrono::Utc::now().format("%Y-%m-%d")
+    );
+
+    fs::write(dest_path.join("README.md"), readme)
+        .map_err(|e| format!("Failed to write README: {}", e))?;
+
+    println!("✅ Minimal vault created successfully!");
+    Ok(destination)
 }
 
-// Helper function to recursively copy directories
-fn copy_dir_recursive(src: &PathBuf, dst: &PathBuf) -> std::io::Result<()> {
-    if !dst.exists() {
-        fs::create_dir_all(dst)?;
+#[tauri::command]
+pub fn open_vault(path: String, state: State<AppState>) -> Result<String, String> {
+    let vault_path = PathBuf::from(&path);
+
+    // Verify it's a valid vault
+    let manifest_path = vault_path.join("vault.json");
+    if !manifest_path.exists() {
+        return Err("Not a valid Mapanote vault (vault.json not found)".to_string());
     }
-    
-    for entry in fs::read_dir(src)? {
-        let entry = entry?;
-        let file_type = entry.file_type()?;
-        let src_path = entry.path();
-        let dst_path = dst.join(entry.file_name());
-        
-        if file_type.is_dir() {
-            copy_dir_recursive(&src_path, &dst_path)?;
-        } else {
-            fs::copy(&src_path, &dst_path)?;
+
+    // Load and validate manifest
+    let manifest_str = fs::read_to_string(&manifest_path)
+        .map_err(|e| format!("Failed to read manifest: {}", e))?;
+
+    let _manifest: VaultManifest = serde_json::from_str(&manifest_str)
+        .map_err(|e| format!("Invalid manifest format: {}", e))?;
+
+    // Store vault path
+    let mut reader = state.vault_reader.lock().unwrap();
+    *reader = Some(path.clone());
+
+    let mut writer = state.vault_writer.lock().unwrap();
+    *writer = Some(path.clone());
+
+    Ok(format!("Opened vault at {}", path))
+}
+
+#[tauri::command]
+pub fn get_vault_manifest(state: State<AppState>) -> Result<VaultManifest, String> {
+    let reader = state.vault_reader.lock().unwrap();
+    let vault_path = reader.as_ref().ok_or("No vault opened")?;
+
+    let manifest_path = PathBuf::from(vault_path).join("vault.json");
+    let manifest_str = fs::read_to_string(&manifest_path)
+        .map_err(|e| format!("Failed to read manifest: {}", e))?;
+
+    serde_json::from_str(&manifest_str).map_err(|e| format!("Failed to parse manifest: {}", e))
+}
+
+#[tauri::command]
+pub fn get_country_notes(slug: String, state: State<AppState>) -> Result<Vec<Note>, String> {
+    let reader = state.vault_reader.lock().unwrap();
+    let vault_path = reader.as_ref().ok_or("No vault opened")?;
+
+    let country_dir = PathBuf::from(vault_path).join("notes").join(&slug);
+
+    // If folder doesn't exist, return empty array (not an error)
+    if !country_dir.exists() {
+        return Ok(Vec::new());
+    }
+
+    let mut notes = Vec::new();
+
+    for entry in fs::read_dir(&country_dir)
+        .map_err(|e| format!("Failed to read country directory: {}", e))?
+    {
+        let entry = entry.map_err(|e| format!("Failed to read entry: {}", e))?;
+        let path = entry.path();
+
+        if path.extension().and_then(|s| s.to_str()) == Some("md") {
+            let content =
+                fs::read_to_string(&path).map_err(|e| format!("Failed to read note: {}", e))?;
+
+            // Parse frontmatter and content
+            if let Some(note) = parse_note(&content) {
+                notes.push(note);
+            }
         }
     }
-    
-    Ok(())
+
+    // Sort by date descending
+    notes.sort_by(|a, b| b.date.cmp(&a.date));
+
+    Ok(notes)
+}
+
+fn parse_note(content: &str) -> Option<Note> {
+    // Simple frontmatter parser
+    if !content.starts_with("---\n") {
+        return None;
+    }
+
+    let parts: Vec<&str> = content.splitn(3, "---\n").collect();
+    if parts.len() < 3 {
+        return None;
+    }
+
+    let frontmatter = parts[1];
+    let body = parts[2].trim();
+
+    let mut id = String::new();
+    let mut date = String::new();
+    let mut title = String::new();
+    let mut tags = Vec::new();
+
+    for line in frontmatter.lines() {
+        if let Some((key, value)) = line.split_once(':') {
+            let key = key.trim();
+            let value = value.trim();
+
+            match key {
+                "id" => id = value.to_string(),
+                "date" => date = value.to_string(),
+                "title" => title = value.to_string(),
+                "tags" => {
+                    // Parse array: ["tag1", "tag2"]
+                    tags = value
+                        .trim_matches(|c| c == '[' || c == ']')
+                        .split(',')
+                        .map(|s| s.trim().trim_matches('"').to_string())
+                        .filter(|s| !s.is_empty())
+                        .collect();
+                }
+                _ => {}
+            }
+        }
+    }
+
+    Some(Note {
+        id,
+        date,
+        title,
+        content: body.to_string(),
+        tags,
+    })
+}
+
+#[tauri::command]
+pub fn add_note(
+    country_slug: String,
+    title: String,
+    content: String,
+    tags: Vec<String>,
+    state: State<AppState>,
+) -> Result<Note, String> {
+    let writer = state.vault_writer.lock().unwrap();
+    let vault_path = writer.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+
+    // Generate note ID and date
+    let id = ulid::Ulid::new().to_string();
+    let date = chrono::Utc::now().format("%Y-%m-%d").to_string();
+
+    let note = Note {
+        id: id.clone(),
+        date: date.clone(),
+        title: title.clone(),
+        content: content.clone(),
+        tags: tags.clone(),
+    };
+
+    // Lazy-create country folder
+    let country_dir = vault_root.join("notes").join(&country_slug);
+    fs::create_dir_all(&country_dir)
+        .map_err(|e| format!("Failed to create country directory: {}", e))?;
+
+    // Write note file
+    let note_filename = format!("{}.md", id);
+    let note_path = country_dir.join(&note_filename);
+
+    let note_content = format!(
+        "---\nid: {}\ndate: {}\ntitle: {}\ntags: {:?}\n---\n\n{}",
+        id, date, title, tags, content
+    );
+
+    fs::write(&note_path, note_content).map_err(|e| format!("Failed to write note: {}", e))?;
+
+    // Update manifest
+    let manifest_path = vault_root.join("vault.json");
+    let manifest_str = fs::read_to_string(&manifest_path)
+        .map_err(|e| format!("Failed to read manifest: {}", e))?;
+
+    let mut manifest: VaultManifest = serde_json::from_str(&manifest_str)
+        .map_err(|e| format!("Failed to parse manifest: {}", e))?;
+
+    let stats = manifest
+        .countries
+        .entry(country_slug.clone())
+        .or_insert(CountryStats {
+            note_count: 0,
+            last_updated: None,
+            tags: Vec::new(),
+        });
+
+    stats.note_count += 1;
+    stats.last_updated = Some(date.clone());
+
+    // Add new tags
+    for tag in &tags {
+        if !stats.tags.contains(tag) {
+            stats.tags.push(tag.clone());
+        }
+    }
+    stats.tags.sort();
+
+    fs::write(
+        &manifest_path,
+        serde_json::to_string_pretty(&manifest)
+            .map_err(|e| format!("Failed to serialize manifest: {}", e))?,
+    )
+    .map_err(|e| format!("Failed to write manifest: {}", e))?;
+
+    Ok(note)
+}
+
+#[tauri::command]
+pub fn list_countries(state: State<AppState>) -> Result<Vec<String>, String> {
+    let reader = state.vault_reader.lock().unwrap();
+    let vault_path = reader.as_ref().ok_or("No vault opened")?;
+
+    let manifest_path = PathBuf::from(vault_path).join("vault.json");
+    let manifest_str = fs::read_to_string(&manifest_path)
+        .map_err(|e| format!("Failed to read manifest: {}", e))?;
+
+    let manifest: VaultManifest = serde_json::from_str(&manifest_str)
+        .map_err(|e| format!("Failed to parse manifest: {}", e))?;
+
+    let mut countries: Vec<String> = manifest.countries.keys().cloned().collect();
+    countries.sort();
+
+    Ok(countries)
+}
+
+#[derive(Serialize)]
+pub struct CountryStatsWithSlug {
+    // ← ADD pub
+    slug: String,
+    #[serde(rename = "noteCount")]
+    note_count: usize,
+    #[serde(rename = "lastUpdated")]
+    last_updated: Option<String>,
+    tags: Vec<String>,
+}
+
+#[tauri::command]
+pub fn get_all_country_stats(state: State<AppState>) -> Result<Vec<CountryStatsWithSlug>, String> {
+    let manifest = get_vault_manifest(state)?;
+
+    let stats: Vec<CountryStatsWithSlug> = manifest
+        .countries
+        .into_iter()
+        .map(|(slug, stats)| CountryStatsWithSlug {
+            slug,
+            note_count: stats.note_count,
+            last_updated: stats.last_updated,
+            tags: stats.tags,
+        })
+        .collect();
+
+    Ok(stats)
 }

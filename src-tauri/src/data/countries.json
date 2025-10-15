@@ -1,0 +1,1703 @@
+[
+  {
+    "slug": "af",
+    "name": "Afghanistan",
+    "iso2": "AF",
+    "iso3": "AF",
+    "summary": "Southern Asia; UN member; in Asia; capital Kabul; AFN currency.",
+    "region": "Asia",
+    "subregion": "Southern Asia"
+  },
+  {
+    "slug": "al",
+    "name": "Albania",
+    "iso2": "AL",
+    "iso3": "AL",
+    "summary": "Southeast Europe; UN member; in Europe; capital Tirana; ALL currency.",
+    "region": "Europe",
+    "subregion": "Southeast Europe"
+  },
+  {
+    "slug": "dz",
+    "name": "Algeria",
+    "iso2": "DZ",
+    "iso3": "DZ",
+    "summary": "Northern Africa; UN member; in Africa; capital Algiers; DZD currency.",
+    "region": "Africa",
+    "subregion": "Northern Africa"
+  },
+  {
+    "slug": "ad",
+    "name": "Andorra",
+    "iso2": "AD",
+    "iso3": "AD",
+    "summary": "Southern Europe; UN member; in Europe; capital Andorra la Vella; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southern Europe"
+  },
+  {
+    "slug": "ao",
+    "name": "Angola",
+    "iso2": "AO",
+    "iso3": "AO",
+    "summary": "Middle Africa; UN member; in Africa; capital Luanda; AOA currency.",
+    "region": "Africa",
+    "subregion": "Middle Africa"
+  },
+  {
+    "slug": "aq",
+    "name": "Antarctica",
+    "iso2": "AQ",
+    "iso3": "AQ",
+    "summary": "in Antarctic.",
+    "region": "Antarctic",
+    "subregion": "Antarctic"
+  },
+  {
+    "slug": "ag",
+    "name": "Antigua and Barbuda",
+    "iso2": "AG",
+    "iso3": "AG",
+    "summary": "Caribbean; UN member; in Americas; capital Saint John's; XCD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "ar",
+    "name": "Argentina",
+    "iso2": "AR",
+    "iso3": "AR",
+    "summary": "South America; UN member; in Americas; capital Buenos Aires; ARS currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "am",
+    "name": "Armenia",
+    "iso2": "AM",
+    "iso3": "AM",
+    "summary": "Western Asia; UN member; in Asia; capital Yerevan; AMD currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "au",
+    "name": "Australia",
+    "iso2": "AU",
+    "iso3": "AU",
+    "summary": "Australia and New Zealand; UN member; in Oceania; capital Canberra; AUD currency.",
+    "region": "Oceania",
+    "subregion": "Australia and New Zealand"
+  },
+  {
+    "slug": "at",
+    "name": "Austria",
+    "iso2": "AT",
+    "iso3": "AT",
+    "summary": "Central Europe; UN member; in Europe; capital Vienna; EUR currency.",
+    "region": "Europe",
+    "subregion": "Central Europe"
+  },
+  {
+    "slug": "az",
+    "name": "Azerbaijan",
+    "iso2": "AZ",
+    "iso3": "AZ",
+    "summary": "Western Asia; UN member; in Asia; capital Baku; AZN currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "bs",
+    "name": "Bahamas",
+    "iso2": "BS",
+    "iso3": "BS",
+    "summary": "Caribbean; UN member; in Americas; capital Nassau; BSD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "bh",
+    "name": "Bahrain",
+    "iso2": "BH",
+    "iso3": "BH",
+    "summary": "Western Asia; UN member; in Asia; capital Manama; BHD currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "bd",
+    "name": "Bangladesh",
+    "iso2": "BD",
+    "iso3": "BD",
+    "summary": "Southern Asia; UN member; in Asia; capital Dhaka; BDT currency.",
+    "region": "Asia",
+    "subregion": "Southern Asia"
+  },
+  {
+    "slug": "bb",
+    "name": "Barbados",
+    "iso2": "BB",
+    "iso3": "BB",
+    "summary": "Caribbean; UN member; in Americas; capital Bridgetown; BBD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "by",
+    "name": "Belarus",
+    "iso2": "BY",
+    "iso3": "BY",
+    "summary": "Eastern Europe; UN member; in Europe; capital Minsk; BYN currency.",
+    "region": "Europe",
+    "subregion": "Eastern Europe"
+  },
+  {
+    "slug": "be",
+    "name": "Belgium",
+    "iso2": "BE",
+    "iso3": "BE",
+    "summary": "Western Europe; UN member; in Europe; capital Brussels; EUR currency.",
+    "region": "Europe",
+    "subregion": "Western Europe"
+  },
+  {
+    "slug": "bz",
+    "name": "Belize",
+    "iso2": "BZ",
+    "iso3": "BZ",
+    "summary": "Central America; UN member; in Americas; capital Belmopan; BZD currency.",
+    "region": "Americas",
+    "subregion": "Central America"
+  },
+  {
+    "slug": "bj",
+    "name": "Benin",
+    "iso2": "BJ",
+    "iso3": "BJ",
+    "summary": "Western Africa; UN member; in Africa; capital Porto-Novo; XOF currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "bt",
+    "name": "Bhutan",
+    "iso2": "BT",
+    "iso3": "BT",
+    "summary": "Southern Asia; UN member; in Asia; capital Thimphu; BTN currency.",
+    "region": "Asia",
+    "subregion": "Southern Asia"
+  },
+  {
+    "slug": "bo",
+    "name": "Bolivia",
+    "iso2": "BO",
+    "iso3": "BO",
+    "summary": "South America; UN member; in Americas; capital Sucre; BOB currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "ba",
+    "name": "Bosnia and Herzegovina",
+    "iso2": "BA",
+    "iso3": "BA",
+    "summary": "Southeast Europe; UN member; in Europe; capital Sarajevo; BAM currency.",
+    "region": "Europe",
+    "subregion": "Southeast Europe"
+  },
+  {
+    "slug": "bw",
+    "name": "Botswana",
+    "iso2": "BW",
+    "iso3": "BW",
+    "summary": "Southern Africa; UN member; in Africa; capital Gaborone; BWP currency.",
+    "region": "Africa",
+    "subregion": "Southern Africa"
+  },
+  {
+    "slug": "br",
+    "name": "Brazil",
+    "iso2": "BR",
+    "iso3": "BR",
+    "summary": "South America; UN member; in Americas; capital Brasília; BRL currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "bn",
+    "name": "Brunei",
+    "iso2": "BN",
+    "iso3": "BN",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Bandar Seri Begawan; BND currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "bg",
+    "name": "Bulgaria",
+    "iso2": "BG",
+    "iso3": "BG",
+    "summary": "Southeast Europe; UN member; in Europe; capital Sofia; BGN currency.",
+    "region": "Europe",
+    "subregion": "Southeast Europe"
+  },
+  {
+    "slug": "bf",
+    "name": "Burkina Faso",
+    "iso2": "BF",
+    "iso3": "BF",
+    "summary": "Western Africa; UN member; in Africa; capital Ouagadougou; XOF currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "bi",
+    "name": "Burundi",
+    "iso2": "BI",
+    "iso3": "BI",
+    "summary": "Eastern Africa; UN member; in Africa; capital Gitega; BIF currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "kh",
+    "name": "Cambodia",
+    "iso2": "KH",
+    "iso3": "KH",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Phnom Penh; KHR currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "cm",
+    "name": "Cameroon",
+    "iso2": "CM",
+    "iso3": "CM",
+    "summary": "Middle Africa; UN member; in Africa; capital Yaoundé; XAF currency.",
+    "region": "Africa",
+    "subregion": "Middle Africa"
+  },
+  {
+    "slug": "ca",
+    "name": "Canada",
+    "iso2": "CA",
+    "iso3": "CA",
+    "summary": "North America; UN member; in Americas; capital Ottawa; CAD currency.",
+    "region": "Americas",
+    "subregion": "North America"
+  },
+  {
+    "slug": "cf",
+    "name": "Central African Republic",
+    "iso2": "CF",
+    "iso3": "CF",
+    "summary": "Middle Africa; UN member; in Africa; capital Bangui; XAF currency.",
+    "region": "Africa",
+    "subregion": "Middle Africa"
+  },
+  {
+    "slug": "td",
+    "name": "Chad",
+    "iso2": "TD",
+    "iso3": "TD",
+    "summary": "Middle Africa; UN member; in Africa; capital N'Djamena; XAF currency.",
+    "region": "Africa",
+    "subregion": "Middle Africa"
+  },
+  {
+    "slug": "cl",
+    "name": "Chile",
+    "iso2": "CL",
+    "iso3": "CL",
+    "summary": "South America; UN member; in Americas; capital Santiago; CLP currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "cn",
+    "name": "China",
+    "iso2": "CN",
+    "iso3": "CN",
+    "summary": "Eastern Asia; UN member; in Asia; capital Beijing; CNY currency.",
+    "region": "Asia",
+    "subregion": "Eastern Asia"
+  },
+  {
+    "slug": "co",
+    "name": "Colombia",
+    "iso2": "CO",
+    "iso3": "CO",
+    "summary": "South America; UN member; in Americas; capital Bogotá; COP currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "cg",
+    "name": "Congo",
+    "iso2": "CG",
+    "iso3": "CG",
+    "summary": "Middle Africa; UN member; in Africa; capital Brazzaville; XAF currency.",
+    "region": "Africa",
+    "subregion": "Middle Africa"
+  },
+  {
+    "slug": "cr",
+    "name": "Costa Rica",
+    "iso2": "CR",
+    "iso3": "CR",
+    "summary": "Central America; UN member; in Americas; capital San José; CRC currency.",
+    "region": "Americas",
+    "subregion": "Central America"
+  },
+  {
+    "slug": "hr",
+    "name": "Croatia",
+    "iso2": "HR",
+    "iso3": "HR",
+    "summary": "Southeast Europe; UN member; in Europe; capital Zagreb; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southeast Europe"
+  },
+  {
+    "slug": "cu",
+    "name": "Cuba",
+    "iso2": "CU",
+    "iso3": "CU",
+    "summary": "Caribbean; UN member; in Americas; capital Havana; CUC currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "cy",
+    "name": "Cyprus",
+    "iso2": "CY",
+    "iso3": "CY",
+    "summary": "Southern Europe; UN member; in Europe; capital Nicosia; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southern Europe"
+  },
+  {
+    "slug": "cz",
+    "name": "Czechia",
+    "iso2": "CZ",
+    "iso3": "CZ",
+    "summary": "Central Europe; UN member; in Europe; capital Prague; CZK currency.",
+    "region": "Europe",
+    "subregion": "Central Europe"
+  },
+  {
+    "slug": "dk",
+    "name": "Denmark",
+    "iso2": "DK",
+    "iso3": "DK",
+    "summary": "Northern Europe; UN member; in Europe; capital Copenhagen; DKK currency.",
+    "region": "Europe",
+    "subregion": "Northern Europe"
+  },
+  {
+    "slug": "dj",
+    "name": "Djibouti",
+    "iso2": "DJ",
+    "iso3": "DJ",
+    "summary": "Eastern Africa; UN member; in Africa; capital Djibouti; DJF currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "dm",
+    "name": "Dominica",
+    "iso2": "DM",
+    "iso3": "DM",
+    "summary": "Caribbean; UN member; in Americas; capital Roseau; XCD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "do",
+    "name": "Dominican Republic",
+    "iso2": "DO",
+    "iso3": "DO",
+    "summary": "Caribbean; UN member; in Americas; capital Santo Domingo; DOP currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "cd",
+    "name": "DR Congo",
+    "iso2": "CD",
+    "iso3": "CD",
+    "summary": "Middle Africa; UN member; in Africa; capital Kinshasa; CDF currency.",
+    "region": "Africa",
+    "subregion": "Middle Africa"
+  },
+  {
+    "slug": "ec",
+    "name": "Ecuador",
+    "iso2": "EC",
+    "iso3": "EC",
+    "summary": "South America; UN member; in Americas; capital Quito; USD currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "eg",
+    "name": "Egypt",
+    "iso2": "EG",
+    "iso3": "EG",
+    "summary": "Northern Africa; UN member; in Africa; capital Cairo; EGP currency.",
+    "region": "Africa",
+    "subregion": "Northern Africa"
+  },
+  {
+    "slug": "sv",
+    "name": "El Salvador",
+    "iso2": "SV",
+    "iso3": "SV",
+    "summary": "Central America; UN member; in Americas; capital San Salvador; USD currency.",
+    "region": "Americas",
+    "subregion": "Central America"
+  },
+  {
+    "slug": "gq",
+    "name": "Equatorial Guinea",
+    "iso2": "GQ",
+    "iso3": "GQ",
+    "summary": "Middle Africa; UN member; in Africa; capital Malabo; XAF currency.",
+    "region": "Africa",
+    "subregion": "Middle Africa"
+  },
+  {
+    "slug": "er",
+    "name": "Eritrea",
+    "iso2": "ER",
+    "iso3": "ER",
+    "summary": "Eastern Africa; UN member; in Africa; capital Asmara; ERN currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "ee",
+    "name": "Estonia",
+    "iso2": "EE",
+    "iso3": "EE",
+    "summary": "Northern Europe; UN member; in Europe; capital Tallinn; EUR currency.",
+    "region": "Europe",
+    "subregion": "Northern Europe"
+  },
+  {
+    "slug": "sz",
+    "name": "Eswatini",
+    "iso2": "SZ",
+    "iso3": "SZ",
+    "summary": "Southern Africa; UN member; in Africa; capital Lobamba; SZL currency.",
+    "region": "Africa",
+    "subregion": "Southern Africa"
+  },
+  {
+    "slug": "et",
+    "name": "Ethiopia",
+    "iso2": "ET",
+    "iso3": "ET",
+    "summary": "Eastern Africa; UN member; in Africa; capital Addis Ababa; ETB currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "fk",
+    "name": "Falkland Islands",
+    "iso2": "FK",
+    "iso3": "FK",
+    "summary": "South America; in Americas; capital Stanley; FKP currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "fj",
+    "name": "Fiji",
+    "iso2": "FJ",
+    "iso3": "FJ",
+    "summary": "Melanesia; UN member; in Oceania; capital Suva; FJD currency.",
+    "region": "Oceania",
+    "subregion": "Melanesia"
+  },
+  {
+    "slug": "fi",
+    "name": "Finland",
+    "iso2": "FI",
+    "iso3": "FI",
+    "summary": "Northern Europe; UN member; in Europe; capital Helsinki; EUR currency.",
+    "region": "Europe",
+    "subregion": "Northern Europe"
+  },
+  {
+    "slug": "tf",
+    "name": "French Southern and Antarctic Lands",
+    "iso2": "TF",
+    "iso3": "TF",
+    "summary": "in Antarctic; capital Port-aux-Français; EUR currency.",
+    "region": "Antarctic",
+    "subregion": "Antarctic"
+  },
+  {
+    "slug": "ga",
+    "name": "Gabon",
+    "iso2": "GA",
+    "iso3": "GA",
+    "summary": "Middle Africa; UN member; in Africa; capital Libreville; XAF currency.",
+    "region": "Africa",
+    "subregion": "Middle Africa"
+  },
+  {
+    "slug": "gm",
+    "name": "Gambia",
+    "iso2": "GM",
+    "iso3": "GM",
+    "summary": "Western Africa; UN member; in Africa; capital Banjul; GMD currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "ge",
+    "name": "Georgia",
+    "iso2": "GE",
+    "iso3": "GE",
+    "summary": "Western Asia; UN member; in Asia; capital Tbilisi; GEL currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "de",
+    "name": "Germany",
+    "iso2": "DE",
+    "iso3": "DE",
+    "summary": "Western Europe; UN member; in Europe; capital Berlin; EUR currency.",
+    "region": "Europe",
+    "subregion": "Western Europe"
+  },
+  {
+    "slug": "gh",
+    "name": "Ghana",
+    "iso2": "GH",
+    "iso3": "GH",
+    "summary": "Western Africa; UN member; in Africa; capital Accra; GHS currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "gr",
+    "name": "Greece",
+    "iso2": "GR",
+    "iso3": "GR",
+    "summary": "Southern Europe; UN member; in Europe; capital Athens; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southern Europe"
+  },
+  {
+    "slug": "gl",
+    "name": "Greenland",
+    "iso2": "GL",
+    "iso3": "GL",
+    "summary": "North America; in Americas; capital Nuuk; DKK currency.",
+    "region": "Americas",
+    "subregion": "North America"
+  },
+  {
+    "slug": "gd",
+    "name": "Grenada",
+    "iso2": "GD",
+    "iso3": "GD",
+    "summary": "Caribbean; UN member; in Americas; capital St. George's; XCD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "gt",
+    "name": "Guatemala",
+    "iso2": "GT",
+    "iso3": "GT",
+    "summary": "Central America; UN member; in Americas; capital Guatemala City; GTQ currency.",
+    "region": "Americas",
+    "subregion": "Central America"
+  },
+  {
+    "slug": "gn",
+    "name": "Guinea",
+    "iso2": "GN",
+    "iso3": "GN",
+    "summary": "Western Africa; UN member; in Africa; capital Conakry; GNF currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "gw",
+    "name": "Guinea-Bissau",
+    "iso2": "GW",
+    "iso3": "GW",
+    "summary": "Western Africa; UN member; in Africa; capital Bissau; XOF currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "gy",
+    "name": "Guyana",
+    "iso2": "GY",
+    "iso3": "GY",
+    "summary": "South America; UN member; in Americas; capital Georgetown; GYD currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "ht",
+    "name": "Haiti",
+    "iso2": "HT",
+    "iso3": "HT",
+    "summary": "Caribbean; UN member; in Americas; capital Port-au-Prince; HTG currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "hn",
+    "name": "Honduras",
+    "iso2": "HN",
+    "iso3": "HN",
+    "summary": "Central America; UN member; in Americas; capital Tegucigalpa; HNL currency.",
+    "region": "Americas",
+    "subregion": "Central America"
+  },
+  {
+    "slug": "hu",
+    "name": "Hungary",
+    "iso2": "HU",
+    "iso3": "HU",
+    "summary": "Central Europe; UN member; in Europe; capital Budapest; HUF currency.",
+    "region": "Europe",
+    "subregion": "Central Europe"
+  },
+  {
+    "slug": "is",
+    "name": "Iceland",
+    "iso2": "IS",
+    "iso3": "IS",
+    "summary": "Northern Europe; UN member; in Europe; capital Reykjavik; ISK currency.",
+    "region": "Europe",
+    "subregion": "Northern Europe"
+  },
+  {
+    "slug": "in",
+    "name": "India",
+    "iso2": "IN",
+    "iso3": "IN",
+    "summary": "Southern Asia; UN member; in Asia; capital New Delhi; INR currency.",
+    "region": "Asia",
+    "subregion": "Southern Asia"
+  },
+  {
+    "slug": "id",
+    "name": "Indonesia",
+    "iso2": "ID",
+    "iso3": "ID",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Jakarta; IDR currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "ir",
+    "name": "Iran",
+    "iso2": "IR",
+    "iso3": "IR",
+    "summary": "Southern Asia; UN member; in Asia; capital Tehran; IRR currency.",
+    "region": "Asia",
+    "subregion": "Southern Asia"
+  },
+  {
+    "slug": "iq",
+    "name": "Iraq",
+    "iso2": "IQ",
+    "iso3": "IQ",
+    "summary": "Western Asia; UN member; in Asia; capital Baghdad; IQD currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "ie",
+    "name": "Ireland",
+    "iso2": "IE",
+    "iso3": "IE",
+    "summary": "Northern Europe; UN member; in Europe; capital Dublin; EUR currency.",
+    "region": "Europe",
+    "subregion": "Northern Europe"
+  },
+  {
+    "slug": "il",
+    "name": "Israel",
+    "iso2": "IL",
+    "iso3": "IL",
+    "summary": "Western Asia; UN member; in Asia; capital Jerusalem; ILS currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "it",
+    "name": "Italy",
+    "iso2": "IT",
+    "iso3": "IT",
+    "summary": "Southern Europe; UN member; in Europe; capital Rome; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southern Europe"
+  },
+  {
+    "slug": "ci",
+    "name": "Ivory Coast",
+    "iso2": "CI",
+    "iso3": "CI",
+    "summary": "Western Africa; UN member; in Africa; capital Yamoussoukro; XOF currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "jm",
+    "name": "Jamaica",
+    "iso2": "JM",
+    "iso3": "JM",
+    "summary": "Caribbean; UN member; in Americas; capital Kingston; JMD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "jp",
+    "name": "Japan",
+    "iso2": "JP",
+    "iso3": "JP",
+    "summary": "Eastern Asia; UN member; in Asia; capital Tokyo; JPY currency.",
+    "region": "Asia",
+    "subregion": "Eastern Asia"
+  },
+  {
+    "slug": "jo",
+    "name": "Jordan",
+    "iso2": "JO",
+    "iso3": "JO",
+    "summary": "Western Asia; UN member; in Asia; capital Amman; JOD currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "kz",
+    "name": "Kazakhstan",
+    "iso2": "KZ",
+    "iso3": "KZ",
+    "summary": "Central Asia; UN member; in Asia; capital Astana; KZT currency.",
+    "region": "Asia",
+    "subregion": "Central Asia"
+  },
+  {
+    "slug": "ke",
+    "name": "Kenya",
+    "iso2": "KE",
+    "iso3": "KE",
+    "summary": "Eastern Africa; UN member; in Africa; capital Nairobi; KES currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "kw",
+    "name": "Kuwait",
+    "iso2": "KW",
+    "iso3": "KW",
+    "summary": "Western Asia; UN member; in Asia; capital Kuwait City; KWD currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "kg",
+    "name": "Kyrgyzstan",
+    "iso2": "KG",
+    "iso3": "KG",
+    "summary": "Central Asia; UN member; in Asia; capital Bishkek; KGS currency.",
+    "region": "Asia",
+    "subregion": "Central Asia"
+  },
+  {
+    "slug": "la",
+    "name": "Laos",
+    "iso2": "LA",
+    "iso3": "LA",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Vientiane; LAK currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "lv",
+    "name": "Latvia",
+    "iso2": "LV",
+    "iso3": "LV",
+    "summary": "Northern Europe; UN member; in Europe; capital Riga; EUR currency.",
+    "region": "Europe",
+    "subregion": "Northern Europe"
+  },
+  {
+    "slug": "lb",
+    "name": "Lebanon",
+    "iso2": "LB",
+    "iso3": "LB",
+    "summary": "Western Asia; UN member; in Asia; capital Beirut; LBP currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "ls",
+    "name": "Lesotho",
+    "iso2": "LS",
+    "iso3": "LS",
+    "summary": "Southern Africa; UN member; in Africa; capital Maseru; LSL currency.",
+    "region": "Africa",
+    "subregion": "Southern Africa"
+  },
+  {
+    "slug": "lr",
+    "name": "Liberia",
+    "iso2": "LR",
+    "iso3": "LR",
+    "summary": "Western Africa; UN member; in Africa; capital Monrovia; LRD currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "ly",
+    "name": "Libya",
+    "iso2": "LY",
+    "iso3": "LY",
+    "summary": "Northern Africa; UN member; in Africa; capital Tripoli; LYD currency.",
+    "region": "Africa",
+    "subregion": "Northern Africa"
+  },
+  {
+    "slug": "li",
+    "name": "Liechtenstein",
+    "iso2": "LI",
+    "iso3": "LI",
+    "summary": "Western Europe; UN member; in Europe; capital Vaduz; CHF currency.",
+    "region": "Europe",
+    "subregion": "Western Europe"
+  },
+  {
+    "slug": "lt",
+    "name": "Lithuania",
+    "iso2": "LT",
+    "iso3": "LT",
+    "summary": "Northern Europe; UN member; in Europe; capital Vilnius; EUR currency.",
+    "region": "Europe",
+    "subregion": "Northern Europe"
+  },
+  {
+    "slug": "lu",
+    "name": "Luxembourg",
+    "iso2": "LU",
+    "iso3": "LU",
+    "summary": "Western Europe; UN member; in Europe; capital Luxembourg; EUR currency.",
+    "region": "Europe",
+    "subregion": "Western Europe"
+  },
+  {
+    "slug": "mg",
+    "name": "Madagascar",
+    "iso2": "MG",
+    "iso3": "MG",
+    "summary": "Eastern Africa; UN member; in Africa; capital Antananarivo; MGA currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "mw",
+    "name": "Malawi",
+    "iso2": "MW",
+    "iso3": "MW",
+    "summary": "Eastern Africa; UN member; in Africa; capital Lilongwe; MWK currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "my",
+    "name": "Malaysia",
+    "iso2": "MY",
+    "iso3": "MY",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Kuala Lumpur; MYR currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "mv",
+    "name": "Maldives",
+    "iso2": "MV",
+    "iso3": "MV",
+    "summary": "Southern Asia; UN member; in Asia; capital Malé; MVR currency.",
+    "region": "Asia",
+    "subregion": "Southern Asia"
+  },
+  {
+    "slug": "ml",
+    "name": "Mali",
+    "iso2": "ML",
+    "iso3": "ML",
+    "summary": "Western Africa; UN member; in Africa; capital Bamako; XOF currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "mt",
+    "name": "Malta",
+    "iso2": "MT",
+    "iso3": "MT",
+    "summary": "Southern Europe; UN member; in Europe; capital Valletta; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southern Europe"
+  },
+  {
+    "slug": "mr",
+    "name": "Mauritania",
+    "iso2": "MR",
+    "iso3": "MR",
+    "summary": "Western Africa; UN member; in Africa; capital Nouakchott; MRU currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "mu",
+    "name": "Mauritius",
+    "iso2": "MU",
+    "iso3": "MU",
+    "summary": "Eastern Africa; UN member; in Africa; capital Port Louis; MUR currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "mx",
+    "name": "Mexico",
+    "iso2": "MX",
+    "iso3": "MX",
+    "summary": "North America; UN member; in Americas; capital Mexico City; MXN currency.",
+    "region": "Americas",
+    "subregion": "North America"
+  },
+  {
+    "slug": "md",
+    "name": "Moldova",
+    "iso2": "MD",
+    "iso3": "MD",
+    "summary": "Eastern Europe; UN member; in Europe; capital Chișinău; MDL currency.",
+    "region": "Europe",
+    "subregion": "Eastern Europe"
+  },
+  {
+    "slug": "mc",
+    "name": "Monaco",
+    "iso2": "MC",
+    "iso3": "MC",
+    "summary": "Western Europe; UN member; in Europe; capital Monaco; EUR currency.",
+    "region": "Europe",
+    "subregion": "Western Europe"
+  },
+  {
+    "slug": "mn",
+    "name": "Mongolia",
+    "iso2": "MN",
+    "iso3": "MN",
+    "summary": "Eastern Asia; UN member; in Asia; capital Ulan Bator; MNT currency.",
+    "region": "Asia",
+    "subregion": "Eastern Asia"
+  },
+  {
+    "slug": "me",
+    "name": "Montenegro",
+    "iso2": "ME",
+    "iso3": "ME",
+    "summary": "Southeast Europe; UN member; in Europe; capital Podgorica; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southeast Europe"
+  },
+  {
+    "slug": "ma",
+    "name": "Morocco",
+    "iso2": "MA",
+    "iso3": "MA",
+    "summary": "Northern Africa; UN member; in Africa; capital Rabat; MAD currency.",
+    "region": "Africa",
+    "subregion": "Northern Africa"
+  },
+  {
+    "slug": "mz",
+    "name": "Mozambique",
+    "iso2": "MZ",
+    "iso3": "MZ",
+    "summary": "Eastern Africa; UN member; in Africa; capital Maputo; MZN currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "mm",
+    "name": "Myanmar",
+    "iso2": "MM",
+    "iso3": "MM",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Naypyidaw; MMK currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "na",
+    "name": "Namibia",
+    "iso2": "NA",
+    "iso3": "NA",
+    "summary": "Southern Africa; UN member; in Africa; capital Windhoek; NAD currency.",
+    "region": "Africa",
+    "subregion": "Southern Africa"
+  },
+  {
+    "slug": "np",
+    "name": "Nepal",
+    "iso2": "NP",
+    "iso3": "NP",
+    "summary": "Southern Asia; UN member; in Asia; capital Kathmandu; NPR currency.",
+    "region": "Asia",
+    "subregion": "Southern Asia"
+  },
+  {
+    "slug": "nl",
+    "name": "Netherlands",
+    "iso2": "NL",
+    "iso3": "NL",
+    "summary": "Western Europe; UN member; in Europe; capital Amsterdam; EUR currency.",
+    "region": "Europe",
+    "subregion": "Western Europe"
+  },
+  {
+    "slug": "nc",
+    "name": "New Caledonia",
+    "iso2": "NC",
+    "iso3": "NC",
+    "summary": "Melanesia; in Oceania; capital Nouméa; XPF currency.",
+    "region": "Oceania",
+    "subregion": "Melanesia"
+  },
+  {
+    "slug": "nz",
+    "name": "New Zealand",
+    "iso2": "NZ",
+    "iso3": "NZ",
+    "summary": "Australia and New Zealand; UN member; in Oceania; capital Wellington; NZD currency.",
+    "region": "Oceania",
+    "subregion": "Australia and New Zealand"
+  },
+  {
+    "slug": "ni",
+    "name": "Nicaragua",
+    "iso2": "NI",
+    "iso3": "NI",
+    "summary": "Central America; UN member; in Americas; capital Managua; NIO currency.",
+    "region": "Americas",
+    "subregion": "Central America"
+  },
+  {
+    "slug": "ne",
+    "name": "Niger",
+    "iso2": "NE",
+    "iso3": "NE",
+    "summary": "Western Africa; UN member; in Africa; capital Niamey; XOF currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "ng",
+    "name": "Nigeria",
+    "iso2": "NG",
+    "iso3": "NG",
+    "summary": "Western Africa; UN member; in Africa; capital Abuja; NGN currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "kp",
+    "name": "North Korea",
+    "iso2": "KP",
+    "iso3": "KP",
+    "summary": "Eastern Asia; UN member; in Asia; capital Pyongyang; KPW currency.",
+    "region": "Asia",
+    "subregion": "Eastern Asia"
+  },
+  {
+    "slug": "mk",
+    "name": "North Macedonia",
+    "iso2": "MK",
+    "iso3": "MK",
+    "summary": "Southeast Europe; UN member; in Europe; capital Skopje; MKD currency.",
+    "region": "Europe",
+    "subregion": "Southeast Europe"
+  },
+  {
+    "slug": "om",
+    "name": "Oman",
+    "iso2": "OM",
+    "iso3": "OM",
+    "summary": "Western Asia; UN member; in Asia; capital Muscat; OMR currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "pk",
+    "name": "Pakistan",
+    "iso2": "PK",
+    "iso3": "PK",
+    "summary": "Southern Asia; UN member; in Asia; capital Islamabad; PKR currency.",
+    "region": "Asia",
+    "subregion": "Southern Asia"
+  },
+  {
+    "slug": "ps",
+    "name": "Palestine",
+    "iso2": "PS",
+    "iso3": "PS",
+    "summary": "Western Asia; in Asia; capital Ramallah; EGP currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "pa",
+    "name": "Panama",
+    "iso2": "PA",
+    "iso3": "PA",
+    "summary": "Central America; UN member; in Americas; capital Panama City; PAB currency.",
+    "region": "Americas",
+    "subregion": "Central America"
+  },
+  {
+    "slug": "pg",
+    "name": "Papua New Guinea",
+    "iso2": "PG",
+    "iso3": "PG",
+    "summary": "Melanesia; UN member; in Oceania; capital Port Moresby; PGK currency.",
+    "region": "Oceania",
+    "subregion": "Melanesia"
+  },
+  {
+    "slug": "py",
+    "name": "Paraguay",
+    "iso2": "PY",
+    "iso3": "PY",
+    "summary": "South America; UN member; in Americas; capital Asunción; PYG currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "pe",
+    "name": "Peru",
+    "iso2": "PE",
+    "iso3": "PE",
+    "summary": "South America; UN member; in Americas; capital Lima; PEN currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "ph",
+    "name": "Philippines",
+    "iso2": "PH",
+    "iso3": "PH",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Manila; PHP currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "pl",
+    "name": "Poland",
+    "iso2": "PL",
+    "iso3": "PL",
+    "summary": "Central Europe; UN member; in Europe; capital Warsaw; PLN currency.",
+    "region": "Europe",
+    "subregion": "Central Europe"
+  },
+  {
+    "slug": "pt",
+    "name": "Portugal",
+    "iso2": "PT",
+    "iso3": "PT",
+    "summary": "Southern Europe; UN member; in Europe; capital Lisbon; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southern Europe"
+  },
+  {
+    "slug": "pr",
+    "name": "Puerto Rico",
+    "iso2": "PR",
+    "iso3": "PR",
+    "summary": "Caribbean; in Americas; capital San Juan; USD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "qa",
+    "name": "Qatar",
+    "iso2": "QA",
+    "iso3": "QA",
+    "summary": "Western Asia; UN member; in Asia; capital Doha; QAR currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "ro",
+    "name": "Romania",
+    "iso2": "RO",
+    "iso3": "RO",
+    "summary": "Southeast Europe; UN member; in Europe; capital Bucharest; RON currency.",
+    "region": "Europe",
+    "subregion": "Southeast Europe"
+  },
+  {
+    "slug": "ru",
+    "name": "Russia",
+    "iso2": "RU",
+    "iso3": "RU",
+    "summary": "Eastern Europe; UN member; in Europe; capital Moscow; RUB currency.",
+    "region": "Europe",
+    "subregion": "Eastern Europe"
+  },
+  {
+    "slug": "rw",
+    "name": "Rwanda",
+    "iso2": "RW",
+    "iso3": "RW",
+    "summary": "Eastern Africa; UN member; in Africa; capital Kigali; RWF currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "kn",
+    "name": "Saint Kitts and Nevis",
+    "iso2": "KN",
+    "iso3": "KN",
+    "summary": "Caribbean; UN member; in Americas; capital Basseterre; XCD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "lc",
+    "name": "Saint Lucia",
+    "iso2": "LC",
+    "iso3": "LC",
+    "summary": "Caribbean; UN member; in Americas; capital Castries; XCD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "vc",
+    "name": "Saint Vincent and the Grenadines",
+    "iso2": "VC",
+    "iso3": "VC",
+    "summary": "Caribbean; UN member; in Americas; capital Kingstown; XCD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "sm",
+    "name": "San Marino",
+    "iso2": "SM",
+    "iso3": "SM",
+    "summary": "Southern Europe; UN member; in Europe; capital City of San Marino; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southern Europe"
+  },
+  {
+    "slug": "sa",
+    "name": "Saudi Arabia",
+    "iso2": "SA",
+    "iso3": "SA",
+    "summary": "Western Asia; UN member; in Asia; capital Riyadh; SAR currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "sn",
+    "name": "Senegal",
+    "iso2": "SN",
+    "iso3": "SN",
+    "summary": "Western Africa; UN member; in Africa; capital Dakar; XOF currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "rs",
+    "name": "Serbia",
+    "iso2": "RS",
+    "iso3": "RS",
+    "summary": "Southeast Europe; UN member; in Europe; capital Belgrade; RSD currency.",
+    "region": "Europe",
+    "subregion": "Southeast Europe"
+  },
+  {
+    "slug": "sc",
+    "name": "Seychelles",
+    "iso2": "SC",
+    "iso3": "SC",
+    "summary": "Eastern Africa; UN member; in Africa; capital Victoria; SCR currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "sl",
+    "name": "Sierra Leone",
+    "iso2": "SL",
+    "iso3": "SL",
+    "summary": "Western Africa; UN member; in Africa; capital Freetown; SLL currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "sg",
+    "name": "Singapore",
+    "iso2": "SG",
+    "iso3": "SG",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Singapore; SGD currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "sk",
+    "name": "Slovakia",
+    "iso2": "SK",
+    "iso3": "SK",
+    "summary": "Central Europe; UN member; in Europe; capital Bratislava; EUR currency.",
+    "region": "Europe",
+    "subregion": "Central Europe"
+  },
+  {
+    "slug": "si",
+    "name": "Slovenia",
+    "iso2": "SI",
+    "iso3": "SI",
+    "summary": "Central Europe; UN member; in Europe; capital Ljubljana; EUR currency.",
+    "region": "Europe",
+    "subregion": "Central Europe"
+  },
+  {
+    "slug": "sb",
+    "name": "Solomon Islands",
+    "iso2": "SB",
+    "iso3": "SB",
+    "summary": "Melanesia; UN member; in Oceania; capital Honiara; SBD currency.",
+    "region": "Oceania",
+    "subregion": "Melanesia"
+  },
+  {
+    "slug": "so",
+    "name": "Somalia",
+    "iso2": "SO",
+    "iso3": "SO",
+    "summary": "Eastern Africa; UN member; in Africa; capital Mogadishu; SOS currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "za",
+    "name": "South Africa",
+    "iso2": "ZA",
+    "iso3": "ZA",
+    "summary": "Southern Africa; UN member; in Africa; capital Pretoria; ZAR currency.",
+    "region": "Africa",
+    "subregion": "Southern Africa"
+  },
+  {
+    "slug": "kr",
+    "name": "South Korea",
+    "iso2": "KR",
+    "iso3": "KR",
+    "summary": "Eastern Asia; UN member; in Asia; capital Seoul; KRW currency.",
+    "region": "Asia",
+    "subregion": "Eastern Asia"
+  },
+  {
+    "slug": "ss",
+    "name": "South Sudan",
+    "iso2": "SS",
+    "iso3": "SS",
+    "summary": "Middle Africa; UN member; in Africa; capital Juba; SSP currency.",
+    "region": "Africa",
+    "subregion": "Middle Africa"
+  },
+  {
+    "slug": "es",
+    "name": "Spain",
+    "iso2": "ES",
+    "iso3": "ES",
+    "summary": "Southern Europe; UN member; in Europe; capital Madrid; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southern Europe"
+  },
+  {
+    "slug": "lk",
+    "name": "Sri Lanka",
+    "iso2": "LK",
+    "iso3": "LK",
+    "summary": "Southern Asia; UN member; in Asia; capital Colombo; LKR currency.",
+    "region": "Asia",
+    "subregion": "Southern Asia"
+  },
+  {
+    "slug": "sd",
+    "name": "Sudan",
+    "iso2": "SD",
+    "iso3": "SD",
+    "summary": "Northern Africa; UN member; in Africa; capital Khartoum; SDG currency.",
+    "region": "Africa",
+    "subregion": "Northern Africa"
+  },
+  {
+    "slug": "sr",
+    "name": "Suriname",
+    "iso2": "SR",
+    "iso3": "SR",
+    "summary": "South America; UN member; in Americas; capital Paramaribo; SRD currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "se",
+    "name": "Sweden",
+    "iso2": "SE",
+    "iso3": "SE",
+    "summary": "Northern Europe; UN member; in Europe; capital Stockholm; SEK currency.",
+    "region": "Europe",
+    "subregion": "Northern Europe"
+  },
+  {
+    "slug": "ch",
+    "name": "Switzerland",
+    "iso2": "CH",
+    "iso3": "CH",
+    "summary": "Western Europe; UN member; in Europe; capital Bern; CHF currency.",
+    "region": "Europe",
+    "subregion": "Western Europe"
+  },
+  {
+    "slug": "sy",
+    "name": "Syria",
+    "iso2": "SY",
+    "iso3": "SY",
+    "summary": "Western Asia; UN member; in Asia; capital Damascus; SYP currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "tj",
+    "name": "Tajikistan",
+    "iso2": "TJ",
+    "iso3": "TJ",
+    "summary": "Central Asia; UN member; in Asia; capital Dushanbe; TJS currency.",
+    "region": "Asia",
+    "subregion": "Central Asia"
+  },
+  {
+    "slug": "tz",
+    "name": "Tanzania",
+    "iso2": "TZ",
+    "iso3": "TZ",
+    "summary": "Eastern Africa; UN member; in Africa; capital Dodoma; TZS currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "th",
+    "name": "Thailand",
+    "iso2": "TH",
+    "iso3": "TH",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Bangkok; THB currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "tl",
+    "name": "Timor-Leste",
+    "iso2": "TL",
+    "iso3": "TL",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Dili; USD currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "tg",
+    "name": "Togo",
+    "iso2": "TG",
+    "iso3": "TG",
+    "summary": "Western Africa; UN member; in Africa; capital Lomé; XOF currency.",
+    "region": "Africa",
+    "subregion": "Western Africa"
+  },
+  {
+    "slug": "tt",
+    "name": "Trinidad and Tobago",
+    "iso2": "TT",
+    "iso3": "TT",
+    "summary": "Caribbean; UN member; in Americas; capital Port of Spain; TTD currency.",
+    "region": "Americas",
+    "subregion": "Caribbean"
+  },
+  {
+    "slug": "tn",
+    "name": "Tunisia",
+    "iso2": "TN",
+    "iso3": "TN",
+    "summary": "Northern Africa; UN member; in Africa; capital Tunis; TND currency.",
+    "region": "Africa",
+    "subregion": "Northern Africa"
+  },
+  {
+    "slug": "tr",
+    "name": "Türkiye",
+    "iso2": "TR",
+    "iso3": "TR",
+    "summary": "Western Asia; UN member; in Asia; capital Ankara; TRY currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "tm",
+    "name": "Turkmenistan",
+    "iso2": "TM",
+    "iso3": "TM",
+    "summary": "Central Asia; UN member; in Asia; capital Ashgabat; TMT currency.",
+    "region": "Asia",
+    "subregion": "Central Asia"
+  },
+  {
+    "slug": "ug",
+    "name": "Uganda",
+    "iso2": "UG",
+    "iso3": "UG",
+    "summary": "Eastern Africa; UN member; in Africa; capital Kampala; UGX currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "ua",
+    "name": "Ukraine",
+    "iso2": "UA",
+    "iso3": "UA",
+    "summary": "Eastern Europe; UN member; in Europe; capital Kyiv; UAH currency.",
+    "region": "Europe",
+    "subregion": "Eastern Europe"
+  },
+  {
+    "slug": "ae",
+    "name": "United Arab Emirates",
+    "iso2": "AE",
+    "iso3": "AE",
+    "summary": "Western Asia; UN member; in Asia; capital Abu Dhabi; AED currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "gb",
+    "name": "United Kingdom",
+    "iso2": "GB",
+    "iso3": "GB",
+    "summary": "Northern Europe; UN member; in Europe; capital London; GBP currency.",
+    "region": "Europe",
+    "subregion": "Northern Europe"
+  },
+  {
+    "slug": "us",
+    "name": "United States",
+    "iso2": "US",
+    "iso3": "US",
+    "summary": "North America; UN member; in Americas; capital Washington D.C.; USD currency.",
+    "region": "Americas",
+    "subregion": "North America"
+  },
+  {
+    "slug": "uy",
+    "name": "Uruguay",
+    "iso2": "UY",
+    "iso3": "UY",
+    "summary": "South America; UN member; in Americas; capital Montevideo; UYU currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "uz",
+    "name": "Uzbekistan",
+    "iso2": "UZ",
+    "iso3": "UZ",
+    "summary": "Central Asia; UN member; in Asia; capital Tashkent; UZS currency.",
+    "region": "Asia",
+    "subregion": "Central Asia"
+  },
+  {
+    "slug": "vu",
+    "name": "Vanuatu",
+    "iso2": "VU",
+    "iso3": "VU",
+    "summary": "Melanesia; UN member; in Oceania; capital Port Vila; VUV currency.",
+    "region": "Oceania",
+    "subregion": "Melanesia"
+  },
+  {
+    "slug": "va",
+    "name": "Vatican City",
+    "iso2": "VA",
+    "iso3": "VA",
+    "summary": "Southern Europe; UN member; in Europe; capital Vatican City; EUR currency.",
+    "region": "Europe",
+    "subregion": "Southern Europe"
+  },
+  {
+    "slug": "ve",
+    "name": "Venezuela",
+    "iso2": "VE",
+    "iso3": "VE",
+    "summary": "South America; UN member; in Americas; capital Caracas; VES currency.",
+    "region": "Americas",
+    "subregion": "South America"
+  },
+  {
+    "slug": "vn",
+    "name": "Vietnam",
+    "iso2": "VN",
+    "iso3": "VN",
+    "summary": "South-Eastern Asia; UN member; in Asia; capital Hanoi; VND currency.",
+    "region": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  {
+    "slug": "eh",
+    "name": "Western Sahara",
+    "iso2": "EH",
+    "iso3": "EH",
+    "summary": "Northern Africa; in Africa; capital El Aaiún; DZD currency.",
+    "region": "Africa",
+    "subregion": "Northern Africa"
+  },
+  {
+    "slug": "ye",
+    "name": "Yemen",
+    "iso2": "YE",
+    "iso3": "YE",
+    "summary": "Western Asia; UN member; in Asia; capital Sana'a; YER currency.",
+    "region": "Asia",
+    "subregion": "Western Asia"
+  },
+  {
+    "slug": "zm",
+    "name": "Zambia",
+    "iso2": "ZM",
+    "iso3": "ZM",
+    "summary": "Eastern Africa; UN member; in Africa; capital Lusaka; ZMW currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  },
+  {
+    "slug": "zw",
+    "name": "Zimbabwe",
+    "iso2": "ZW",
+    "iso3": "ZW",
+    "summary": "Eastern Africa; UN member; in Africa; capital Harare; BWP currency.",
+    "region": "Africa",
+    "subregion": "Eastern Africa"
+  }
+]

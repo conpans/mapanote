@@ -17,6 +17,12 @@
   import { truncate } from "$lib/data/countryHelpers";
   import LoadingSkeleton from "./LoadingSkeleton.svelte";
   import { loadWorldSvg } from "$lib/stores/svgCache";
+  import {
+    countriesMetadata,
+    loadCountriesMetadata,
+  } from "$lib/stores/countriesMetadata";
+  import { get } from "svelte/store";
+  import { vaultOpened } from "$lib/stores/vault";
 
   let mapContainer: HTMLDivElement;
   let svgElement: SVGElement | null = null;
@@ -50,16 +56,23 @@
     console.log("=== WorldMap mounted ===");
 
     try {
-      if (!$mapStatsLoaded) {
-        console.log("Loading map stats...");
+      // 1) Always load embedded country metadata (no disk churn, instant for first-time users)
+      console.log("Loading embedded countries metadata...");
+      await loadCountriesMetadata();
+
+      // 2) Only load vault-backed stats if a vault is currently opened
+      if (get(vaultOpened)) {
+        // ← CHANGED: Use get() instead of $
+        console.log("Loading map stats from vault...");
         await loadMapStats();
       } else {
-        console.log("Using cached map stats");
+        console.log(
+          "No vault opened - showing map with embedded metadata only."
+        );
       }
 
-      if (!mapContainer) {
-        throw new Error("mapContainer ref not bound");
-      }
+      // 3) Load and mount the SVG
+      if (!mapContainer) throw new Error("mapContainer ref not bound");
 
       console.log("Loading SVG...");
       const svgText = await loadWorldSvg();
@@ -75,7 +88,7 @@
         svgElement.style.height = "auto";
         svgElement.style.display = "block";
 
-        // Wrap content in viewport group
+        // Wrap content in viewport group for pan/zoom
         wrapInViewportGroup();
       } else {
         throw new Error("SVG element not found in response");

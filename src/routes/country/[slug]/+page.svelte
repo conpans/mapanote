@@ -20,7 +20,6 @@
 
   // Filter state
   let selectedTags: string[] = [];
-  let showPinnedOnly = false;
   let dateFilter: "all" | "7d" | "30d" = "all";
 
   // Edit modal state
@@ -49,11 +48,6 @@
   $: filteredNotes = (() => {
     let notes = [...$currentNotes];
 
-    // Filter by pinned
-    if (showPinnedOnly) {
-      notes = notes.filter((n) => n.pinned);
-    }
-
     // Filter by tags
     if (selectedTags.length > 0) {
       notes = notes.filter((n) =>
@@ -73,19 +67,11 @@
       });
     }
 
-    // Sort: pinned first, then by date (newest first)
-    notes.sort((a, b) => {
-      if (a.pinned !== b.pinned) {
-        return a.pinned ? -1 : 1;
-      }
-      return b.date.localeCompare(a.date);
-    });
+    // Sort by date (newest first)
+    notes.sort((a, b) => b.date.localeCompare(a.date));
 
     return notes;
   })();
-
-  // Computed: pinned notes count
-  $: pinnedCount = $currentNotes.filter((n) => n.pinned).length;
 
   function goBack() {
     goto("/");
@@ -97,12 +83,6 @@
     } else {
       selectedTags = [...selectedTags, tag];
     }
-  }
-
-  function clearFilters() {
-    selectedTags = [];
-    showPinnedOnly = false;
-    dateFilter = "all";
   }
 
   function handleEditNote(note: Note) {
@@ -156,17 +136,20 @@
           <div>
             <div class="flex items-center gap-4 mb-2">
               <h1 class="text-4xl font-bold text-gray-900 dark:text-gray-100">
-                {$currentCountry.title}
+                {$currentCountry.name}
               </h1>
               <span
                 class="text-2xl text-gray-500 dark:text-gray-400 uppercase font-mono"
               >
-                {$currentCountry.slug}
+                {$currentCountry.iso2}
               </span>
             </div>
 
             <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">
               {$currentCountry.region}
+              {#if $currentCountry.subregion && $currentCountry.subregion !== "Unknown"}
+                · {$currentCountry.subregion}
+              {/if}
             </p>
 
             {#if $currentCountry.summary}
@@ -175,56 +158,34 @@
               </p>
             {/if}
 
-            <!-- Export button -->
-            <!-- ← ADD -->
-            <button
-              on:click={() => (showExportMenu = true)}
-              class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
-                   hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg transition
-                   flex items-center gap-2 text-gray-700 dark:text-gray-300"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              Export
-            </button>
-
-            {#if $currentCountry.aliases.length > 0}
-              <div
-                class="mt-3 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400"
-              >
-                <span>Also known as:</span>
-                <span class="font-medium"
-                  >{$currentCountry.aliases.join(", ")}</span
-                >
-              </div>
-            {/if}
+            <!-- Export button - temporarily disabled -->
+            <!--
+<button
+  on:click={() => (showExportMenu = true)}
+  class="mt-4 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
+         hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg transition
+         flex items-center gap-2 text-gray-700 dark:text-gray-300"
+>
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+    />
+  </svg>
+  Export
+</button>
+-->
           </div>
 
           <!-- Stats -->
           <div class="flex flex-col items-end gap-2 text-sm">
             <div class="text-gray-600 dark:text-gray-400">
-              <span class="font-semibold text-gray-900 dark:text-gray-100"
-                >{$currentNotes.length}</span
-              > notes
+              <span class="font-semibold text-gray-900 dark:text-gray-100">
+                {$currentNotes.length}
+              </span> notes
             </div>
-            {#if pinnedCount > 0}
-              <div class="text-gray-600 dark:text-gray-400">
-                📌 <span class="font-semibold text-gray-900 dark:text-gray-100"
-                  >{pinnedCount}</span
-                > pinned
-              </div>
-            {/if}
           </div>
         </div>
       </div>
@@ -243,7 +204,7 @@
           <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
             Filters
           </h3>
-          {#if selectedTags.length > 0 || showPinnedOnly || dateFilter !== "all"}
+          {#if selectedTags.length > 0 || dateFilter !== "all"}
             <button
               on:click={clearFilters}
               class="text-xs text-mapanote-blue-600 hover:underline"
@@ -280,19 +241,6 @@
           >
             Last 30 days
           </button>
-
-          <div class="ml-auto">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                bind:checked={showPinnedOnly}
-                class="rounded border-gray-300 text-mapanote-blue-600 focus:ring-mapanote-blue-500"
-              />
-              <span class="text-sm text-gray-700 dark:text-gray-300"
-                >📌 Pinned only</span
-              >
-            </label>
-          </div>
         </div>
 
         <!-- Tag filter -->
@@ -336,11 +284,11 @@
             class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center"
           >
             <p class="text-gray-500 dark:text-gray-400">
-              {selectedTags.length > 0 || showPinnedOnly || dateFilter !== "all"
+              {selectedTags.length > 0 || dateFilter !== "all"
                 ? "No notes match the current filters."
-                : `No notes yet for ${$currentCountry.title}`}
+                : `No notes yet for ${$currentCountry.name}. Add your first note above!`}
             </p>
-            {#if selectedTags.length > 0 || showPinnedOnly || dateFilter !== "all"}
+            {#if selectedTags.length > 0 || dateFilter !== "all"}
               <button
                 on:click={clearFilters}
                 class="mt-3 text-mapanote-blue-600 hover:underline text-sm"
@@ -357,52 +305,44 @@
               >
                 <!-- Note header -->
                 <div class="flex items-start justify-between mb-3">
-                  <div
-                    class="flex items-center gap-3 flex-wrap text-sm text-gray-500 dark:text-gray-400"
-                  >
-                    <span class="font-medium text-gray-700 dark:text-gray-300"
-                      >{note.date}</span
+                  <div class="flex-1">
+                    <h4
+                      class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2"
                     >
-
-                    {#if note.pinned}
-                      <span class="text-amber-600 dark:text-amber-400"
-                        >📌 Pinned</span
+                      {note.title}
+                    </h4>
+                    <div
+                      class="flex items-center gap-3 flex-wrap text-sm text-gray-500 dark:text-gray-400"
+                    >
+                      <span
+                        class="font-medium text-gray-700 dark:text-gray-300"
                       >
-                    {/if}
-
-                    {#if note.tags.length > 0}
-                      <span>·</span>
-                      <div class="flex gap-2">
-                        {#each note.tags as tag}
-                          <button
-                            on:click={() => toggleTag(tag)}
-                            class="bg-mapanote-blue-100 dark:bg-mapanote-blue-900
-                                   text-mapanote-blue-700 dark:text-mapanote-blue-300
-                                   px-2 py-1 rounded text-xs hover:bg-mapanote-blue-200
-                                   dark:hover:bg-mapanote-blue-800 transition"
-                          >
-                            {tag}
-                          </button>
-                        {/each}
-                      </div>
-                    {/if}
-
-                    {#if note.also.length > 0}
-                      <span>·</span>
-                      <span class="text-xs">
-                        also: {note.also.join(", ")}
+                        {note.date}
                       </span>
-                    {/if}
 
-                    <span class="ml-auto text-xs capitalize opacity-60">
-                      {note.visibility}
-                    </span>
+                      {#if note.tags.length > 0}
+                        <span>·</span>
+                        <div class="flex gap-2">
+                          {#each note.tags as tag}
+                            <button
+                              on:click={() => toggleTag(tag)}
+                              class="bg-mapanote-blue-100 dark:bg-mapanote-blue-900
+                             text-mapanote-blue-700 dark:text-mapanote-blue-300
+                             px-2 py-1 rounded text-xs hover:bg-mapanote-blue-200
+                             dark:hover:bg-mapanote-blue-800 transition"
+                            >
+                              {tag}
+                            </button>
+                          {/each}
+                        </div>
+                      {/if}
+                    </div>
                   </div>
 
                   <!-- Edit button -->
                   <button
                     on:click={() => handleEditNote(note)}
-                    class="text-gray-400 hover:text-mapanote-blue-600 dark:hover:text-mapanote-blue-400 transition"
+                    class="text-gray-400 hover:text-mapanote-blue-600 dark:hover:text-mapanote-blue-400 transition ml-4"
                     title="Edit note"
                   >
                     <svg
@@ -421,12 +361,12 @@
                   </button>
                 </div>
 
-                <!-- Note text -->
+                <!-- Note content -->
                 <div class="prose dark:prose-invert max-w-none">
                   <p
                     class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed"
                   >
-                    {note.text}
+                    {note.content}
                   </p>
                 </div>
               </div>
@@ -455,15 +395,16 @@
   <EditNoteModal note={editingNote} onClose={closeEditModal} />
 {/if}
 
-<!-- Export Menu -->
-<!-- ← ADD -->
+<!-- Export Menu - temporarily disabled -->
+<!--
 {#if showExportMenu && $currentCountry}
   <ExportMenu
     countrySlug={$currentCountry.slug}
-    countryTitle={$currentCountry.title}
+    countryTitle={$currentCountry.name}
     onClose={() => (showExportMenu = false)}
   />
 {/if}
+-->
 
 <style>
   .note-card {
