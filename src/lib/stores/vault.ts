@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 import { invoke } from '@tauri-apps/api/core';
 import type { Note } from '$lib/types';
 import { loadMapStats } from './mapStats';
+import { loadTopics } from './topics';
 
 // Country metadata from embedded data
 export interface CountryMetadata {
@@ -43,6 +44,11 @@ export async function openVault(path: string): Promise<void> {
     console.log('Loading initial map stats...');
     await loadMapStats();
     console.log('Map stats preloaded');
+    
+    // ← ADD THIS: Load topics when vault opens
+    console.log('Loading topics...');
+    await loadTopics();
+    console.log('Topics loaded');
     
   } catch (error) {
     console.error('Failed to open vault:', error);

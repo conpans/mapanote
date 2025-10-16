@@ -1,6 +1,7 @@
 pub mod metadata;
-pub mod vault;
+pub mod topics;
+pub mod vault; // ← ADD THIS
 
-// Re-export all command functions
 pub use metadata::*;
-pub use vault::*;
+pub use topics::*;
+pub use vault::*; // ← ADD THIS

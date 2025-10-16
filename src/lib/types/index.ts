@@ -39,3 +39,32 @@ export interface CountryStats {
   lastUpdated: string | null;
   tags: string[];
 }
+
+export interface Topic {
+  id: string;
+  title: string;
+  summary?: string;
+  color?: string;
+  pinned: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TopicWithCountries {
+  id: string;
+  title: string;
+  summary?: string;
+  color?: string;
+  pinned: boolean;
+  created_at: string;
+  updated_at: string;
+  countries: string[];
+  note_count: number;
+}
+
+export interface TopicCountryRelation {
+  topic_id: string;
+  country_slug: string;
+  note_count: number;
+  last_updated?: string;
+}
