@@ -1,38 +1,36 @@
 <script lang="ts">
   import { updateNote, deleteNote, currentCountry } from "$lib/stores/vault";
-  import type { Note, UpdateNoteRequest } from "$lib/types";
+  import type { Note } from "$lib/types";
 
   export let note: Note;
   export let onClose: () => void;
 
-  let text = note.text;
+  let title = note.title;
+  let content = note.content;
   let tagsInput = note.tags.join(", ");
-  let visibility = note.visibility;
-  let pinned = note.pinned;
   let isSubmitting = false;
   let error = "";
+  let showDeleteConfirm = false; // ← ADD THIS
 
   async function handleSave() {
-    if (!text.trim() || !$currentCountry) return;
+    if (!content.trim() || !title.trim() || !$currentCountry) return;
 
     isSubmitting = true;
     error = "";
 
     try {
-      const request: UpdateNoteRequest = {
-        country_slug: $currentCountry.slug,
-        note_id: note.id,
-        text: text.trim(),
-        tags: tagsInput
-          .split(",")
-          .map((t) => t.trim())
-          .filter((t) => t.length > 0),
-        also: note.also,
-        visibility,
-        pinned,
-      };
+      const tags = tagsInput
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t.length > 0);
 
-      await updateNote(request);
+      await updateNote(
+        $currentCountry.slug,
+        note.id,
+        title.trim(),
+        content.trim(),
+        tags
+      );
       onClose();
     } catch (err) {
       error = err instanceof Error ? err.message : "Failed to update note";
@@ -42,17 +40,19 @@
     }
   }
 
-  async function handleDelete() {
-    if (
-      !confirm(
-        "Are you sure you want to delete this note? This cannot be undone."
-      )
-    ) {
-      return;
-    }
+  // ← REPLACE handleDelete with these 3 functions:
+  function handleDeleteClick() {
+    showDeleteConfirm = true;
+  }
 
+  function cancelDelete() {
+    showDeleteConfirm = false;
+  }
+
+  async function confirmDelete() {
     if (!$currentCountry) return;
 
+    showDeleteConfirm = false;
     isSubmitting = true;
     error = "";
 
@@ -62,7 +62,6 @@
     } catch (err) {
       error = err instanceof Error ? err.message : "Failed to delete note";
       console.error("Error deleting note:", err);
-    } finally {
       isSubmitting = false;
     }
   }
@@ -140,16 +139,35 @@
         />
       </div>
 
-      <!-- Note text -->
+      <!-- Title -->
       <div class="mb-4">
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
         >
-          Note
+          Title
+        </label>
+        <input
+          type="text"
+          bind:value={title}
+          placeholder="Note title..."
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                 rounded-lg bg-white dark:bg-gray-700
+                 text-gray-900 dark:text-gray-100
+                 focus:ring-2 focus:ring-mapanote-blue-500 focus:border-transparent"
+        />
+      </div>
+
+      <!-- Note content -->
+      <div class="mb-4">
+        <label
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+        >
+          Content
         </label>
         <textarea
-          bind:value={text}
+          bind:value={content}
           rows="8"
+          placeholder="Write your note..."
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
                  rounded-lg bg-white dark:bg-gray-700
                  text-gray-900 dark:text-gray-100
@@ -159,7 +177,7 @@
       </div>
 
       <!-- Tags -->
-      <div class="mb-4">
+      <div class="mb-6">
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
         >
@@ -168,7 +186,7 @@
         <input
           type="text"
           bind:value={tagsInput}
-          placeholder="politics, current, economy"
+          placeholder="politics, sports, history"
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
                  rounded-lg bg-white dark:bg-gray-700
                  text-gray-900 dark:text-gray-100 text-sm
@@ -176,45 +194,11 @@
         />
       </div>
 
-      <!-- Options -->
-      <div class="flex items-center gap-6 mb-6">
-        <!-- Visibility -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-          >
-            Visibility
-          </label>
-          <select
-            bind:value={visibility}
-            class="px-3 py-2 border border-gray-300 dark:border-gray-600
-                   rounded-lg bg-white dark:bg-gray-700
-                   text-gray-900 dark:text-gray-100 text-sm"
-          >
-            <option value="internal">Internal</option>
-            <option value="private">Private</option>
-            <option value="publishable">Publishable</option>
-          </select>
-        </div>
-
-        <!-- Pin -->
-        <label class="flex items-center gap-2 cursor-pointer mt-6">
-          <input
-            type="checkbox"
-            bind:checked={pinned}
-            class="rounded border-gray-300 text-mapanote-blue-600
-                   focus:ring-mapanote-blue-500"
-          />
-          <span class="text-sm text-gray-700 dark:text-gray-300"
-            >📌 Pin note</span
-          >
-        </label>
-      </div>
-
       <!-- Actions -->
       <div class="flex items-center justify-between">
+        <!-- ← CHANGED: handleDelete to handleDeleteClick -->
         <button
-          on:click={handleDelete}
+          on:click={handleDeleteClick}
           disabled={isSubmitting}
           class="px-4 py-2 bg-red-600 hover:bg-red-700
                  disabled:bg-gray-400 disabled:cursor-not-allowed
@@ -236,7 +220,7 @@
           </button>
           <button
             on:click={handleSave}
-            disabled={!text.trim() || isSubmitting}
+            disabled={!content.trim() || !title.trim() || isSubmitting}
             class="px-6 py-2 bg-mapanote-blue-600 hover:bg-mapanote-blue-700
                    disabled:bg-gray-400 disabled:cursor-not-allowed
                    text-white rounded-lg font-medium transition"
@@ -253,10 +237,45 @@
   </div>
 </div>
 
+<!-- ← ADD THIS: Delete Confirmation Dialog -->
+{#if showDeleteConfirm}
+  <div
+    class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[60]"
+  >
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6 max-w-md mx-4"
+    >
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+        Delete Note?
+      </h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-6">
+        Are you sure you want to delete this note? This action cannot be undone.
+      </p>
+      <div class="flex gap-3 justify-end">
+        <button
+          on:click={cancelDelete}
+          class="px-4 py-2 bg-gray-200 hover:bg-gray-300
+                 dark:bg-gray-700 dark:hover:bg-gray-600
+                 text-gray-800 dark:text-gray-200
+                 rounded-lg font-medium transition"
+        >
+          Cancel
+        </button>
+        <button
+          on:click={confirmDelete}
+          class="px-4 py-2 bg-red-600 hover:bg-red-700
+                 text-white rounded-lg font-medium transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
+
 <style>
   textarea:focus,
-  input:focus,
-  select:focus {
+  input:focus {
     outline: none;
   }
 </style>

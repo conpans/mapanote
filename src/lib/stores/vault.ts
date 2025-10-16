@@ -106,7 +106,7 @@ export async function addNote(
 }
 
 /**
- * Update an existing note (placeholder - need to implement in Rust)
+ * Update an existing note
  */
 export async function updateNote(
   countrySlug: string,
@@ -137,7 +137,7 @@ export async function updateNote(
 }
 
 /**
- * Delete a note (placeholder - need to implement in Rust)
+ * Delete a note
  */
 export async function deleteNote(countrySlug: string, noteId: string): Promise<void> {
   try {

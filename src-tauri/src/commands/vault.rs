@@ -314,3 +314,213 @@ pub fn get_all_country_stats(state: State<AppState>) -> Result<Vec<CountryStatsW
 
     Ok(stats)
 }
+
+#[tauri::command]
+pub fn update_note(
+    country_slug: String,
+    note_id: String,
+    title: String,
+    content: String,
+    tags: Vec<String>,
+    state: State<AppState>,
+) -> Result<(), String> {
+    let writer = state.vault_writer.lock().unwrap();
+    let vault_path = writer.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let note_path = vault_root
+        .join("notes")
+        .join(&country_slug)
+        .join(format!("{}.md", note_id));
+
+    // Check if note exists
+    if !note_path.exists() {
+        return Err(format!("Note {} not found", note_id));
+    }
+
+    // Read existing note to get the date
+    let existing_content =
+        fs::read_to_string(&note_path).map_err(|e| format!("Failed to read note: {}", e))?;
+
+    let existing_date = if let Some(note) = parse_note(&existing_content) {
+        note.date
+    } else {
+        chrono::Utc::now().format("%Y-%m-%d").to_string()
+    };
+
+    // Write updated note
+    let note_content = format!(
+        "---\nid: {}\ndate: {}\ntitle: {}\ntags: {:?}\n---\n\n{}",
+        note_id, existing_date, title, tags, content
+    );
+
+    fs::write(&note_path, note_content).map_err(|e| format!("Failed to write note: {}", e))?;
+
+    // Update manifest tags
+    let manifest_path = vault_root.join("vault.json");
+    let manifest_str = fs::read_to_string(&manifest_path)
+        .map_err(|e| format!("Failed to read manifest: {}", e))?;
+
+    let mut manifest: VaultManifest = serde_json::from_str(&manifest_str)
+        .map_err(|e| format!("Failed to parse manifest: {}", e))?;
+
+    if let Some(stats) = manifest.countries.get_mut(&country_slug) {
+        // Update tags
+        stats.tags = tags.clone();
+        stats.tags.sort();
+        stats.tags.dedup();
+    }
+
+    fs::write(
+        &manifest_path,
+        serde_json::to_string_pretty(&manifest)
+            .map_err(|e| format!("Failed to serialize manifest: {}", e))?,
+    )
+    .map_err(|e| format!("Failed to write manifest: {}", e))?;
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn delete_note(
+    country_slug: String,
+    note_id: String,
+    state: State<AppState>,
+) -> Result<(), String> {
+    let writer = state.vault_writer.lock().unwrap();
+    let vault_path = writer.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let note_path = vault_root
+        .join("notes")
+        .join(&country_slug)
+        .join(format!("{}.md", note_id));
+
+    // Delete the note file
+    if note_path.exists() {
+        fs::remove_file(&note_path).map_err(|e| format!("Failed to delete note: {}", e))?;
+    } else {
+        return Err(format!("Note {} not found", note_id));
+    }
+
+    // Update manifest
+    let manifest_path = vault_root.join("vault.json");
+    let manifest_str = fs::read_to_string(&manifest_path)
+        .map_err(|e| format!("Failed to read manifest: {}", e))?;
+
+    let mut manifest: VaultManifest = serde_json::from_str(&manifest_str)
+        .map_err(|e| format!("Failed to parse manifest: {}", e))?;
+
+    if let Some(stats) = manifest.countries.get_mut(&country_slug) {
+        if stats.note_count > 0 {
+            stats.note_count -= 1;
+        }
+
+        // If no notes left, remove country from manifest
+        if stats.note_count == 0 {
+            manifest.countries.remove(&country_slug);
+        }
+    }
+
+    fs::write(
+        &manifest_path,
+        serde_json::to_string_pretty(&manifest)
+            .map_err(|e| format!("Failed to serialize manifest: {}", e))?,
+    )
+    .map_err(|e| format!("Failed to write manifest: {}", e))?;
+
+    Ok(())
+}
+
+#[derive(Serialize)]
+pub struct SearchResult {
+    pub country_slug: String,
+    pub country_name: String,
+    pub note_id: String,
+    pub note_title: String,
+    pub note_date: String,
+    pub snippet: String,
+    pub tags: Vec<String>,
+}
+
+#[tauri::command]
+pub fn search_notes(query: String, state: State<AppState>) -> Result<Vec<SearchResult>, String> {
+    let reader = state.vault_reader.lock().unwrap();
+    let vault_path = reader.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let notes_dir = vault_root.join("notes");
+
+    if !notes_dir.exists() {
+        return Ok(Vec::new());
+    }
+
+    let query_lower = query.to_lowercase();
+    let mut results = Vec::new();
+
+    // Iterate through country folders
+    for country_entry in
+        fs::read_dir(&notes_dir).map_err(|e| format!("Failed to read notes directory: {}", e))?
+    {
+        let country_entry = country_entry.map_err(|e| format!("Failed to read entry: {}", e))?;
+        let country_path = country_entry.path();
+
+        if !country_path.is_dir() {
+            continue;
+        }
+
+        let country_slug = country_path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("")
+            .to_string();
+
+        // Get country name from metadata
+        let country_name = country_slug.clone(); // Fallback to slug
+
+        // Iterate through notes in this country
+        for note_entry in fs::read_dir(&country_path)
+            .map_err(|e| format!("Failed to read country directory: {}", e))?
+        {
+            let note_entry = note_entry.map_err(|e| format!("Failed to read entry: {}", e))?;
+            let note_path = note_entry.path();
+
+            if note_path.extension().and_then(|s| s.to_str()) != Some("md") {
+                continue;
+            }
+
+            let content = fs::read_to_string(&note_path)
+                .map_err(|e| format!("Failed to read note: {}", e))?;
+
+            if let Some(note) = parse_note(&content) {
+                // Check if query matches title or content
+                let title_lower = note.title.to_lowercase();
+                let content_lower = note.content.to_lowercase();
+
+                if title_lower.contains(&query_lower) || content_lower.contains(&query_lower) {
+                    // Create snippet (first 150 chars of content)
+                    let snippet = if note.content.len() > 150 {
+                        format!("{}...", &note.content[..150])
+                    } else {
+                        note.content.clone()
+                    };
+
+                    results.push(SearchResult {
+                        country_slug: country_slug.clone(),
+                        country_name: country_name.clone(),
+                        note_id: note.id,
+                        note_title: note.title,
+                        note_date: note.date,
+                        snippet,
+                        tags: note.tags,
+                    });
+                }
+            }
+        }
+    }
+
+    // Sort by date (newest first)
+    results.sort_by(|a, b| b.note_date.cmp(&a.note_date));
+
+    Ok(results)
+}

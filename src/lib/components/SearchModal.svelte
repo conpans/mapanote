@@ -1,45 +1,47 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
   import { invoke } from "@tauri-apps/api/core";
   import { goto } from "$app/navigation";
+  import { onMount } from "svelte";
 
-  export let onClose: () => void;
-
-  interface SearchResult {
-    note_id: string;
-    country_slug: string;
-    country_title: string;
-    date: string;
-    tags: string[];
-    text: string;
-    snippet: string;
-    visibility: string;
-    pinned: boolean;
+  interface Props {
+    onClose: () => void;
   }
 
-  let query = "";
-  let results: SearchResult[] = [];
-  let isSearching = false;
-  let selectedIndex = 0;
-  let searchInput: HTMLInputElement;
+  let { onClose }: Props = $props();
 
-  onMount(() => {
-    searchInput?.focus();
+  interface SearchResult {
+    country_slug: string;
+    country_name: string;
+    note_id: string;
+    note_title: string;
+    note_date: string;
+    snippet: string;
+    tags: string[];
+  }
+
+  let query = $state("");
+  let results = $state<SearchResult[]>([]);
+  let isSearching = $state(false);
+  let selectedIndex = $state(0);
+
+  // Auto-search when query changes
+  $effect(() => {
+    if (query.length >= 2) {
+      performSearch();
+    } else {
+      results = [];
+      selectedIndex = 0;
+    }
   });
 
-  async function handleSearch() {
-    if (query.trim().length < 2) {
-      results = [];
-      return;
-    }
+  async function performSearch() {
+    if (query.trim().length < 2) return;
 
     isSearching = true;
-
     try {
-      const searchResults = await invoke<SearchResult[]>("search_notes", {
+      results = await invoke<SearchResult[]>("search_notes", {
         query: query.trim(),
       });
-      results = searchResults;
       selectedIndex = 0;
     } catch (error) {
       console.error("Search failed:", error);
@@ -47,6 +49,11 @@
     } finally {
       isSearching = false;
     }
+  }
+
+  function handleResultClick(result: SearchResult) {
+    goto(`/country/${result.country_slug}`);
+    onClose();
   }
 
   function handleKeydown(e: KeyboardEvent) {
@@ -59,51 +66,41 @@
       e.preventDefault();
       selectedIndex = Math.max(selectedIndex - 1, 0);
     } else if (e.key === "Enter" && results.length > 0) {
-      handleSelectResult(results[selectedIndex]);
+      e.preventDefault();
+      handleResultClick(results[selectedIndex]);
     }
   }
 
-  function handleSelectResult(result: SearchResult) {
-    goto(`/country/${result.country_slug}`);
-    onClose();
+  function handleBackdropClick(e: MouseEvent) {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
   }
 
-  // Debounced search
-  let searchTimeout: number;
-  $: {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-      if (query.trim().length >= 2) {
-        handleSearch();
-      } else {
-        results = [];
-      }
-    }, 300) as unknown as number;
-  }
+  onMount(() => {
+    // Auto-focus search input
+    const input = document.getElementById("search-input");
+    if (input) {
+      input.focus();
+    }
+  });
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
-
-<!-- Modal backdrop -->
 <div
-  class="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center pt-20 z-50"
-  on:click={onClose}
-  on:keydown={(e) => e.key === "Escape" && onClose()}
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center pt-20 z-50 p-4"
+  on:click={handleBackdropClick}
+  on:keydown={handleKeydown}
   role="button"
   tabindex="0"
 >
-  <!-- Search box -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden"
-    on:click|stopPropagation
-    role="dialog"
-    aria-modal="true"
+    class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-2xl w-full max-h-[70vh] flex flex-col"
   >
-    <!-- Search input -->
+    <!-- Search Input -->
     <div class="p-4 border-b border-gray-200 dark:border-gray-700">
       <div class="relative">
         <svg
-          class="absolute left-3 top-3 w-5 h-5 text-gray-400"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -116,70 +113,87 @@
           />
         </svg>
         <input
-          bind:this={searchInput}
-          bind:value={query}
+          id="search-input"
           type="text"
-          placeholder="Search notes..."
-          class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border-0 rounded-lg
-                 text-gray-900 dark:text-gray-100 placeholder-gray-500
+          bind:value={query}
+          placeholder="Search notes... (title or content)"
+          class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900
+                 border-0 rounded-lg
+                 text-gray-900 dark:text-gray-100
+                 placeholder-gray-400 dark:placeholder-gray-500
                  focus:ring-2 focus:ring-mapanote-blue-500 focus:outline-none"
         />
       </div>
     </div>
 
     <!-- Results -->
-    <div class="max-h-96 overflow-y-auto">
-      {#if isSearching}
+    <div class="flex-1 overflow-y-auto p-2">
+      {#if query.length < 2}
         <div class="p-8 text-center text-gray-500 dark:text-gray-400">
-          Searching...
+          <svg
+            class="w-12 h-12 mx-auto mb-3 opacity-50"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <p>Type at least 2 characters to search</p>
         </div>
-      {:else if query.trim().length < 2}
+      {:else if isSearching}
         <div class="p-8 text-center text-gray-500 dark:text-gray-400">
-          Type at least 2 characters to search
+          <p>Searching...</p>
         </div>
       {:else if results.length === 0}
         <div class="p-8 text-center text-gray-500 dark:text-gray-400">
-          No results found for "{query}"
+          <p>No notes found for "{query}"</p>
         </div>
       {:else}
-        <div class="divide-y divide-gray-200 dark:divide-gray-700">
-          {#each results as result, i (result.note_id)}
+        <div class="space-y-1">
+          {#each results as result, index (result.note_id)}
             <button
-              on:click={() => handleSelectResult(result)}
-              class="w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition
-                     {i === selectedIndex
-                ? 'bg-mapanote-blue-50 dark:bg-mapanote-blue-900/20'
-                : ''}"
+              on:click={() => handleResultClick(result)}
+              class="w-full text-left p-3 rounded-lg transition
+                     {index === selectedIndex
+                ? 'bg-mapanote-blue-100 dark:bg-mapanote-blue-900'
+                : 'hover:bg-gray-100 dark:hover:bg-gray-700'}"
             >
-              <div class="flex items-start justify-between mb-2">
-                <div class="flex items-center gap-2">
-                  <span class="font-semibold text-gray-900 dark:text-gray-100">
-                    {result.country_title}
-                  </span>
-                  {#if result.pinned}
-                    <span class="text-amber-600 dark:text-amber-400">📌</span>
-                  {/if}
-                </div>
-                <span class="text-sm text-gray-500 dark:text-gray-400">
-                  {result.date}
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-semibold text-gray-900 dark:text-gray-100">
+                  {result.note_title}
+                </h4>
+                <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                  {result.note_date}
                 </span>
               </div>
 
-              {#if result.tags.length > 0}
-                <div class="flex gap-2 mb-2">
-                  {#each result.tags as tag}
-                    <span
-                      class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-2 py-1 rounded"
-                    >
-                      {tag}
-                    </span>
-                  {/each}
-                </div>
-              {/if}
-
-              <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
+              <p
+                class="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-2"
+              >
                 {result.snippet}
               </p>
+
+              <div class="flex items-center gap-2 flex-wrap">
+                <span
+                  class="text-xs px-2 py-1 rounded bg-gray-200 dark:bg-gray-700
+                       text-gray-700 dark:text-gray-300"
+                >
+                  {result.country_slug}
+                </span>
+                {#each result.tags as tag}
+                  <span
+                    class="text-xs px-2 py-1 rounded bg-mapanote-blue-100 dark:bg-mapanote-blue-900
+                         text-mapanote-blue-700 dark:text-mapanote-blue-300"
+                  >
+                    {tag}
+                  </span>
+                {/each}
+              </div>
             </button>
           {/each}
         </div>
@@ -188,39 +202,19 @@
 
     <!-- Footer -->
     <div
-      class="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+      class="p-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 flex items-center justify-between"
     >
-      <div
-        class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400"
-      >
-        <div class="flex items-center gap-4">
-          <span><kbd class="kbd">↑↓</kbd> Navigate</span>
-          <span><kbd class="kbd">Enter</kbd> Select</span>
-          <span><kbd class="kbd">Esc</kbd> Close</span>
-        </div>
-        {#if results.length > 0}
-          <span>{results.length} result{results.length !== 1 ? "s" : ""}</span>
-        {/if}
+      <div class="flex gap-4">
+        <span>↑↓ Navigate</span>
+        <span>↵ Open</span>
+        <span>Esc Close</span>
       </div>
+      <div>{results.length} result{results.length !== 1 ? "s" : ""}</div>
     </div>
   </div>
 </div>
 
 <style>
-  .kbd {
-    padding: 2px 6px;
-    background: white;
-    border: 1px solid #d1d5db;
-    border-radius: 3px;
-    font-family: monospace;
-    font-size: 11px;
-  }
-
-  :global(.dark) .kbd {
-    background: #374151;
-    border-color: #4b5563;
-  }
-
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
