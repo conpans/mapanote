@@ -168,3 +168,47 @@ export async function getTopicsForCountry(countrySlug: string): Promise<Topic[]>
     return [];
   }
 }
+
+export async function updateTopicNote(
+  topicId: string,
+  noteId: string,
+  title: string,
+  content: string,
+  tags: string[],
+  countryTargets: string[]
+): Promise<void> {
+  try {
+    await invoke('update_topic_note', {
+      topicId,
+      noteId,
+      title,
+      content,
+      tags,
+      countryTargets,
+    });
+    
+    // Reload topics to update counts
+    await loadTopics();
+  } catch (error) {
+    console.error('Failed to update topic note:', error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a topic note
+ */
+export async function deleteTopicNote(
+  topicId: string,
+  noteId: string
+): Promise<void> {
+  try {
+    await invoke('delete_topic_note', { topicId, noteId });
+    
+    // Reload topics to update counts
+    await loadTopics();
+  } catch (error) {
+    console.error('Failed to delete topic note:', error);
+    throw error;
+  }
+}

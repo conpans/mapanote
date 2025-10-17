@@ -5,8 +5,10 @@
     loadCountry,
     currentCountry,
     currentNotes,
+    currentNotesWithSource, // ← ADD THIS
     isLoading,
   } from "$lib/stores/vault";
+  import type { NoteWithSource } from "$lib/types"; // ← ADD THIS
   import { goto } from "$app/navigation";
   import AddNoteForm from "$lib/components/AddNoteForm.svelte";
   import EditNoteModal from "$lib/components/EditNoteModal.svelte";
@@ -410,12 +412,29 @@
             {:else}
               <div class="space-y-4">
                 {#each filteredNotes as note (note.id)}
+                  {@const noteWithSource = $currentNotesWithSource.find(
+                    (n) => n.id === note.id
+                  )}
                   <div
                     class="note-card bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+                    style={noteWithSource?.source_type === "topic"
+                      ? `border-left: 4px solid ${noteWithSource.topic_color || "#3B82F6"}`
+                      : ""}
                   >
                     <!-- Note header -->
                     <div class="flex items-start justify-between mb-3">
                       <div class="flex-1">
+                        <!-- Show topic badge if it's a topic note -->
+                        {#if noteWithSource?.source_type === "topic"}
+                          <div class="flex items-center gap-2 mb-2">
+                            <span
+                              class="text-xs px-2 py-1 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                            >
+                              📚 from {noteWithSource.source_name}
+                            </span>
+                          </div>
+                        {/if}
+
                         <h4
                           class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2"
                         >

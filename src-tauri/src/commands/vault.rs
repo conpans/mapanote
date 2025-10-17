@@ -139,53 +139,61 @@ pub fn get_country_notes(slug: String, state: State<AppState>) -> Result<Vec<Not
 }
 
 fn parse_note(content: &str) -> Option<Note> {
-    // Simple frontmatter parser
-    if !content.starts_with("---\n") {
+    let mut lines = content.lines();
+
+    if lines.next()? != "---" {
         return None;
     }
-
-    let parts: Vec<&str> = content.splitn(3, "---\n").collect();
-    if parts.len() < 3 {
-        return None;
-    }
-
-    let frontmatter = parts[1];
-    let body = parts[2].trim();
 
     let mut id = String::new();
-    let mut date = String::new();
     let mut title = String::new();
+    let mut date = String::new();
     let mut tags = Vec::new();
+    let mut topic_id = None; // ← ADD
+    let mut country_targets = Vec::new(); // ← ADD
 
-    for line in frontmatter.lines() {
-        if let Some((key, value)) = line.split_once(':') {
-            let key = key.trim();
-            let value = value.trim();
+    for line in lines.by_ref() {
+        if line == "---" {
+            break;
+        }
 
-            match key {
-                "id" => id = value.to_string(),
-                "date" => date = value.to_string(),
-                "title" => title = value.to_string(),
-                "tags" => {
-                    // Parse array: ["tag1", "tag2"]
-                    tags = value
-                        .trim_matches(|c| c == '[' || c == ']')
-                        .split(',')
-                        .map(|s| s.trim().trim_matches('"').to_string())
-                        .filter(|s| !s.is_empty())
-                        .collect();
-                }
-                _ => {}
-            }
+        if let Some(value) = line.strip_prefix("id: ") {
+            id = value.to_string();
+        } else if let Some(value) = line.strip_prefix("title: ") {
+            title = value.to_string();
+        } else if let Some(value) = line.strip_prefix("date: ") {
+            date = value.to_string();
+        } else if let Some(value) = line.strip_prefix("tags: ") {
+            let tags_str = value.trim_matches(|c| c == '[' || c == ']');
+            tags = tags_str
+                .split(',')
+                .map(|s| s.trim().to_string())
+                .filter(|s| !s.is_empty())
+                .collect();
+        } else if let Some(value) = line.strip_prefix("topic_id: ") {
+            // ← ADD
+            topic_id = Some(value.to_string());
+        } else if let Some(value) = line.strip_prefix("country_targets: ") {
+            // ← ADD
+            let targets_str = value.trim_matches(|c| c == '[' || c == ']');
+            country_targets = targets_str
+                .split(',')
+                .map(|s| s.trim().to_string())
+                .filter(|s| !s.is_empty())
+                .collect();
         }
     }
 
+    let content: String = lines.collect::<Vec<_>>().join("\n").trim().to_string();
+
     Some(Note {
         id,
-        date,
         title,
-        content: body.to_string(),
+        content,
+        date,
         tags,
+        topic_id,        // ← ADD
+        country_targets, // ← ADD
     })
 }
 
@@ -207,11 +215,13 @@ pub fn add_note(
     let date = chrono::Utc::now().format("%Y-%m-%d").to_string();
 
     let note = Note {
-        id: id.clone(),
-        date: date.clone(),
+        id: id.clone(), // ← FIXED: use 'id' not 'note_id'
         title: title.clone(),
         content: content.clone(),
+        date: date.clone(),
         tags: tags.clone(),
+        topic_id: None,
+        country_targets: vec![country_slug.clone()], // ← FIXED: use 'country_slug' not 'slug'
     };
 
     // Lazy-create country folder
@@ -224,8 +234,8 @@ pub fn add_note(
     let note_path = country_dir.join(&note_filename);
 
     let note_content = format!(
-        "---\nid: {}\ndate: {}\ntitle: {}\ntags: {:?}\n---\n\n{}",
-        id, date, title, tags, content
+        "---\nid: {}\ndate: {}\ntitle: {}\ntags: {:?}\ntopic_id: \ncountry_targets: [{}]\n---\n\n{}",
+        id, date, title, tags, country_slug, content
     );
 
     fs::write(&note_path, note_content).map_err(|e| format!("Failed to write note: {}", e))?;
@@ -443,6 +453,18 @@ pub struct SearchResult {
     pub tags: Vec<String>,
 }
 
+#[derive(Serialize)]
+pub struct RecentActivity {
+    pub note_id: String,
+    pub note_title: String,
+    pub note_date: String,
+    pub country_slug: String,
+    pub country_name: String,
+    pub source_type: String, // "country" or "topic"
+    pub topic_name: Option<String>,
+    pub topic_color: Option<String>,
+}
+
 #[tauri::command]
 pub fn search_notes(query: String, state: State<AppState>) -> Result<Vec<SearchResult>, String> {
     let reader = state.vault_reader.lock().unwrap();
@@ -523,4 +545,260 @@ pub fn search_notes(query: String, state: State<AppState>) -> Result<Vec<SearchR
     results.sort_by(|a, b| b.note_date.cmp(&a.note_date));
 
     Ok(results)
+}
+
+#[tauri::command]
+pub fn get_all_countries_with_combined_counts(
+    state: State<AppState>,
+) -> Result<Vec<mapanote_lib::models::CountryWithStats>, String> {
+    let reader = state.vault_reader.lock().unwrap();
+    let vault_path = reader.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let manifest_path = vault_root.join("vault.json");
+
+    let manifest_str = fs::read_to_string(&manifest_path)
+        .map_err(|e| format!("Failed to read manifest: {}", e))?;
+
+    let manifest: VaultManifest = serde_json::from_str(&manifest_str)
+        .map_err(|e| format!("Failed to parse manifest: {}", e))?;
+
+    // Load topics manifest to count topic notes
+    let topics_manifest = crate::commands::topics::load_topics_manifest(vault_path)
+        .unwrap_or_else(|_| mapanote_lib::models::TopicsManifest::new());
+
+    // Build a set of ALL country slugs that have either:
+    // 1. Country notes (in vault.json)
+    // 2. Topic notes targeting them
+    let mut all_country_slugs = std::collections::HashSet::new();
+
+    // Add countries from vault.json
+    for slug in manifest.countries.keys() {
+        all_country_slugs.insert(slug.clone());
+    }
+
+    // Add countries targeted by topic notes
+    for topic in &topics_manifest.topics {
+        let topic_notes_dir = vault_root.join("topics").join(&topic.id);
+
+        if topic_notes_dir.exists() {
+            if let Ok(entries) = fs::read_dir(&topic_notes_dir) {
+                for entry in entries.flatten() {
+                    let path = entry.path();
+                    if path.extension().and_then(|s| s.to_str()) == Some("md") {
+                        if let Ok(content) = fs::read_to_string(&path) {
+                            if let Some(note) = parse_note(&content) {
+                                // Add all country targets from this note
+                                for target in note.country_targets {
+                                    all_country_slugs.insert(target);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let mut countries: Vec<mapanote_lib::models::CountryWithStats> = Vec::new();
+
+    // Process each country slug
+    for slug in all_country_slugs {
+        // Get base metadata
+        let metadata = match crate::get_country_metadata(slug.clone()) {
+            Ok(meta) => meta,
+            Err(_) => continue, // Skip if metadata not found
+        };
+
+        // Get country notes count (from vault.json)
+        let country_note_count = manifest
+            .countries
+            .get(&slug)
+            .map(|stats| stats.note_count)
+            .unwrap_or(0);
+
+        // Get last_updated and tags from vault.json (if exists)
+        let (last_updated, tags) = manifest
+            .countries
+            .get(&slug)
+            .map(|stats| (stats.last_updated.clone(), stats.tags.clone()))
+            .unwrap_or((None, Vec::new()));
+
+        // Count topic notes targeting this country
+        let mut topic_note_count = 0;
+
+        for topic in &topics_manifest.topics {
+            let topic_notes_dir = vault_root.join("topics").join(&topic.id);
+
+            if topic_notes_dir.exists() {
+                if let Ok(entries) = fs::read_dir(&topic_notes_dir) {
+                    for entry in entries.flatten() {
+                        let path = entry.path();
+                        if path.extension().and_then(|s| s.to_str()) == Some("md") {
+                            if let Ok(content) = fs::read_to_string(&path) {
+                                if let Some(note) = parse_note(&content) {
+                                    // Only count if this country is in the targets
+                                    if note.country_targets.contains(&slug) {
+                                        topic_note_count += 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Calculate total
+        let total_note_count = country_note_count + topic_note_count;
+
+        // Only include countries that have at least one note (country or topic)
+        if total_note_count > 0 {
+            countries.push(mapanote_lib::models::CountryWithStats {
+                slug: metadata.slug,
+                name: metadata.name,
+                iso2: metadata.iso2,
+                iso3: metadata.iso3,
+                summary: metadata.summary,
+                region: metadata.region,
+                subregion: metadata.subregion,
+                note_count: total_note_count,
+                last_updated,
+                tags,
+            });
+        }
+    }
+
+    countries.sort_by(|a, b| a.name.cmp(&b.name));
+
+    Ok(countries)
+}
+
+// Add this command at the end of vault.rs
+#[tauri::command]
+pub fn get_recent_activity(
+    // ← Make sure it has 'pub'
+    limit: usize,
+    state: State<AppState>,
+) -> Result<Vec<RecentActivity>, String> {
+    let reader = state.vault_reader.lock().unwrap();
+    let vault_path = reader.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let mut activities: Vec<RecentActivity> = Vec::new();
+
+    // 1. Collect all country notes
+    let notes_dir = vault_root.join("notes");
+    if notes_dir.exists() {
+        for country_entry in fs::read_dir(&notes_dir)
+            .map_err(|e| format!("Failed to read notes directory: {}", e))?
+        {
+            let country_entry =
+                country_entry.map_err(|e| format!("Failed to read entry: {}", e))?;
+            let country_path = country_entry.path();
+
+            if !country_path.is_dir() {
+                continue;
+            }
+
+            let country_slug = country_path
+                .file_name()
+                .and_then(|n| n.to_str())
+                .unwrap_or("")
+                .to_string();
+
+            // Get country metadata
+            let country_metadata = match crate::get_country_metadata(country_slug.clone()) {
+                Ok(meta) => meta,
+                Err(_) => continue,
+            };
+
+            // Read notes in this country
+            for note_entry in fs::read_dir(&country_path)
+                .map_err(|e| format!("Failed to read country directory: {}", e))?
+            {
+                let note_entry = note_entry.map_err(|e| format!("Failed to read entry: {}", e))?;
+                let note_path = note_entry.path();
+
+                if note_path.extension().and_then(|s| s.to_str()) != Some("md") {
+                    continue;
+                }
+
+                let content = fs::read_to_string(&note_path)
+                    .map_err(|e| format!("Failed to read note: {}", e))?;
+
+                if let Some(note) = parse_note(&content) {
+                    activities.push(RecentActivity {
+                        note_id: note.id,
+                        note_title: note.title,
+                        note_date: note.date,
+                        country_slug: country_slug.clone(),
+                        country_name: country_metadata.name.clone(),
+                        source_type: "country".to_string(),
+                        topic_name: None,
+                        topic_color: None,
+                    });
+                }
+            }
+        }
+    }
+
+    // 2. Collect all topic notes
+    let topics_manifest = crate::commands::topics::load_topics_manifest(vault_path)
+        .unwrap_or_else(|_| mapanote_lib::models::TopicsManifest::new());
+
+    for topic in &topics_manifest.topics {
+        let topic_notes_dir = vault_root.join("topics").join(&topic.id);
+
+        if !topic_notes_dir.exists() {
+            continue;
+        }
+
+        for note_entry in fs::read_dir(&topic_notes_dir)
+            .map_err(|e| format!("Failed to read topic notes directory: {}", e))?
+        {
+            let note_entry = note_entry.map_err(|e| format!("Failed to read entry: {}", e))?;
+            let note_path = note_entry.path();
+
+            if note_path.extension().and_then(|s| s.to_str()) != Some("md") {
+                continue;
+            }
+
+            let content = fs::read_to_string(&note_path)
+                .map_err(|e| format!("Failed to read note: {}", e))?;
+
+            if let Some(note) = parse_note(&content) {
+                // Get first country target as the primary country
+                let primary_country_slug = note
+                    .country_targets
+                    .first()
+                    .cloned()
+                    .unwrap_or_else(|| "unknown".to_string());
+
+                let country_name = match crate::get_country_metadata(primary_country_slug.clone()) {
+                    Ok(meta) => meta.name,
+                    Err(_) => primary_country_slug.clone(),
+                };
+
+                activities.push(RecentActivity {
+                    note_id: note.id,
+                    note_title: note.title,
+                    note_date: note.date,
+                    country_slug: primary_country_slug,
+                    country_name,
+                    source_type: "topic".to_string(),
+                    topic_name: Some(topic.title.clone()),
+                    topic_color: topic.color.clone(),
+                });
+            }
+        }
+    }
+
+    // Sort by date (newest first)
+    activities.sort_by(|a, b| b.note_date.cmp(&a.note_date));
+
+    // Limit results
+    activities.truncate(limit);
+
+    Ok(activities)
 }

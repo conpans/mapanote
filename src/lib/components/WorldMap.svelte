@@ -329,7 +329,7 @@
         path.classList.add("activity-none");
       }
 
-      path.style.cursor = "pointer";
+      (path as SVGPathElement).style.cursor = "pointer";
       path.setAttribute("role", "button");
       path.setAttribute("tabindex", "0");
 
@@ -378,7 +378,7 @@
         circle.classList.add("microstate-none");
       }
 
-      circle.style.cursor = "pointer";
+      (circle as SVGCircleElement).style.cursor = "pointer";
       circle.setAttribute("role", "button");
       circle.setAttribute("tabindex", "0");
 
@@ -524,8 +524,8 @@
   <div
     class="map-container"
     bind:this={mapContainer}
-    on:wheel={handleWheel}
-    on:mousedown={handlePanStart}
+    onwheel={handleWheel}
+    onmousedown={handlePanStart}
     style:cursor={isPanning
       ? "grabbing"
       : transform.scale > 1
@@ -539,7 +539,7 @@
   {#if transform.scale > 1}
     <button
       class="reset-button"
-      on:click={resetView}
+      onclick={resetView}
       title="Reset view (zoom to 1x)"
     >
       <svg
@@ -589,8 +589,8 @@
       class:tooltip-bottom={tooltipPosition === "bottom"}
       class:tooltip-fadeout={isTooltipFadingOut}
       style="left: {tooltipX}px; top: {tooltipY}px;"
-      on:mouseenter={handleTooltipMouseEnter}
-      on:mouseleave={handleTooltipMouseLeave}
+      onmouseenter={handleTooltipMouseEnter}
+      onmouseleave={handleTooltipMouseLeave}
       role="tooltip"
     >
       <!-- Arrow indicator -->
@@ -603,8 +603,8 @@
             src="/flags/{hoveredIso.toLowerCase()}.svg"
             alt="{tooltipName} flag"
             class="flag-image-large"
-            on:error={(e) => {
-              e.currentTarget.style.display = "none";
+            onerror={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = "none";
             }}
           />
         {/if}
@@ -693,28 +693,30 @@
   {/if}
 </div>
 
+/* Replace the styles section in WorldMap.svelte with these improved styles */
+
 <style>
   .world-map-wrapper {
     position: relative;
     width: 100%;
-    height: calc(100vh - 300px); /* ← Larger map area */
-    min-height: 600px;
+    height: 100%;
+    min-height: 400px;
   }
 
   .map-container {
     width: 100%;
-    height: 100%; /* ← Fill wrapper */
+    height: 100%;
     background: white;
     border-radius: 8px;
     border: 1px solid #e5e7eb;
     padding: 1rem;
-    overflow: hidden; /* ← Prevent scrollbars during pan */
-    user-select: none; /* ← Prevent text selection during drag */
+    overflow: hidden;
+    user-select: none;
   }
 
   :global(.dark) .map-container {
-    background: #1f2937;
-    border-color: #374151;
+    background: #111827;
+    border-color: #1f2937;
   }
 
   /* Reset button */
@@ -746,19 +748,13 @@
 
   :global(.dark) .reset-button {
     background: #1f2937;
-    border-color: #4b5563;
+    border-color: #374151;
     color: #d1d5db;
   }
 
   :global(.dark) .reset-button:hover {
     background: #374151;
-    border-color: #6b7280;
-  }
-
-  /* SVG path interaction during zoom */
-  :global(#viewport-transform path[role="button"]),
-  :global(#viewport-transform circle[role="button"]) {
-    pointer-events: all; /* Ensure clickable when zoomed */
+    border-color: #4b5563;
   }
 
   .loading-overlay,
@@ -775,7 +771,7 @@
 
   :global(.dark) .loading-overlay,
   :global(.dark) .error-overlay {
-    background: rgba(31, 41, 55, 0.9);
+    background: rgba(17, 24, 39, 0.9);
   }
 
   /* SVG styling */
@@ -785,75 +781,106 @@
 
   :global(.map-container path) {
     vector-effect: non-scaling-stroke;
-    transition:
-      opacity 0.12s ease,
-      stroke-width 0.12s ease;
+    transition: all 0.15s ease;
   }
 
-  /* Activity colors */
+  /* LIGHT MODE - Refined heat map colors */
   :global(.activity-none) {
-    fill: #f3f4f6 !important;
-    stroke: #d1d5db !important;
+    fill: #f9fafb !important;
+    stroke: #e5e7eb !important;
     stroke-width: 0.5;
-  }
-
-  :global(.dark .activity-none) {
-    fill: #374151 !important;
-    stroke: #4b5563 !important;
   }
 
   :global(.activity-low) {
     fill: #dbeafe !important;
     stroke: #93c5fd !important;
+    stroke-width: 0.6;
+  }
+
+  :global(.activity-medium) {
+    fill: #93c5fd !important;
+    stroke: #3b82f6 !important;
+    stroke-width: 0.7;
+  }
+
+  :global(.activity-high) {
+    fill: #3b82f6 !important;
+    stroke: #2563eb !important;
+    stroke-width: 0.8;
+  }
+
+  :global(.activity-very-high) {
+    fill: #2563eb !important;
+    stroke: #1d4ed8 !important;
+    stroke-width: 1;
+  }
+
+  /* DARK MODE - Better contrast and glow */
+  :global(.dark .activity-none) {
+    fill: #1f2937 !important;
+    stroke: #374151 !important;
     stroke-width: 0.5;
   }
 
   :global(.dark .activity-low) {
     fill: #1e3a8a !important;
     stroke: #3b82f6 !important;
-  }
-
-  :global(.activity-medium) {
-    fill: #93c5fd !important;
-    stroke: #60a5fa !important;
-    stroke-width: 0.5;
+    stroke-width: 0.7;
+    filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.3));
   }
 
   :global(.dark .activity-medium) {
     fill: #1e40af !important;
-    stroke: #3b82f6 !important;
-  }
-
-  :global(.activity-high) {
-    fill: #60a5fa !important;
-    stroke: #3b82f6 !important;
-    stroke-width: 0.5;
+    stroke: #60a5fa !important;
+    stroke-width: 0.8;
+    filter: drop-shadow(0 0 3px rgba(96, 165, 250, 0.4));
   }
 
   :global(.dark .activity-high) {
-    fill: #1d4ed8 !important;
-    stroke: #2563eb !important;
-  }
-
-  :global(.activity-very-high) {
-    fill: #3b82f6 !important;
-    stroke: #2563eb !important;
-    stroke-width: 0.5;
+    fill: #2563eb !important;
+    stroke: #93c5fd !important;
+    stroke-width: 1;
+    filter: drop-shadow(0 0 4px rgba(147, 197, 253, 0.5));
   }
 
   :global(.dark .activity-very-high) {
-    fill: #1e40af !important;
-    stroke: #1d4ed8 !important;
+    fill: #3b82f6 !important;
+    stroke: #bfdbfe !important;
+    stroke-width: 1.2;
+    filter: drop-shadow(0 0 6px rgba(191, 219, 254, 0.6));
   }
 
+  /* Fresh indicator (recent notes) */
   :global(.fresh) {
     stroke: #10b981 !important;
     stroke-width: 2 !important;
+    animation: pulse-green 2s ease-in-out infinite;
   }
 
+  :global(.dark .fresh) {
+    stroke: #34d399 !important;
+    filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.7));
+  }
+
+  @keyframes pulse-green {
+    0%,
+    100% {
+      stroke-opacity: 1;
+    }
+    50% {
+      stroke-opacity: 0.7;
+    }
+  }
+
+  /* Hover states */
   :global(path[role="button"]:hover) {
-    opacity: 0.8;
+    opacity: 0.85;
     stroke-width: 2 !important;
+    filter: brightness(1.1);
+  }
+
+  :global(.dark path[role="button"]:hover) {
+    filter: brightness(1.3) drop-shadow(0 0 8px currentColor);
   }
 
   :global(path[role="button"]:focus) {
@@ -861,18 +888,79 @@
     outline-offset: 2px;
   }
 
+  /* Microstate styles - LIGHT MODE */
+  :global(#microstates circle) {
+    vector-effect: non-scaling-stroke;
+    transition: all 0.2s ease;
+  }
+
+  :global(.microstate-none) {
+    fill: #d1d5db !important;
+    stroke: #9ca3af !important;
+    stroke-width: 0.8;
+    r: 1.2;
+  }
+
+  :global(.microstate-low) {
+    fill: #93c5fd !important;
+    stroke: #60a5fa !important;
+    stroke-width: 1;
+    r: 1.5;
+  }
+
+  :global(.microstate-medium),
+  :global(.microstate-high),
+  :global(.microstate-very-high) {
+    fill: #3b82f6 !important;
+    stroke: #2563eb !important;
+    stroke-width: 1.2;
+    r: 1.8;
+  }
+
+  /* Microstate styles - DARK MODE */
+  :global(.dark .microstate-none) {
+    fill: #4b5563 !important;
+    stroke: #6b7280 !important;
+    stroke-width: 0.8;
+    r: 1.3;
+  }
+
+  :global(.dark .microstate-low) {
+    fill: #3b82f6 !important;
+    stroke: #60a5fa !important;
+    stroke-width: 1.2;
+    r: 1.6;
+    filter: drop-shadow(0 0 3px rgba(59, 130, 246, 0.6));
+  }
+
+  :global(.dark .microstate-medium),
+  :global(.dark .microstate-high),
+  :global(.dark .microstate-very-high) {
+    fill: #60a5fa !important;
+    stroke: #93c5fd !important;
+    stroke-width: 1.4;
+    r: 2;
+    filter: drop-shadow(0 0 5px rgba(147, 197, 253, 0.8));
+  }
+
+  :global(#microstates circle[role="button"]:hover) {
+    r: 2.5 !important;
+    stroke-width: 2 !important;
+    filter: drop-shadow(0 0 10px currentColor) !important;
+  }
+
+  /* Tooltip styles remain the same... */
   .map-tooltip {
     position: fixed;
     background: white;
     border: 1px solid #d1d5db;
-    border-radius: 0; /* ← REMOVED: Was 8px */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* ← Simpler shadow */
+    border-radius: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     pointer-events: auto;
     z-index: 1000;
     width: 360px;
     overflow: hidden;
     cursor: default;
-    animation: tooltipFadeIn 0.2s ease-out;
     animation: tooltipFadeIn 0.15s ease-out;
   }
 
@@ -908,7 +996,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   }
 
-  /* Arrow Indicator */
   .tooltip-arrow {
     position: absolute;
     width: 16px;
@@ -926,21 +1013,20 @@
     border-color: #374151;
   }
 
-  /* Arrow position */
   .tooltip-bottom .tooltip-arrow {
     top: -9px;
     border-bottom: none;
     border-right: none;
-    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05); /* ← NEW: subtle shadow */
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
   }
 
   .tooltip-top .tooltip-arrow {
     bottom: -9px;
     border-top: none;
     border-left: none;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05); /* ← NEW: subtle shadow */
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
   }
-  /* Full-width Flag Container (no overlay) */
+
   .tooltip-flag-container {
     position: relative;
     width: 100%;
@@ -960,7 +1046,6 @@
     display: block;
   }
 
-  /* Compact Content Section */
   .tooltip-content {
     padding: 12px 16px 16px;
   }
@@ -1020,7 +1105,6 @@
     color: #6b7280;
   }
 
-  /* Summary Section with Country Name */
   .tooltip-summary {
     margin-top: 10px;
     padding-top: 10px;
@@ -1042,103 +1126,6 @@
 
   :global(.dark) .tooltip-summary strong {
     color: #f3f4f6;
-  }
-
-  /* Header with Flag */
-  .tooltip-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    border-bottom: 1px solid #e5e7eb;
-    background: #f9fafb;
-  }
-
-  :global(.dark) .tooltip-header {
-    background: #111827;
-    border-bottom-color: #374151;
-  }
-
-  .flag-image {
-    width: 56px; /* ← Slightly larger */
-    height: 37px;
-    object-fit: cover;
-    border-radius: 0; /* ← CHANGED: Sharp corners */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    flex-shrink: 0;
-    border: 1px solid rgba(0, 0, 0, 0.1); /* ← NEW: Subtle border */
-  }
-
-  :global(.dark) .flag-image {
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .tooltip-title {
-    font-weight: 600;
-    font-size: 17px; /* ← Slightly larger */
-    color: #111827;
-    line-height: 1.3;
-  }
-
-  :global(.dark) .tooltip-title {
-    color: #f9fafb;
-  }
-
-  /* Stats Section */
-  .tooltip-stats {
-    padding: 10px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .stat-item {
-    font-size: 14px;
-    color: #4b5563;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  :global(.dark) .stat-item {
-    color: #9ca3af;
-  }
-
-  .stat-value {
-    font-weight: 600;
-    color: #1f2937;
-  }
-
-  :global(.dark) .stat-value {
-    color: #e5e7eb;
-  }
-
-  .text-xs {
-    font-size: 12px;
-  }
-
-  .fresh-badge {
-    color: #059669;
-    font-weight: 500;
-    font-size: 13px;
-  }
-
-  :global(.dark) .fresh-badge {
-    color: #34d399;
-  }
-
-  /* Summary Section (more space now) */
-  .tooltip-summary {
-    padding: 12px; /* ← Increased padding */
-    border-top: 1px solid #e5e7eb;
-    font-size: 13px;
-    line-height: 1.6; /* ← Better readability */
-    color: #374151;
-  }
-
-  :global(.dark) .tooltip-summary {
-    border-top-color: #374151;
-    color: #d1d5db;
   }
 
   /* Legend */
@@ -1170,66 +1157,6 @@
     color: #9ca3af;
   }
 
-  /* NEW: Microstate styles */
-  :global(#microstates circle) {
-    vector-effect: non-scaling-stroke;
-    transition: all 0.2s ease;
-  }
-
-  /* Default microstate (no notes) */
-  :global(.microstate-none) {
-    fill: #9ca3af !important;
-    stroke: #6b7280 !important;
-    stroke-width: 0.8;
-    r: 1.2;
-  }
-
-  :global(.dark .microstate-none) {
-    fill: #60a5fa !important;
-    stroke: #93c5fd !important;
-    stroke-width: 1;
-    r: 1.5;
-    filter: drop-shadow(0 0 3px rgba(96, 165, 250, 0.6));
-  }
-
-  /* Microstate with notes */
-  :global(.microstate-low) {
-    fill: #93c5fd !important;
-    stroke: #60a5fa !important;
-    r: 1.5;
-  }
-
-  :global(.dark .microstate-low) {
-    fill: #60a5fa !important;
-    stroke: #3b82f6 !important;
-    r: 1.8;
-    filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.7));
-  }
-
-  :global(.microstate-medium),
-  :global(.microstate-high),
-  :global(.microstate-very-high) {
-    fill: #3b82f6 !important;
-    stroke: #2563eb !important;
-    r: 1.8;
-  }
-
-  :global(.dark .microstate-medium),
-  :global(.dark .microstate-high),
-  :global(.dark .microstate-very-high) {
-    fill: #3b82f6 !important;
-    stroke: #2563eb !important;
-    r: 2;
-    filter: drop-shadow(0 0 5px rgba(37, 99, 235, 0.8));
-  }
-
-  /* Hover state for microstates */
-  :global(#microstates circle[role="button"]:hover) {
-    r: 2.5 !important;
-    stroke-width: 1.5 !important;
-    filter: drop-shadow(0 0 8px currentColor) !important;
-  }
-
   .legend-swatch {
     width: 20px;
     height: 14px;
@@ -1243,7 +1170,7 @@
   }
 
   .legend-swatch.activity-none {
-    background: #f3f4f6;
+    background: #f9fafb;
   }
   .legend-swatch.activity-low {
     background: #dbeafe;
@@ -1252,13 +1179,29 @@
     background: #93c5fd;
   }
   .legend-swatch.activity-high {
-    background: #60a5fa;
+    background: #3b82f6;
   }
   .legend-swatch.activity-very-high {
-    background: #3b82f6;
+    background: #2563eb;
   }
   .legend-swatch.fresh-indicator {
     background: #10b981;
     border-color: #10b981;
+  }
+
+  :global(.dark) .legend-swatch.activity-none {
+    background: #1f2937;
+  }
+  :global(.dark) .legend-swatch.activity-low {
+    background: #1e3a8a;
+  }
+  :global(.dark) .legend-swatch.activity-medium {
+    background: #1e40af;
+  }
+  :global(.dark) .legend-swatch.activity-high {
+    background: #2563eb;
+  }
+  :global(.dark) .legend-swatch.activity-very-high {
+    background: #3b82f6;
   }
 </style>

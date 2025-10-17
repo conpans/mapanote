@@ -39,12 +39,41 @@ pub struct CountryMetadata {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CountryWithStats {
+    pub slug: String,
+    pub name: String,
+    pub iso2: String,
+    pub iso3: String,
+    pub summary: String,
+    pub region: String,
+    pub subregion: String,
+    // Stats fields
+    pub note_count: usize,
+    pub last_updated: Option<String>,
+    pub tags: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Note {
     pub id: String,
-    pub date: String,
     pub title: String,
     pub content: String,
+    pub date: String,
     pub tags: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub topic_id: Option<String>, // Which topic this belongs to (if any)
+    #[serde(default)]
+    pub country_targets: Vec<String>, // Which countries this note is about
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NoteWithSource {
+    #[serde(flatten)]
+    pub note: Note,
+    pub source_type: String, // "country" or "topic"
+    pub source_name: String, // country slug or topic title
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub topic_color: Option<String>, // For visual distinction
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

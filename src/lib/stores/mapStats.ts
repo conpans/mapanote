@@ -1,38 +1,43 @@
 import { writable } from 'svelte/store';
 import { invoke } from '@tauri-apps/api/core';
+import type { Country } from '$lib/types';
 
 export interface CountryStats {
   slug: string;
   noteCount: number;
   lastUpdated: string | null;
+  tags: string[];
 }
 
 export const mapStats = writable<Map<string, CountryStats>>(new Map());
-export const mapStatsLoaded = writable<boolean>(false);  // ← ADD THIS
+export const mapStatsLoaded = writable<boolean>(false);
 
 /**
- * Load stats for all countries in one efficient call
+ * Load stats for all countries with COMBINED counts (country + topic notes)
  */
 export async function loadMapStats(): Promise<void> {
   try {
-    const allStats = await invoke<CountryStats[]>('get_all_country_stats');
+    // Use the NEW command that includes topic notes targeting each country
+    const allCountries = await invoke<Country[]>('get_all_countries_with_combined_counts');
     
-    const statsMap = new Map<string, CountryStats>();
+    const statsMap = new Map<CountryStats>();
     
-    allStats.forEach(stat => {
-      statsMap.set(stat.slug, {
-        slug: stat.slug,
-        noteCount: stat.noteCount,
-        lastUpdated: stat.lastUpdated,
+    allCountries.forEach(country => {
+      statsMap.set(country.slug, {
+        slug: country.slug,
+        noteCount: country.note_count,
+        lastUpdated: country.last_updated ?? null,
+        tags: country.tags,
       });
     });
     
     mapStats.set(statsMap);
-    mapStatsLoaded.set(true);  // ← ADD THIS
+    mapStatsLoaded.set(true);
     
-    console.log(`Loaded stats for ${statsMap.size} countries in one call`);
+    console.log(`✅ Loaded COMBINED stats for ${statsMap.size} countries`);
   } catch (error) {
     console.error('Failed to load map stats:', error);
+    mapStatsLoaded.set(false);
     throw error;
   }
 }

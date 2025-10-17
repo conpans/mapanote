@@ -11,12 +11,14 @@
   } from "$lib/stores/topics";
   import { invoke } from "@tauri-apps/api/core";
   import type { Note } from "$lib/types";
-  import type { CountryMetadata } from "$lib/stores/vault";
   import ThemeToggle from "$lib/components/ThemeToggle.svelte";
   import LoadingSkeleton from "$lib/components/LoadingSkeleton.svelte";
+  import AddTopicNoteForm from "$lib/components/AddTopicNoteForm.svelte";
+  import type { CountryMetadata } from "$lib/stores/vault";
+  import EditTopicNoteModal from "$lib/components/EditTopicNoteModal.svelte";
 
   let topicId = $derived($page.params.id);
-
+  let topicNotes = $state<Note[]>([]);
   let isEditing = $state(false);
   let editTitle = $state("");
   let editSummary = $state("");
@@ -26,6 +28,7 @@
   let showDeleteConfirm = $state(false);
   let allNotes = $state<{ country: string; notes: Note[] }[]>([]);
   let countriesMetadata = $state<Map<string, CountryMetadata>>(new Map());
+  let editingTopicNote: Note | null = $state(null);
 
   onMount(async () => {
     if (!topicId) return;
@@ -39,19 +42,13 @@
   async function loadTopicNotes() {
     if (!$currentTopic) return;
 
-    const notesPromises = $currentTopic.countries.map(async (countrySlug) => {
-      try {
-        const notes = await invoke<Note[]>("get_country_notes", {
-          slug: countrySlug,
-        });
-        return { country: countrySlug, notes };
-      } catch (error) {
-        console.error(`Failed to load notes for ${countrySlug}:`, error);
-        return { country: countrySlug, notes: [] };
-      }
-    });
-
-    allNotes = await Promise.all(notesPromises);
+    try {
+      topicNotes = await invoke<Note[]>("get_topic_notes", {
+        topicId: $currentTopic.id,
+      });
+    } catch (error) {
+      console.error("Failed to load topic notes:", error);
+    }
   }
 
   async function loadCountriesMetadata() {
@@ -142,7 +139,7 @@
       <div class="mb-6">
         <div class="flex items-center justify-between mb-4">
           <button
-            on:click={goBack}
+            onclick={goBack}
             class="text-mapanote-blue-600 hover:underline inline-flex items-center gap-1"
           >
             <svg
@@ -238,7 +235,7 @@
               <!-- Actions -->
               <div class="flex gap-2 justify-end pt-4">
                 <button
-                  on:click={cancelEditing}
+                  onclick={cancelEditing}
                   disabled={isSaving}
                   class="px-4 py-2 bg-gray-200 hover:bg-gray-300
                          dark:bg-gray-700 dark:hover:bg-gray-600
@@ -247,7 +244,7 @@
                   Cancel
                 </button>
                 <button
-                  on:click={saveChanges}
+                  onclick={saveChanges}
                   disabled={!editTitle.trim() || isSaving}
                   class="px-6 py-2 bg-mapanote-blue-600 hover:bg-mapanote-blue-700
                          disabled:bg-gray-400 text-white rounded-lg"
@@ -294,14 +291,14 @@
 
             <div class="flex gap-2">
               <button
-                on:click={startEditing}
+                onclick={startEditing}
                 class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
                        hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition"
               >
                 Edit
               </button>
               <button
-                on:click={() => (showDeleteConfirm = true)}
+                onclick={() => (showDeleteConfirm = true)}
                 class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
               >
                 Delete
@@ -327,7 +324,7 @@
             >
               <div class="flex items-start justify-between mb-2">
                 <button
-                  on:click={() => goToCountry(countrySlug)}
+                  onclick={() => goToCountry(countrySlug)}
                   class="text-left flex-1 hover:text-mapanote-blue-600"
                 >
                   <h3 class="font-semibold text-gray-900 dark:text-gray-100">
@@ -340,7 +337,7 @@
                 </button>
 
                 <button
-                  on:click={() => handleRemoveCountry(countrySlug)}
+                  onclick={() => handleRemoveCountry(countrySlug)}
                   class="text-red-500 hover:text-red-700 text-sm"
                   title="Remove from topic"
                 >
@@ -351,6 +348,96 @@
           {/each}
         </div>
       </div>
+
+      <!-- Add Note Form -->
+      {#if $currentTopic}
+        <AddTopicNoteForm
+          topicId={$currentTopic.id}
+          topicCountries={$currentTopic.countries}
+          onSuccess={async () => {
+            await loadTopicNotes();
+          }}
+        />
+      {/if}
+
+      <!-- Topic Notes Section -->
+      {#if topicNotes.length > 0}
+        <div class="mb-6">
+          <h2
+            class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4"
+          >
+            Topic Notes ({topicNotes.length})
+          </h2>
+
+          <div class="space-y-3">
+            {#each topicNotes as note}
+              <button
+                onclick={() => (editingTopicNote = note)}
+                class="w-full text-left bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-200 dark:border-gray-700 p-4
+                 hover:border-mapanote-blue-500 transition cursor-pointer"
+                style="border-left: 4px solid {$currentTopic.color ||
+                  '#3B82F6'}"
+              >
+                <div class="flex items-start justify-between mb-2">
+                  <h4 class="font-semibold text-gray-900 dark:text-gray-100">
+                    {note.title}
+                  </h4>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">
+                      {note.date}
+                    </span>
+                    <svg
+                      class="w-4 h-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  {note.content}
+                </p>
+
+                <!-- Country targets -->
+                <div class="flex items-center gap-2 flex-wrap mb-2">
+                  <span class="text-xs text-gray-500 dark:text-gray-400"
+                    >Countries:</span
+                  >
+                  {#each note.country_targets as countrySlug}
+                    {@const metadata = countriesMetadata.get(countrySlug)}
+                    <span
+                      class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                    >
+                      {metadata?.name || countrySlug}
+                    </span>
+                  {/each}
+                </div>
+
+                <!-- Tags -->
+                {#if note.tags.length > 0}
+                  <div class="flex gap-2">
+                    {#each note.tags as tag}
+                      <span
+                        class="text-xs px-2 py-1 rounded bg-mapanote-blue-100 dark:bg-mapanote-blue-900 text-mapanote-blue-700 dark:text-mapanote-blue-300"
+                      >
+                        {tag}
+                      </span>
+                    {/each}
+                  </div>
+                {/if}
+              </button>
+            {/each}
+          </div>
+        </div>
+      {/if}
 
       <!-- All Notes -->
       <div>
@@ -371,7 +458,7 @@
                 <div class="space-y-3">
                   {#each notes as note}
                     <button
-                      on:click={() => goToCountry(country)}
+                      onclick={() => goToCountry(country)}
                       class="w-full text-left bg-white dark:bg-gray-800 rounded-lg
                              border border-gray-200 dark:border-gray-700 p-4
                              hover:border-mapanote-blue-500 transition"
@@ -412,6 +499,19 @@
         </div>
       </div>
     {/if}
+
+    <!-- Edit Topic Note Modal -->
+    {#if editingTopicNote && $currentTopic}
+      <EditTopicNoteModal
+        note={editingTopicNote}
+        topicId={$currentTopic.id}
+        topicCountries={$currentTopic.countries}
+        onClose={async () => {
+          editingTopicNote = null;
+          await loadTopicNotes();
+        }}
+      />
+    {/if}
   </div>
 </main>
 
@@ -432,7 +532,7 @@
       </p>
       <div class="flex gap-3 justify-end">
         <button
-          on:click={() => (showDeleteConfirm = false)}
+          onclick={() => (showDeleteConfirm = false)}
           class="px-4 py-2 bg-gray-200 hover:bg-gray-300
                  dark:bg-gray-700 dark:hover:bg-gray-600
                  text-gray-800 dark:text-gray-200 rounded-lg"
@@ -440,7 +540,7 @@
           Cancel
         </button>
         <button
-          on:click={handleDelete}
+          onclick={handleDelete}
           class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
         >
           Delete
