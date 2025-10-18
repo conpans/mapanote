@@ -34,6 +34,7 @@ export interface NoteWithSource {
   topic_color?: string;        
 }
 
+
 export interface VaultConfig {
   schema_version: number;
   created_at: string;

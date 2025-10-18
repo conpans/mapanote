@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/core";
   import type { Note, CountryMetadata } from "$lib/types";
+  import MarkdownToolbar from "./MarkdownToolbar.svelte";
 
   interface Props {
     topicId: string;
@@ -17,6 +18,7 @@
   let isSubmitting = $state(false);
   let error = $state("");
   let countriesMetadata = $state<Map<string, CountryMetadata>>(new Map());
+  let contentTextarea: HTMLTextAreaElement;
 
   // Load country metadata
   $effect(() => {
@@ -40,6 +42,31 @@
     } else {
       selectedCountries = [...selectedCountries, slug];
     }
+  }
+
+  function handleInsertMarkdown(event: CustomEvent<{ markdown: string }>) {
+    const { markdown } = event.detail;
+    const textarea = contentTextarea;
+
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+
+    // Replace "text" placeholder with selected text if any
+    const insertion = selectedText
+      ? markdown.replace("text", selectedText)
+      : markdown;
+
+    content = content.substring(0, start) + insertion + content.substring(end);
+
+    // Set cursor position
+    setTimeout(() => {
+      const cursorPos = start + insertion.length;
+      textarea.focus();
+      textarea.setSelectionRange(cursorPos, cursorPos);
+    }, 0);
   }
 
   async function handleSubmit(e: Event) {
@@ -83,12 +110,8 @@
 </script>
 
 <div
-  class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
 >
-  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-    Add Note to Topic
-  </h3>
-
   {#if error}
     <div
       class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-3 mb-4"
@@ -116,16 +139,20 @@
       />
     </div>
 
-    <!-- Content -->
+    <!-- Content with Markdown Toolbar -->
     <div class="mb-4">
       <label
         class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
       >
         Content <span class="text-red-500">*</span>
       </label>
+
+      <MarkdownToolbar on:insertMarkdown={handleInsertMarkdown} />
+
       <textarea
+        bind:this={contentTextarea}
         bind:value={content}
-        rows="4"
+        rows="6"
         placeholder="Write your note... (Ctrl+Enter to save)"
         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
                rounded-lg bg-white dark:bg-gray-700

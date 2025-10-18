@@ -16,6 +16,7 @@
   import AddTopicNoteForm from "$lib/components/AddTopicNoteForm.svelte";
   import type { CountryMetadata } from "$lib/stores/vault";
   import EditTopicNoteModal from "$lib/components/EditTopicNoteModal.svelte";
+  import MarkdownRenderer from "$lib/components/MarkdownRenderer.svelte";
 
   let topicId = $derived($page.params.id);
   let topicNotes = $state<Note[]>([]);
@@ -29,6 +30,7 @@
   let allNotes = $state<{ country: string; notes: Note[] }[]>([]);
   let countriesMetadata = $state<Map<string, CountryMetadata>>(new Map());
   let editingTopicNote: Note | null = $state(null);
+  let showAddNote = $state(false);
 
   onMount(async () => {
     if (!topicId) return;
@@ -293,7 +295,8 @@
               <button
                 onclick={startEditing}
                 class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-                       hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition"
+         text-gray-800 dark:text-gray-200
+         hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition"
               >
                 Edit
               </button>
@@ -349,15 +352,48 @@
         </div>
       </div>
 
-      <!-- Add Note Form -->
+      <!-- Add Note Form - Collapsible -->
       {#if $currentTopic}
-        <AddTopicNoteForm
-          topicId={$currentTopic.id}
-          topicCountries={$currentTopic.countries}
-          onSuccess={async () => {
-            await loadTopicNotes();
-          }}
-        />
+        <div class="mb-6">
+          <button
+            onclick={() => (showAddNote = !showAddNote)}
+            class="w-full flex items-center justify-between p-4 bg-white dark:bg-gray-800
+             rounded-lg border-2 border-gray-200 dark:border-gray-700
+             hover:border-mapanote-blue-500 dark:hover:border-mapanote-blue-400 transition"
+          >
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              Add Note to Topic
+            </h2>
+            <svg
+              class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform {showAddNote
+                ? 'rotate-180'
+                : ''}"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          {#if showAddNote}
+            <div class="mt-4 animate-in slide-in-from-top">
+              <AddTopicNoteForm
+                topicId={$currentTopic.id}
+                topicCountries={$currentTopic.countries}
+                onSuccess={async () => {
+                  await loadTopicNotes();
+                  showAddNote = false;
+                }}
+              />
+            </div>
+          {/if}
+        </div>
       {/if}
 
       <!-- Topic Notes Section -->
@@ -374,7 +410,7 @@
               <button
                 onclick={() => (editingTopicNote = note)}
                 class="w-full text-left bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-200 dark:border-gray-700 p-4
-                 hover:border-mapanote-blue-500 transition cursor-pointer"
+           hover:border-mapanote-blue-500 transition cursor-pointer"
                 style="border-left: 4px solid {$currentTopic.color ||
                   '#3B82F6'}"
               >
@@ -402,9 +438,12 @@
                   </div>
                 </div>
 
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  {note.content}
-                </p>
+                <div class="text-sm mb-3">
+                  <MarkdownRenderer
+                    content={note.content}
+                    topicId={$currentTopic.id}
+                  />
+                </div>
 
                 <!-- Country targets -->
                 <div class="flex items-center gap-2 flex-wrap mb-2">

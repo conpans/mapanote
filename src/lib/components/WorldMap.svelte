@@ -37,6 +37,10 @@
   let shouldShowTooltip = $state(false); // ← NEW: Controls visibility with delay
   let isTooltipFadingOut = $state(false);
 
+  const colorCache = new Map<string, { top: string; bottom: string }>();
+  let arrowBackgroundColor = $state<string>("white");
+  let tooltipArrowPosition = $state<"left" | "right" | "center">("center");
+
   // Zoom/Pan state
   let transform = $state({ scale: 1, x: 0, y: 0 });
   let isPanning = $state(false);
@@ -445,34 +449,67 @@
   }
 
   function setTooltipPosition(e: MouseEvent) {
-    const offset = 20;
+    const offset = 15; // Distance from cursor
+    const arrowOffset = 40; // Distance of arrow from edge
     const tooltipWidth = 360;
     const tooltipHeight = 320;
+    const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
-    // Center horizontally on cursor
-    let x = e.clientX - tooltipWidth / 2;
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
 
-    // Keep on screen horizontally
-    if (x < 10) x = 10;
-    if (x + tooltipWidth > window.innerWidth - 10) {
-      x = window.innerWidth - tooltipWidth - 10;
+    // Calculate which side has more space
+    const spaceRight = viewportWidth - mouseX;
+    const spaceLeft = mouseX;
+    const spaceBelow = viewportHeight - mouseY;
+    const spaceAbove = mouseY;
+
+    // Determine horizontal position
+    let x: number;
+    let arrowXPosition: "left" | "right" | "center";
+
+    // Prefer showing on the side with more space
+    if (spaceLeft > spaceRight && spaceLeft > tooltipWidth + offset) {
+      // Show on left side
+      x = mouseX - tooltipWidth - offset;
+      arrowXPosition = "right";
+    } else if (spaceRight > tooltipWidth + offset) {
+      // Show on right side
+      x = mouseX + offset;
+      arrowXPosition = "left";
+    } else if (spaceLeft > tooltipWidth + offset) {
+      // Fall back to left if right doesn't fit
+      x = mouseX - tooltipWidth - offset;
+      arrowXPosition = "right";
+    } else {
+      // Center it as last resort
+      x = Math.max(
+        10,
+        Math.min(mouseX - tooltipWidth / 2, viewportWidth - tooltipWidth - 10)
+      );
+      arrowXPosition = "center";
     }
 
-    // Position above or below cursor
+    // Determine vertical position
     let y: number;
-    if (e.clientY + offset + tooltipHeight < viewportHeight) {
+    if (spaceBelow > tooltipHeight + offset) {
       // Show below cursor
-      y = e.clientY + offset;
+      y = mouseY + offset;
       tooltipPosition = "bottom";
-    } else {
+    } else if (spaceAbove > tooltipHeight + offset) {
       // Show above cursor
-      y = e.clientY - tooltipHeight - offset;
+      y = mouseY - tooltipHeight - offset;
       tooltipPosition = "top";
+    } else {
+      // Default to below
+      y = Math.max(10, mouseY + offset);
+      tooltipPosition = "bottom";
     }
 
     tooltipX = x;
     tooltipY = y;
+    tooltipArrowPosition = arrowXPosition;
   }
 
   function updateTooltipPosition(e: MouseEvent) {
@@ -516,6 +553,93 @@
   function handleCountryClick(slug: string) {
     goto(`/country/${slug}`);
   }
+
+  // Function to detect flag edge colors based on arrow position
+  async function detectFlagEdgeColors(
+    isoCode: string,
+    arrowPos: "left" | "right" | "center"
+  ): Promise<{ top: string; bottom: string } | null> {
+    // Create cache key including arrow position
+    const cacheKey = `${isoCode}-${arrowPos}`;
+    if (colorCache.has(cacheKey)) {
+      return colorCache.get(cacheKey)!;
+    }
+
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = `/flags/${isoCode.toLowerCase()}.svg`;
+
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("Failed to load flag"));
+        setTimeout(() => reject(new Error("Timeout")), 2000);
+      });
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+      if (!ctx) return null;
+
+      canvas.width = img.width || 100;
+      canvas.height = img.height || 60;
+      ctx.drawImage(img, 0, 0);
+
+      // Determine X position based on where arrow is
+      let sampleX: number;
+      if (arrowPos === "left") {
+        sampleX = canvas.width * 0.1; // Sample from left side (10% in)
+      } else if (arrowPos === "right") {
+        sampleX = canvas.width * 0.9; // Sample from right side (90% in)
+      } else {
+        sampleX = canvas.width / 2; // Sample from center
+      }
+
+      // Sample Y positions (top and bottom of flag)
+      const topY = Math.min(10, canvas.height * 0.15);
+      const bottomY = canvas.height - Math.min(10, canvas.height * 0.15);
+
+      // Get color from top edge at arrow's X position
+      const topPixel = ctx.getImageData(sampleX, topY, 1, 1).data;
+      const topColor = `rgb(${topPixel[0]}, ${topPixel[1]}, ${topPixel[2]})`;
+
+      // Get color from bottom edge at arrow's X position
+      const bottomPixel = ctx.getImageData(sampleX, bottomY, 1, 1).data;
+      const bottomColor = `rgb(${bottomPixel[0]}, ${bottomPixel[1]}, ${bottomPixel[2]})`;
+
+      const colors = { top: topColor, bottom: bottomColor };
+
+      // Cache the result
+      colorCache.set(cacheKey, colors);
+
+      return colors;
+    } catch (error) {
+      console.warn(`Failed to detect colors for ${isoCode}:`, error);
+      return null;
+    }
+  }
+
+  // Effect to update arrow color when country or position changes
+  $effect(() => {
+    if (hoveredIso && shouldShowTooltip) {
+      // Only use flag color when tooltip is BELOW cursor (arrow at top points up into flag)
+      if (tooltipPosition === "bottom") {
+        detectFlagEdgeColors(hoveredIso, tooltipArrowPosition).then(
+          (colors) => {
+            if (colors) {
+              arrowBackgroundColor = colors.top;
+            } else {
+              arrowBackgroundColor = "white";
+            }
+          }
+        );
+      } else {
+        // Tooltip is ABOVE cursor - arrow at bottom should match background
+        // Don't set inline style, let CSS handle dark mode
+        arrowBackgroundColor = ""; // Empty string removes inline style
+      }
+    }
+  });
 </script>
 
 <svelte:window on:mousemove={handlePanMove} on:mouseup={handlePanEnd} />
@@ -581,79 +705,85 @@
   {/if}
 
   <!-- Enhanced Tooltip with Flag -->
-  <!-- Stationary Tooltip (only show when shouldShowTooltip is true) -->
+  <!-- Enhanced Tooltip with Flag and Smooth Transitions -->
+  <!-- Enhanced Tooltip with Flag and Smooth Transitions -->
   {#if hoveredIso && tooltipName && !isLoading && shouldShowTooltip}
-    <div
-      class="map-tooltip"
-      class:tooltip-top={tooltipPosition === "top"}
-      class:tooltip-bottom={tooltipPosition === "bottom"}
-      class:tooltip-fadeout={isTooltipFadingOut}
-      style="left: {tooltipX}px; top: {tooltipY}px;"
-      onmouseenter={handleTooltipMouseEnter}
-      onmouseleave={handleTooltipMouseLeave}
-      role="tooltip"
-    >
-      <!-- Arrow indicator -->
-      <div class="tooltip-arrow"></div>
+    {#key hoveredIso}
+      <div
+        class="map-tooltip {tooltipPosition === 'top'
+          ? 'tooltip-top'
+          : 'tooltip-bottom'}"
+        class:tooltip-fadeout={isTooltipFadingOut}
+        style="left: {tooltipX}px; top: {tooltipY}px;"
+        onmouseenter={handleTooltipMouseEnter}
+        onmouseleave={handleTooltipMouseLeave}
+        role="tooltip"
+      >
+        <!-- Arrow indicator -->
+        <div
+          class="tooltip-arrow arrow-{tooltipArrowPosition}"
+          style:background-color={arrowBackgroundColor || undefined}
+        ></div>
 
-      <!-- Full-width Flag (no overlay) -->
-      <div class="tooltip-flag-container">
-        {#if hoveredIso}
-          <img
-            src="/flags/{hoveredIso.toLowerCase()}.svg"
-            alt="{tooltipName} flag"
-            class="flag-image-large"
-            onerror={(e) => {
-              (e.currentTarget as HTMLImageElement).style.display = "none";
-            }}
-          />
-        {/if}
-      </div>
+        <!-- Full-width Flag -->
+        <div class="tooltip-flag-container">
+          {#if hoveredIso}
+            <img
+              src="/flags/{hoveredIso.toLowerCase()}.svg"
+              alt="{tooltipName} flag"
+              class="flag-image-large"
+              onerror={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display = "none";
+              }}
+            />
+          {/if}
+        </div>
 
-      <!-- Compact Info Section -->
-      <div class="tooltip-content">
-        <!-- Stats -->
-        {#if tooltipStats}
-          <div class="stat-row">
-            <span class="stat-icon">📝</span>
-            <span class="stat-text">
-              <strong>{tooltipStats.noteCount}</strong>
-              {tooltipStats.noteCount === 1 ? "note" : "notes"}
-            </span>
-            {#if isFresh(tooltipStats.lastUpdated)}
-              <span class="fresh-indicator">🔥</span>
+        <!-- Compact Info Section -->
+        <div class="tooltip-content">
+          <!-- Stats -->
+          {#if tooltipStats}
+            <div class="stat-row">
+              <span class="stat-icon">📝</span>
+              <span class="stat-text">
+                <strong>{tooltipStats.noteCount}</strong>
+                {tooltipStats.noteCount === 1 ? "note" : "notes"}
+              </span>
+              {#if isFresh(tooltipStats.lastUpdated)}
+                <span class="fresh-indicator">🔥</span>
+              {/if}
+            </div>
+            {#if tooltipStats.lastUpdated}
+              <div class="stat-row-small">
+                Updated {tooltipStats.lastUpdated}
+              </div>
             {/if}
-          </div>
-          {#if tooltipStats.lastUpdated}
-            <div class="stat-row-small">
-              Updated {tooltipStats.lastUpdated}
+          {:else}
+            <div class="stat-row">
+              <span class="stat-icon">📝</span>
+              <span class="stat-text text-muted">No notes yet</span>
             </div>
           {/if}
-        {:else}
-          <div class="stat-row">
-            <span class="stat-icon">📝</span>
-            <span class="stat-text text-muted">No notes yet</span>
-          </div>
-        {/if}
 
-        <!-- Summary with country name -->
-        {#if tooltipCountry?.summary}
-          <div class="tooltip-summary">
-            <strong>{tooltipName}</strong>, {tooltipCountry.summary
-              .toLowerCase()
-              .startsWith(tooltipName.toLowerCase())
-              ? tooltipCountry.summary
-                  .substring(tooltipName.length)
-                  .replace(/^,?\s*/, "")
-              : tooltipCountry.summary}
-          </div>
-        {:else if tooltipName}
-          <div class="tooltip-summary">
-            <strong>{tooltipName}</strong>
-          </div>
-        {/if}
+          <!-- Summary with country name -->
+          {#if tooltipCountry?.summary}
+            <div class="tooltip-summary">
+              <strong>{tooltipName}</strong>, {tooltipCountry.summary
+                .toLowerCase()
+                .startsWith(tooltipName.toLowerCase())
+                ? tooltipCountry.summary
+                    .substring(tooltipName.length)
+                    .replace(/^,?\s*/, "")
+                : tooltipCountry.summary}
+            </div>
+          {:else if tooltipName}
+            <div class="tooltip-summary">
+              <strong>{tooltipName}</strong>
+            </div>
+          {/if}
+        </div>
       </div>
-    </div>
+    {/key}
   {/if}
   <!-- Legend -->
   {#if !isLoading && !errorMessage}
@@ -692,8 +822,6 @@
     </div>
   {/if}
 </div>
-
-/* Replace the styles section in WorldMap.svelte with these improved styles */
 
 <style>
   .world-map-wrapper {
@@ -959,7 +1087,7 @@
     pointer-events: auto;
     z-index: 1000;
     width: 360px;
-    overflow: hidden;
+    overflow: visible; /* ← CHANGED */
     cursor: default;
     animation: tooltipFadeIn 0.15s ease-out;
   }
@@ -998,33 +1126,47 @@
 
   .tooltip-arrow {
     position: absolute;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     background: white;
-    border: 1px solid #d1d5db;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     transform: rotate(45deg);
-    left: 50%;
-    margin-left: -8px;
-    z-index: 1;
+    z-index: 2;
+    transition: background-color 0.2s ease;
   }
 
   :global(.dark) .tooltip-arrow {
     background: #1f2937;
-    border-color: #374151;
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
+  /* Vertical position */
   .tooltip-bottom .tooltip-arrow {
-    top: -9px;
+    top: -10px;
     border-bottom: none;
     border-right: none;
-    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.1);
   }
 
   .tooltip-top .tooltip-arrow {
-    bottom: -9px;
+    bottom: -10px;
     border-top: none;
     border-left: none;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Horizontal position - closer to edges */
+  .tooltip-arrow.arrow-left {
+    left: 25px; /* Closer to left edge */
+  }
+
+  .tooltip-arrow.arrow-right {
+    right: 25px; /* Closer to right edge */
+  }
+
+  .tooltip-arrow.arrow-center {
+    left: 50%;
+    margin-left: -10px;
   }
 
   .tooltip-flag-container {
@@ -1033,6 +1175,7 @@
     height: 180px;
     overflow: hidden;
     background: #f3f4f6;
+    z-index: 1;
   }
 
   :global(.dark) .tooltip-flag-container {
@@ -1044,10 +1187,19 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    position: relative;
+    z-index: 0;
   }
 
   .tooltip-content {
     padding: 12px 16px 16px;
+    position: relative;
+    z-index: 1; /* ← ADD THIS */
+    background: white; /* ← ADD THIS */
+  }
+
+  :global(.dark) .tooltip-content {
+    background: #1f2937; /* ← ADD THIS */
   }
 
   .stat-row {

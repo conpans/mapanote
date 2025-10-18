@@ -1,3 +1,4 @@
+use base64::{engine::general_purpose, Engine as _};
 use mapanote_lib::models::{CountryStats, Note, VaultManifest};
 use mapanote_lib::AppState;
 use serde::Serialize;
@@ -801,4 +802,164 @@ pub fn get_recent_activity(
     activities.truncate(limit);
 
     Ok(activities)
+}
+
+/// Save an image to the vault's assets folder
+#[tauri::command]
+pub fn save_note_image(
+    country_slug: String,
+    image_data: String, // Base64 encoded image
+    filename: String,
+    state: State<AppState>,
+) -> Result<String, String> {
+    let writer = state.vault_writer.lock().unwrap();
+    let vault_path = writer.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let assets_dir = vault_root.join("notes").join(&country_slug).join("assets");
+
+    // Create assets directory if it doesn't exist
+    fs::create_dir_all(&assets_dir)
+        .map_err(|e| format!("Failed to create assets directory: {}", e))?;
+
+    // Decode base64 image data
+    let image_bytes = general_purpose::STANDARD
+        .decode(image_data)
+        .map_err(|e| format!("Failed to decode image data: {}", e))?;
+
+    // Generate unique filename if needed
+    let final_filename = if filename.is_empty() {
+        format!("image_{}.png", ulid::Ulid::new())
+    } else {
+        filename
+    };
+
+    // Save image file
+    let image_path = assets_dir.join(&final_filename);
+    fs::write(&image_path, image_bytes)
+        .map_err(|e| format!("Failed to write image file: {}", e))?;
+
+    // Return relative path for markdown
+    Ok(format!("assets/{}", final_filename))
+}
+
+/// Save an image to a topic note's assets folder
+#[tauri::command]
+pub fn save_topic_image(
+    topic_id: String,
+    image_data: String, // Base64 encoded image
+    filename: String,
+    state: State<AppState>,
+) -> Result<String, String> {
+    let writer = state.vault_writer.lock().unwrap();
+    let vault_path = writer.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let assets_dir = vault_root.join("topics").join(&topic_id).join("assets");
+
+    // Create assets directory if it doesn't exist
+    fs::create_dir_all(&assets_dir)
+        .map_err(|e| format!("Failed to create assets directory: {}", e))?;
+
+    // Decode base64 image data
+    let image_bytes = general_purpose::STANDARD
+        .decode(image_data)
+        .map_err(|e| format!("Failed to decode image data: {}", e))?;
+
+    // Generate unique filename if needed
+    let final_filename = if filename.is_empty() {
+        format!("image_{}.png", ulid::Ulid::new())
+    } else {
+        filename
+    };
+
+    // Save image file
+    let image_path = assets_dir.join(&final_filename);
+    fs::write(&image_path, image_bytes)
+        .map_err(|e| format!("Failed to write image file: {}", e))?;
+
+    // Return relative path for markdown
+    Ok(format!("assets/{}", final_filename))
+}
+
+/// Delete an image from assets
+#[tauri::command]
+pub fn delete_note_image(
+    country_slug: String,
+    image_filename: String,
+    state: State<AppState>,
+) -> Result<(), String> {
+    let writer = state.vault_writer.lock().unwrap();
+    let vault_path = writer.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let image_path = vault_root
+        .join("notes")
+        .join(&country_slug)
+        .join("assets")
+        .join(&image_filename);
+
+    if image_path.exists() {
+        fs::remove_file(&image_path).map_err(|e| format!("Failed to delete image: {}", e))?;
+    }
+
+    Ok(())
+}
+
+/// Get image as base64 for display
+#[tauri::command]
+pub fn get_note_image(
+    country_slug: String,
+    image_filename: String,
+    state: State<AppState>,
+) -> Result<String, String> {
+    let reader = state.vault_reader.lock().unwrap();
+    let vault_path = reader.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let image_path = vault_root
+        .join("notes")
+        .join(&country_slug)
+        .join("assets")
+        .join(&image_filename);
+
+    if !image_path.exists() {
+        return Err(format!("Image not found: {}", image_filename));
+    }
+
+    let image_bytes = fs::read(&image_path).map_err(|e| format!("Failed to read image: {}", e))?;
+
+    // Encode as base64
+    let base64_data = general_purpose::STANDARD.encode(image_bytes);
+
+    Ok(base64_data)
+}
+
+/// Get topic image as base64 for display
+#[tauri::command]
+pub fn get_topic_image(
+    topic_id: String,
+    image_filename: String,
+    state: State<AppState>,
+) -> Result<String, String> {
+    let reader = state.vault_reader.lock().unwrap();
+    let vault_path = reader.as_ref().ok_or("No vault opened")?;
+
+    let vault_root = PathBuf::from(vault_path);
+    let image_path = vault_root
+        .join("topics")
+        .join(&topic_id)
+        .join("assets")
+        .join(&image_filename);
+
+    if !image_path.exists() {
+        return Err(format!("Image not found: {}", image_filename));
+    }
+
+    let image_bytes = fs::read(&image_path).map_err(|e| format!("Failed to read image: {}", e))?;
+
+    // Encode as base64
+    let base64_data = general_purpose::STANDARD.encode(image_bytes);
+
+    Ok(base64_data)
 }

@@ -2,12 +2,12 @@ mod commands;
 
 use commands::{
     add_country_to_topic, add_note, add_topic_note, create_minimal_vault, create_topic,
-    delete_note, delete_topic, delete_topic_note, get_all_countries_metadata,
+    delete_note, delete_note_image, delete_topic, delete_topic_note, get_all_countries_metadata,
     get_all_countries_with_combined_counts, get_all_country_stats, get_all_topics,
-    get_country_metadata, get_country_notes, get_country_notes_with_topics, get_recent_activity,
-    get_topic, get_topic_notes, get_topics_for_country, get_vault_manifest, list_countries,
-    open_vault, remove_country_from_topic, search_notes, update_note, update_topic,
-    update_topic_note,
+    get_country_metadata, get_country_notes, get_country_notes_with_topics, get_note_image,
+    get_recent_activity, get_topic, get_topic_image, get_topic_notes, get_topics_for_country,
+    get_vault_manifest, list_countries, open_vault, remove_country_from_topic, save_note_image,
+    save_topic_image, search_notes, update_note, update_topic, update_topic_note,
 };
 use mapanote_lib::AppState;
 use std::sync::Mutex;
@@ -49,6 +49,11 @@ fn main() {
             get_country_notes_with_topics,
             get_all_countries_with_combined_counts,
             get_recent_activity,
+            save_note_image,
+            save_topic_image,
+            delete_note_image,
+            get_note_image,
+            get_topic_image,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

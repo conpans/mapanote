@@ -5,10 +5,10 @@
     loadCountry,
     currentCountry,
     currentNotes,
-    currentNotesWithSource, // ← ADD THIS
+    currentNotesWithSource,
     isLoading,
   } from "$lib/stores/vault";
-  import type { NoteWithSource } from "$lib/types"; // ← ADD THIS
+  import type { NoteWithSource } from "$lib/types";
   import { goto } from "$app/navigation";
   import AddNoteForm from "$lib/components/AddNoteForm.svelte";
   import EditNoteModal from "$lib/components/EditNoteModal.svelte";
@@ -19,17 +19,24 @@
   import { getTopicsForCountry } from "$lib/stores/topics";
   import type { Topic } from "$lib/types";
   import { invoke } from "@tauri-apps/api/core";
+  import MarkdownRenderer from "$lib/components/MarkdownRenderer.svelte";
+  import PromoteToTopicModal from "$lib/components/PromoteToTopicModal.svelte";
 
   // Get slug from URL
   let slug = $derived($page.params.slug);
 
+  let promotingNote: Note | null = $state(null);
+
   // Filter state
-  let selectedTags: string[] = [];
-  let dateFilter: "all" | "7d" | "30d" = "all";
+  let selectedTags: string[] = $state([]);
+  let dateFilter: "all" | "7d" | "30d" = $state("all");
 
   // Edit modal state
-  let editingNote: Note | null = null;
-  let showExportMenu = false;
+  let editingNote: NoteWithSource | null = $state(null);
+  let showExportMenu = $state(false);
+
+  // ADD NOTE FORM STATE
+  let isAddNoteExpanded = $state(false);
 
   let countryTopics = $state<Topic[]>([]);
   let relatedCountries = $state<
@@ -150,7 +157,17 @@
   }
 
   function handleEditNote(note: Note) {
-    editingNote = note;
+    const noteWithSource = $currentNotesWithSource.find(
+      (n) => n.id === note.id
+    );
+    editingNote =
+      noteWithSource ||
+      ({
+        ...note,
+        source_type: "country",
+        source_name: $currentCountry?.slug || "",
+        topic_color: null,
+      } as unknown as NoteWithSource);
   }
 
   function closeEditModal() {
@@ -158,8 +175,18 @@
   }
 
   function handleAddSuccess() {
-    // Scroll to top after adding
+    // Collapse the form after adding a note
+    isAddNoteExpanded = false;
+    // Scroll to top to see the new note
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handlePromoteNote(note: Note) {
+    promotingNote = note;
+  }
+
+  function closePromoteModal() {
+    promotingNote = null;
   }
 </script>
 
@@ -174,27 +201,29 @@
       class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"
     >
       <div class="max-w-6xl mx-auto p-8">
-        <button
-          onclick={goBack}
-          class="text-mapanote-blue-600 hover:underline mb-4 inline-flex items-center gap-1"
-        >
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <div class="flex items-center justify-between mb-4">
+          <button
+            onclick={goBack}
+            class="text-mapanote-blue-600 hover:underline inline-flex items-center gap-1"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          Back to countries
-        </button>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Back to countries
+          </button>
 
-        <ThemeToggle />
+          <ThemeToggle />
+        </div>
 
         <div class="flex items-start justify-between">
           <div>
@@ -221,26 +250,6 @@
                 {$currentCountry.summary}
               </p>
             {/if}
-
-            <!-- Export button - temporarily disabled -->
-            <!--
-<button
-  onclick={() => (showExportMenu = true)}
-  class="mt-4 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
-         hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg transition
-         flex items-center gap-2 text-gray-700 dark:text-gray-300"
->
-  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-    />
-  </svg>
-  Export
-</button>
--->
           </div>
 
           <!-- Stats -->
@@ -291,8 +300,57 @@
             </div>
           {/if}
 
-          <!-- Add Note Form -->
-          <AddNoteForm onSuccess={handleAddSuccess} />
+          <!-- Add Note Section - COLLAPSIBLE -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+          >
+            <button
+              onclick={() => (isAddNoteExpanded = !isAddNoteExpanded)}
+              class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition"
+            >
+              <div class="flex items-center gap-3">
+                <svg
+                  class="w-5 h-5 text-mapanote-blue-600 dark:text-mapanote-blue-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                <span
+                  class="text-lg font-semibold text-gray-900 dark:text-gray-100"
+                >
+                  Add Note
+                </span>
+              </div>
+              <svg
+                class="w-5 h-5 text-gray-400 transition-transform {isAddNoteExpanded
+                  ? 'rotate-180'
+                  : ''}"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {#if isAddNoteExpanded}
+              <div class="border-t border-gray-200 dark:border-gray-700 p-6">
+                <AddNoteForm onSuccess={handleAddSuccess} />
+              </div>
+            {/if}
+          </div>
 
           <!-- Filters Bar -->
           <div
@@ -488,15 +546,36 @@
                           />
                         </svg>
                       </button>
+                      <!-- ADD THIS: Promote button (only for country notes, not topic notes) -->
+                      {#if noteWithSource?.source_type !== "topic"}
+                        <button
+                          onclick={() => handlePromoteNote(note)}
+                          class="text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition ml-2"
+                          title="Promote to topic"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M7 11l5-5m0 0l5 5m-5-5v12"
+                            />
+                          </svg>
+                        </button>
+                      {/if}
                     </div>
 
                     <!-- Note content -->
                     <div class="prose dark:prose-invert max-w-none">
-                      <p
-                        class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed"
-                      >
-                        {note.content}
-                      </p>
+                      <MarkdownRenderer
+                        content={note.content}
+                        countrySlug={$currentCountry.slug}
+                      />
                     </div>
                   </div>
                 {/each}
@@ -539,12 +618,6 @@
                           onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log("Clicked country:", countrySlug);
-                            console.log("Full name:", metadata?.name);
-                            console.log(
-                              "Navigating to:",
-                              `/country/${countrySlug}`
-                            );
                             goto(`/country/${countrySlug}`);
                           }}
                           type="button"
@@ -580,19 +653,12 @@
 
 <!-- Edit Modal (conditionally rendered) -->
 {#if editingNote}
-  <EditNoteModal note={editingNote} onClose={closeEditModal} />
+  <EditNoteModal noteWithSource={editingNote} onClose={closeEditModal} />
 {/if}
 
-<!-- Export Menu - temporarily disabled -->
-<!--
-{#if showExportMenu && $currentCountry}
-  <ExportMenu
-    countrySlug={$currentCountry.slug}
-    countryTitle={$currentCountry.name}
-    onClose={() => (showExportMenu = false)}
-  />
+{#if promotingNote}
+  <PromoteToTopicModal note={promotingNote} onClose={closePromoteModal} />
 {/if}
--->
 
 <style>
   .note-card {

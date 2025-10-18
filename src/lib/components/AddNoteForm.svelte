@@ -1,5 +1,7 @@
 <script lang="ts">
   import { addNote, currentCountry } from "$lib/stores/vault";
+  import ImageUploader from "./ImageUploader.svelte";
+  import MarkdownToolbar from "./MarkdownToolbar.svelte";
 
   export let onSuccess: () => void = () => {};
 
@@ -8,6 +10,7 @@
   let tagsInput = "";
   let isSubmitting = false;
   let error = "";
+  let contentTextarea: HTMLTextAreaElement;
 
   async function handleSubmit() {
     if (!content.trim() || !title.trim() || !$currentCountry) return;
@@ -43,6 +46,64 @@
       handleSubmit();
     }
   }
+
+  function handleImageInserted(event: CustomEvent<{ markdown: string }>) {
+    const { markdown } = event.detail;
+
+    // Insert at cursor position
+    if (contentTextarea) {
+      const start = contentTextarea.selectionStart;
+      const end = contentTextarea.selectionEnd;
+      const text = content;
+
+      content =
+        text.substring(0, start) + "\n" + markdown + "\n" + text.substring(end);
+
+      // Move cursor after inserted image
+      setTimeout(() => {
+        contentTextarea.selectionStart = contentTextarea.selectionEnd =
+          start + markdown.length + 2;
+        contentTextarea.focus();
+      }, 0);
+    } else {
+      // Append to end if no cursor position
+      content = content + "\n" + markdown;
+    }
+  }
+
+  function handleMarkdownInsert(event: CustomEvent<{ markdown: string }>) {
+    const { markdown } = event.detail;
+
+    if (contentTextarea) {
+      const start = contentTextarea.selectionStart;
+      const end = contentTextarea.selectionEnd;
+      const selectedText = content.substring(start, end);
+      const text = content;
+
+      let insertText = markdown;
+
+      // If markdown has placeholder text and there's a selection, replace it
+      if (selectedText && markdown.includes("text")) {
+        insertText = markdown.replace("text", selectedText);
+      }
+
+      content = text.substring(0, start) + insertText + text.substring(end);
+
+      setTimeout(() => {
+        // Position cursor appropriately
+        if (selectedText) {
+          contentTextarea.selectionStart = start;
+          contentTextarea.selectionEnd = start + insertText.length;
+        } else {
+          contentTextarea.selectionStart = contentTextarea.selectionEnd =
+            start + insertText.length;
+        }
+        contentTextarea.focus();
+      }, 0);
+    } else {
+      content = content + markdown;
+    }
+  }
 </script>
 
 <div
@@ -74,8 +135,12 @@
              mb-3"
     />
 
+    <!-- Markdown Toolbar -->
+    <MarkdownToolbar on:insertMarkdown={handleMarkdownInsert} />
+
     <!-- Note content -->
     <textarea
+      bind:this={contentTextarea}
       bind:value={content}
       on:keydown={handleKeydown}
       placeholder="Write your note... (Ctrl+Enter to save)"
@@ -85,8 +150,19 @@
              text-gray-900 dark:text-gray-100
              placeholder-gray-400 dark:placeholder-gray-500
              focus:ring-2 focus:ring-mapanote-blue-500 focus:border-transparent
-             resize-y mb-3"
+             resize-y mb-3 font-mono text-sm"
     ></textarea>
+
+    <!-- Image Uploader -->
+    <div class="mb-3">
+      <ImageUploader
+        countrySlug={$currentCountry?.slug}
+        on:imageInserted={handleImageInserted}
+      />
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        💡 Tip: Paste images directly with Ctrl+V or click to upload
+      </p>
+    </div>
 
     <!-- Tags input -->
     <input
@@ -120,7 +196,7 @@
   </form>
 
   <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-    💡 Tip: Press <kbd
+    ⌨️ Tip: Press <kbd
       class="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs"
       >Ctrl+Enter</kbd
     > to save quickly
