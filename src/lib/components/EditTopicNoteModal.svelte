@@ -2,6 +2,8 @@
   import { updateTopicNote, deleteTopicNote } from "$lib/stores/topics";
   import { invoke } from "@tauri-apps/api/core";
   import type { Note, CountryMetadata } from "$lib/types";
+  import MarkdownToolbar from "./MarkdownToolbar.svelte"; // ← ADD THIS
+  import ImageUploader from "./ImageUploader.svelte";
 
   interface Props {
     note: Note;
@@ -14,12 +16,22 @@
 
   let title = $state(note.title);
   let content = $state(note.content);
-  let tagsInput = $state(note.tags.join(", "));
+  let tagsInput = $state(
+    note.tags
+      .map((tag) =>
+        tag
+          .replace(/^["']|["']$/g, "")
+          .replace(/\\\\/g, "\\")
+          .replace(/\\"/g, '"')
+      )
+      .join(", ")
+  );
   let selectedCountries = $state<string[]>(note.country_targets || []);
   let isSubmitting = $state(false);
   let error = $state("");
   let showDeleteConfirm = $state(false);
   let countriesMetadata = $state<Map<string, CountryMetadata>>(new Map());
+  let contentTextarea: HTMLTextAreaElement;
 
   // Load country metadata
   $effect(() => {
@@ -93,6 +105,59 @@
   function handleBackdropClick(e: MouseEvent) {
     if (e.target === e.currentTarget) {
       onClose();
+    }
+  }
+
+  function handleMarkdownInsert(event: CustomEvent<{ markdown: string }>) {
+    const { markdown } = event.detail;
+
+    if (contentTextarea) {
+      const start = contentTextarea.selectionStart;
+      const end = contentTextarea.selectionEnd;
+      const selectedText = content.substring(start, end);
+      const text = content;
+
+      let insertText = markdown;
+
+      if (selectedText && markdown.includes("text")) {
+        insertText = markdown.replace("text", selectedText);
+      }
+
+      content = text.substring(0, start) + insertText + text.substring(end);
+
+      setTimeout(() => {
+        if (selectedText) {
+          contentTextarea.selectionStart = start;
+          contentTextarea.selectionEnd = start + insertText.length;
+        } else {
+          contentTextarea.selectionStart = contentTextarea.selectionEnd =
+            start + insertText.length;
+        }
+        contentTextarea.focus();
+      }, 0);
+    } else {
+      content = content + markdown;
+    }
+  }
+
+  function handleImageInserted(event: CustomEvent<{ markdown: string }>) {
+    const { markdown } = event.detail;
+
+    if (contentTextarea) {
+      const start = contentTextarea.selectionStart;
+      const end = contentTextarea.selectionEnd;
+      const text = content;
+
+      content =
+        text.substring(0, start) + "\n" + markdown + "\n" + text.substring(end);
+
+      setTimeout(() => {
+        contentTextarea.selectionStart = contentTextarea.selectionEnd =
+          start + markdown.length + 2;
+        contentTextarea.focus();
+      }, 0);
+    } else {
+      content = content + "\n" + markdown;
     }
   }
 </script>
@@ -184,18 +249,31 @@
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
         >
-          Content
+          Content <span class="text-red-500">*</span>
         </label>
+
+        <!-- ADD MARKDOWN TOOLBAR -->
+        <MarkdownToolbar on:insertMarkdown={handleMarkdownInsert} />
+
         <textarea
+          bind:this={contentTextarea}
           bind:value={content}
           rows="8"
           placeholder="Write your note..."
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
-                 rounded-lg bg-white dark:bg-gray-700
-                 text-gray-900 dark:text-gray-100
-                 focus:ring-2 focus:ring-mapanote-blue-500 focus:border-transparent
-                 resize-y"
+           rounded-lg bg-white dark:bg-gray-700
+           text-gray-900 dark:text-gray-100
+           focus:ring-2 focus:ring-mapanote-blue-500 focus:border-transparent
+           resize-y"
         ></textarea>
+
+        <!-- ADD IMAGE UPLOADER -->
+        <div class="mt-3">
+          <ImageUploader {topicId} on:imageInserted={handleImageInserted} />
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            💡 Tip: Paste images with Ctrl+V
+          </p>
+        </div>
       </div>
 
       <!-- Country Selection -->

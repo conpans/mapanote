@@ -14,7 +14,16 @@
 
   let title = $state(noteWithSource.title); // ← Direct access, not .noteWithSource.title
   let content = $state(noteWithSource.content);
-  let tagsInput = $state(noteWithSource.tags.join(", "));
+  let tagsInput = $state(
+    noteWithSource.tags
+      .map((tag) =>
+        tag
+          .replace(/^["']|["']$/g, "")
+          .replace(/\\\\/g, "\\")
+          .replace(/\\"/g, '"')
+      )
+      .join(", ")
+  );
   let isSubmitting = $state(false);
   let isDeleting = $state(false);
   let showDeleteConfirm = $state(false);

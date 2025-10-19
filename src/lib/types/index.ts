@@ -10,6 +10,10 @@ export interface Country {
   last_updated?: string;     
   tags: string[];            
 }
+export interface CountryMetadata {
+  slug: string;
+  name: string;
+}
 
 export interface Note {
   id: string;
